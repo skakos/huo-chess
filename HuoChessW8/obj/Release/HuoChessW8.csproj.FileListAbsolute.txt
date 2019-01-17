@@ -1,0 +1,52 @@
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe.config
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.pdb
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csprojResolveAssemblyReference.cache
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Form1.resources
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Properties.Resources.resources
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.GenerateResource.Cache
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.exe
+C:\Users\spyridon.kakos\Documents\Visual Studio 2012 projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.pdb
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe.config
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.pdb
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Form1.resources
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Properties.Resources.resources
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.GenerateResource.Cache
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.exe
+C:\Users\spyridon.kakos\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe.config
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Form1.resources
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Properties.Resources.resources
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.GenerateResource.Cache
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe.config
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Form1.resources
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Properties.Resources.resources
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.990 with GUI - Alpha - Depth 4\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.GenerateResource.Cache
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe.config
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Form1.resources
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Properties.Resources.resources
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.GenerateResource.cache
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.CoreCompileInputs.cache
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2015\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe.config
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\bin\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Form1.resources
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.Properties.Resources.resources
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.GenerateResource.cache
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csproj.CoreCompileInputs.cache
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2017\Projects\HUO CHESS 0.991 with GUI - Alpha\Huo Chess 0.961 with GUI_VS2012\Source\HuoChessW8\obj\Release\HuoChessW8.csprojAssemblyReference.cache
