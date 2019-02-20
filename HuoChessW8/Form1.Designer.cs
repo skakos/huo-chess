@@ -100,8 +100,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label_variant_thought = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxA2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxB2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxC2)).BeginInit();
@@ -1023,32 +1021,11 @@
             this.label3.TabIndex = 74;
             this.label3.Text = "Total final positions analyzed: -";
             // 
-            // label_variant_thought
-            // 
-            this.label_variant_thought.AutoSize = true;
-            this.label_variant_thought.Location = new System.Drawing.Point(140, 477);
-            this.label_variant_thought.Name = "label_variant_thought";
-            this.label_variant_thought.Size = new System.Drawing.Size(10, 13);
-            this.label_variant_thought.TabIndex = 77;
-            this.label_variant_thought.Text = "-";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(47, 477);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(82, 13);
-            this.label4.TabIndex = 76;
-            this.label4.Text = "Variant thought:";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 527);
-            this.Controls.Add(this.label_variant_thought);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.pictureBoxD4);
@@ -1121,7 +1098,7 @@
             this.Controls.Add(this.pictureBox1);
             this.DoubleBuffered = true;
             this.Name = "Form1";
-            this.Text = "Huo Chess 0.990";
+            this.Text = "Huo Chess 0.991";
             this.Click += new System.EventHandler(this.Form1_Click);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxA2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxB2)).EndInit();
@@ -1269,8 +1246,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label_variant_thought;
-        private System.Windows.Forms.Label label4;
     }
 }
 
