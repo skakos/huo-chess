@@ -5,5 +5,7 @@ A mini open source chess program for educational purposes (latest version is 46 
 
 Related resources
 - Harmonia Philosophica Huo Chess site: https://harmoniaphilosophica.com/2019/02/13/huo-chess-c-micro-chess-updated/
-- Codeproject related article: https://www.codeproject.com/Articles/20736/C-C-CLI-Micro-Chess-Huo-Chess
+- Codeproject related article: https://www.codeproject.com/Articles/20736/C-C-CLI-Micro-Chess-Huo-Chess'
+
+Reuse of the code is free, as long as the source is cited properly.
 
