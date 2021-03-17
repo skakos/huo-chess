@@ -100,6 +100,9 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label_variant_thought = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.button_Help = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxA2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxB2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxC2)).BeginInit();
@@ -170,7 +173,7 @@
             // 
             // button_exit
             // 
-            this.button_exit.Location = new System.Drawing.Point(495, 298);
+            this.button_exit.Location = new System.Drawing.Point(495, 327);
             this.button_exit.Name = "button_exit";
             this.button_exit.Size = new System.Drawing.Size(75, 23);
             this.button_exit.TabIndex = 0;
@@ -1021,11 +1024,43 @@
             this.label3.TabIndex = 74;
             this.label3.Text = "Total final positions analyzed: -";
             // 
+            // label_variant_thought
+            // 
+            this.label_variant_thought.AutoSize = true;
+            this.label_variant_thought.Location = new System.Drawing.Point(140, 477);
+            this.label_variant_thought.Name = "label_variant_thought";
+            this.label_variant_thought.Size = new System.Drawing.Size(10, 13);
+            this.label_variant_thought.TabIndex = 77;
+            this.label_variant_thought.Text = "-";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(47, 477);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(82, 13);
+            this.label4.TabIndex = 76;
+            this.label4.Text = "Variant thought:";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // button_Help
+            // 
+            this.button_Help.Location = new System.Drawing.Point(495, 298);
+            this.button_Help.Name = "button_Help";
+            this.button_Help.Size = new System.Drawing.Size(75, 23);
+            this.button_Help.TabIndex = 78;
+            this.button_Help.Text = "Help";
+            this.button_Help.UseVisualStyleBackColor = true;
+            this.button_Help.Click += new System.EventHandler(this.button_Help_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 527);
+            this.Controls.Add(this.button_Help);
+            this.Controls.Add(this.label_variant_thought);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.pictureBoxD4);
@@ -1098,7 +1133,8 @@
             this.Controls.Add(this.pictureBox1);
             this.DoubleBuffered = true;
             this.Name = "Form1";
-            this.Text = "Huo Chess 0.991";
+            this.Text = "Huo Chess 0.992 - Developers Edition";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Click += new System.EventHandler(this.Form1_Click);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxA2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxB2)).EndInit();
@@ -1246,6 +1282,9 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label_variant_thought;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button_Help;
     }
 }
 

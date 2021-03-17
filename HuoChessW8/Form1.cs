@@ -16,6 +16,26 @@ using System.IO;
 //using System.Threading.Tasks;
 //using System.Threading;
 
+// --------------------
+// v0.992 changes
+// As of 2021-03-12
+// --------------------
+// Variables declarations
+// Main_Console()
+// CheckForBlackMate(Removed)
+// CheckForWhiteMate(Removed)
+// CheckMove
+// ComputerMove
+// CountScore
+// ElegxosNomimotitas
+// EnterMove
+// PawnPromotion
+// StartingPosition
+// Analyze_Move_1_HumanMove
+// Analyze_Move_2_ComputerMove
+// Analyze_Move_3_HumanMove
+// Analyze_Move_4_ComputerMove
+
 namespace HuoChessW8
 {
     public partial class Form1 : Form
@@ -36,7 +56,10 @@ namespace HuoChessW8
         private void button_exit_Click(object sender, EventArgs e)
         {
             // v0.991: Activated logs again to test
-            //Form1.HuoChess_main.huo_sw1.Close();
+            //HuoChess_main.huo_ProsorinoKommati.Close();
+            //HuoChess_main.huo_ProsorinoKommati_old.Close();
+            //HuoChess_main.huo_ProsorinoKommati_old_2.Close();
+            Form1.HuoChess_main.huo_sw1.Close();
             this.Close();
         }
 
@@ -289,23 +312,33 @@ namespace HuoChessW8
             // DECLARE VARIABLES (v0.970: Sanitization)
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            #region VariablesDeclaration
+
             // Writer for logging the thought process
-            //public static StreamWriter huo_sw1 = new StreamWriter("HUO_CHESS_LOG_Minimax_Thought_Process.txt", true);
+            public static StreamWriter huo_sw1 = new StreamWriter("HUO_CHESS_LOG_Minimax_Thought_Process.txt", true);
             // Writers for logging the attackers, the defenders and the dangerous squares
-            //public static StreamWriter huo_sw_attackers = new StreamWriter("HUO_CHESS_LOG_Attackers_Defenders.txt", true);
+            public static StreamWriter huo_sw_attackers = new StreamWriter("HUO_CHESS_LOG_Attackers_Defenders.txt", true);
             //public static StreamWriter huo_sw_defenders = new StreamWriter("Defenders.txt", true);
             //public static StreamWriter huo_sw_dangerous = new StreamWriter("Dangerous.txt", true);
+
+            // v0.992 Debug
+            //public static String ProsorinoKommati_old;
+            //public static StreamWriter huo_ProsorinoKommati = new StreamWriter("HUO_CHESS_LOG_huo_ProsorinoKommati.txt", true);
+            //public static StreamWriter huo_ProsorinoKommati_old = new StreamWriter("HUO_CHESS_LOG_huo_ProsorinoKommati_old.txt", true);
+            //public static StreamWriter huo_ProsorinoKommati_old_2 = new StreamWriter("HUO_CHESS_LOG_huo_ProsorinoKommati_old_2.txt", true);
 
             public static String NextLine;
             public static string FinalPositions;
 
             //v0.990
             public static String ThisIsStupidMove = "N";
+            public static bool move_dangerousness = false; // v0.992: Add dangerousness flag
             public static bool Danger_for_piece;
             public static bool ThereIsCheck;
             //Is it possible to eat a piece of greater value?
             public static bool possibility_to_eat;
-            public static int ValueOfKommati = 0;
+            // v0.992: Replaced ValueOfKommati with ValueOfMovingPiece
+            //public static int ValueOfKommati = 0;
             public static int ValueOfTargetPiece = 0;
             // Chessboard for logging purposes
             public static String[,] SkakieraLog = new String[8, 8];  // Δήλωση πίνακα που αντιπροσωπεύει τη σκακιέρα
@@ -350,6 +383,9 @@ namespace HuoChessW8
             public static int Temp_Score_Move_5_human;
             public static int Temp_Score_Move_6;
 
+            // v0.992
+            public static int bestNode0, bestNode1, bestNode2, bestNode3, bestNode4;
+
             // 0.970
             // These arrays will hold the Minimax analysis nodes data (skakos)
             // Dimension ,1: For the score
@@ -364,19 +400,40 @@ namespace HuoChessW8
             // public static double[] NodesAnalysisA = new double[1000000];
             // v0.990 Move 4 changes
             public static int[,] NodesAnalysis3 = new int[10000000, 2];
-            public static int[,] NodesAnalysis4 = new int[100000000, 2];  // Increased depth => Increased size (logical...)
+            public static int[,] NodesAnalysis4 = new int[10000000, 2];  // Increased depth => Increased size (logical...)
+
+            // v0.992
+            public static int[] bestNodes0 = new int[10000000];
+            public static int[] bestNodes1 = new int[10000000];
+            public static int[] bestNodes2 = new int[10000000];
+            public static int[] bestNodes3 = new int[10000000];
+            public static int[] bestNodes4 = new int[10000000];
+
+            //v0.992
+            public static int m_StartingColumnNumber1_public;
+            public static int m_StartingRank1_public;
+            public static int m_FinishingColumnNumber1_public;
+            public static int m_FinishingRank1_public;
+            public static int m_StartingColumnNumber2_public;
+            public static int m_StartingRank2_public;
+            public static int m_FinishingColumnNumber2_public;
+            public static int m_FinishingRank2_public;
 
             // For the logs...
             // v0.991: Variable to denote if logs are activated
             public static bool activateLogs;
             // v0.991: Variables to store the moves the computer thinks of
-            //public static String Move0_text;
-            //public static String Move1_text;
-            //public static String Move2_text;
-            //public static String[] NodesAnalysis0_MoveText = new String[1000000];  //v0.991
-            //public static String[] NodesAnalysis1_MoveText = new String[1000000];  //v0.991
-            //public static String[] NodesAnalysis2_MoveText = new String[1000000];  //v0.991
-            //public static String Best_Variant_text;
+            public static String Move0_text;
+            public static String Move1_text;
+            public static String Move2_text;
+            public static String Move3_text; // v0.992
+            public static String Move4_text; // v0.992
+            public static String[] NodesAnalysis0_MoveText = new String[1000000];  //v0.991
+            public static String[] NodesAnalysis1_MoveText = new String[1000000];  //v0.991
+            public static String[] NodesAnalysis2_MoveText = new String[1000000];  //v0.991
+            public static String[] NodesAnalysis3_MoveText = new String[10000000];  //v0.992 (Initially: 100000)
+            public static String[] NodesAnalysis4_MoveText = new String[10000000];  //v0.992 (Initially: 100000)
+            public static String Best_Variant_text;
             // Tables to store the chessboards to show in the logs
             public static String[,,] NodesAnalysis0_Chessboard = new String[8, 8, 1000000];  //v0.990
             public static String[,,] NodesAnalysis1_Chessboard = new String[8, 8, 1000000];  //v0.990
@@ -451,6 +508,9 @@ namespace HuoChessW8
             // Variables to show if king is in check
             public static bool WhiteKingCheck;
             public static bool BlackKingCheck;
+            //v0.992
+            //public static bool WhiteKingCheck_before;
+            //public static bool BlackKingCheck_before;
 
             // Variable to show if a move is found for the H/Y to do
             public static bool Best_Move_Found;
@@ -514,6 +574,9 @@ namespace HuoChessW8
             public static int Best_Move_FinishingRank;
             public static int Move_Analyzed;
             public static bool Stop_Analyzing;
+            // Thinking depth of the application
+            // Possible values: 2 (for 3-ply search), 4 (for 5-ply search)
+            // Thinking depth must be ζυγός number because the nodes are recorded only in the Analyze_Computer functions!
             public static int Thinking_Depth;
             public static int m_StartingColumnNumber_HY;
             public static int m_FinishingColumnNumber_HY;
@@ -578,6 +641,23 @@ namespace HuoChessW8
             //public static bool BlMate = false;
             //public static bool Mate;
 
+            //v0.992
+            public static String prev_MovingPiece;
+            public static int prev_Best_Move_StartingColumnNumber;
+            public static int prev_Best_Move_StartingRank;
+            public static bool Human_Move_Found;
+            public static bool Pat_Found;
+            public static bool Mate_Found;
+            public static int m_StartingColumnNumber_mate;
+            public static int m_FinishingColumnNumber_mate;
+            public static int m_StartingRank_mate;
+            public static int m_FinishingRank_mate;
+
+            //v0.992
+            //public static Random randomMove  = new Random();
+
+            #endregion VariablesDeclaration
+
             ///////////////////////////////////////////////////////////////////////////////////////////////////
             // END OF VARIABLES DECLARATION
             ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -616,14 +696,17 @@ namespace HuoChessW8
                 // Add more "for loops" in the required section in ComputerMove to allow more deep thinking
                 // However remember that the NodesAnalysis table has a limit!!! (and so does the memory)
                 // Thinking depth must be ζυγός number because the nodes are recorded only in the Analyze_Computer functions!
+                // Possible values: 2 (for 3-ply thinking), 4 (for 5-ply thinking)
 
-                Thinking_Depth = 2;
+                //Thinking_Depth = 2;
+                Thinking_Depth = 4;
 
                 // v0.991
                 /////////////////////////////////////////////////////////////////////////////////////
                 // ACTIVATE LOGS?
                 // ATTENTION: Remember to delete logs after every run if you activate them!!!!
                 /////////////////////////////////////////////////////////////////////////////////////
+                //activateLogs = true;
                 activateLogs = false;
 
                 ////////////////////////////////////////////////////////////
@@ -638,12 +721,19 @@ namespace HuoChessW8
                 //else if((the_choise_of_user.CompareTo("n") == 0)||(the_choise_of_user.CompareTo("N") == 0))
                 //	huo_debug = false;
 
-                MessageBox.Show("\nHuo Chess v0.991 by Spiros I.Kakos (huo) [2018-9] - C# Edition\n\nCURRENT EXPERIMENT: Depth 2 (Minimax Algorithm)\n\nWhat about a nice game of chess?", "Huo Chess W8", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (Thinking_Depth == 4)
+                    MessageBox.Show("\nHuo Chess v0.992 by Spiros I. Kakos (huo)\n[C# Edition - Last updated: 2019, 2020, 2021]\n\nCURRENT EXPERIMENT:\nDepth 5 half-moves (Minimax Algorithm)\n\nWhat about a nice game of chess?", "Huo Chess W8", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else if (Thinking_Depth == 2)
+                    MessageBox.Show("\nHuo Chess v0.992 by Spiros I. Kakos (huo)\n[C# Edition - Last updated: 2019, 2020, 2021]\n\nCURRENT EXPERIMENT:\nDepth 3 half-moves (Minimax Algorithm)\n\nWhat about a nice game of chess?", "Huo Chess W8", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // v0.991: Ability to easily activate/ deactivate logs
-                if(activateLogs == true)
+                if (activateLogs == true)
                 {
-                    MessageBox.Show("Logs are active!\rRemember to delete them after every run!!!");
+                    MessageBox.Show("Logs are active!\rRemember to delete them after every run!!!", "Logs", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                else
+                {
+                    MessageBox.Show("Logs are NOT active!\rRemember to activate them if you need analysis.\nSet activateLogs = true to do that.", "Logs", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
 
                 // Initial values
@@ -985,354 +1075,355 @@ namespace HuoChessW8
             }
 
             // v0.990 changes
-            public static bool CheckForBlackMate(string[,] BMSkakiera)
-            {
-                // Check if the BK is under checkmate
+            // v0.992: Removed completely! It was not used!
+            //public static bool CheckForBlackMate(string[,] BMSkakiera)
+            //{
+            //    // Check if the BK is under checkmate
 
-                bool Mate;
-                //v0.990: Changed MovingPiece and ProsorinoKommati with the CBM variables
-                String MovingPieceCBM;
-                String ProsorinoKommatiCBM;
+            //    bool Mate;
+            //    //v0.990: Changed MovingPiece and ProsorinoKommati with the CBM variables
+            //    String MovingPieceCBM;
+            //    String ProsorinoKommatiCBM;
 
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                // Μεταβλητή που χρησιμεύει στον έλεγχο για το αν υπάρχει ματ (βλ. συναρτήσεις CheckForWhiteMate() και
-                // CheckForBlMate()).
-                // Αναλυτικότερα, το πρόγραμμα ελέγχει αν αρχικά υπάρχει σαχ και, αν υπάρχει, ελέγχει αν αυτό το
-                // σαχ μπορεί να αποφευχθεί με τη μετακίνηση του υπό απειλή βασιλιά σε κάποιο γειτονικό τετράγωνο.
-                // Η μεταβλητή καταγράφει το αν συνεχίζει να υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //    // Μεταβλητή που χρησιμεύει στον έλεγχο για το αν υπάρχει ματ (βλ. συναρτήσεις CheckForWhiteMate() και
+            //    // CheckForBlMate()).
+            //    // Αναλυτικότερα, το πρόγραμμα ελέγχει αν αρχικά υπάρχει σαχ και, αν υπάρχει, ελέγχει αν αυτό το
+            //    // σαχ μπορεί να αποφευχθεί με τη μετακίνηση του υπό απειλή βασιλιά σε κάποιο γειτονικό τετράγωνο.
+            //    // Η μεταβλητή καταγράφει το αν συνεχίζει να υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
+            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                bool DangerForMate;
+            //    bool DangerForMate;
 
-                ////////////////////////////////////////////////////////////
-                // Έλεγχος του αν υπάρχει "ματ" στον μαύρο βασιλιά
-                ////////////////////////////////////////////////////////////
+            //    ////////////////////////////////////////////////////////////
+            //    // Έλεγχος του αν υπάρχει "ματ" στον μαύρο βασιλιά
+            //    ////////////////////////////////////////////////////////////
 
-                Mate = false;
-                DangerForMate = true;    // Αρχικά, προφανώς υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
-                                         // Αν, ωστόσο, κάποια στιγμή βρεθεί ότι αν ο βασιλιάς μπορεί να μετακινηθεί
-                                         // σε ένα διπλανό τετράγωνο και να πάψει να υφίσταται σαχ, τότε παύει να
-                                         // υπάρχει πιθανότητα να υπάρχει ματ (προφανώς) και η μεταβλητή παίρνει την
-                                         // τιμή false.
+            //    Mate = false;
+            //    DangerForMate = true;    // Αρχικά, προφανώς υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
+            //                             // Αν, ωστόσο, κάποια στιγμή βρεθεί ότι αν ο βασιλιάς μπορεί να μετακινηθεί
+            //                             // σε ένα διπλανό τετράγωνο και να πάψει να υφίσταται σαχ, τότε παύει να
+            //                             // υπάρχει πιθανότητα να υπάρχει ματ (προφανώς) και η μεταβλητή παίρνει την
+            //                             // τιμή false.
 
 
-                //////////////////////////////////////////////////////////////
-                // Εύρεση των αρχικών συντεταγμένων του βασιλιά
-                //////////////////////////////////////////////////////////////
+            //    //////////////////////////////////////////////////////////////
+            //    // Εύρεση των αρχικών συντεταγμένων του βασιλιά
+            //    //////////////////////////////////////////////////////////////
 
-                for (i = 0; i <= 7; i++)
-                {
-                    for (j = 0; j <= 7; j++)
-                    {
+            //    for (i = 0; i <= 7; i++)
+            //    {
+            //        for (j = 0; j <= 7; j++)
+            //        {
 
-                        if (BMSkakiera[(i), (j)].CompareTo("Black King") == 0)
-                        {
-                            StartingBlKingColumn = (i + 1);
-                            StartingBlKingRank = (j + 1);
-                        }
+            //            if (BMSkakiera[(i), (j)].CompareTo("Black King") == 0)
+            //            {
+            //                StartingBlKingColumn = (i + 1);
+            //                StartingBlKingRank = (j + 1);
+            //            }
 
-                    }
-                }
+            //        }
+            //    }
 
 
-                //////////////////////////////////////////////////
-                // Έλεγχος αν ο μαύρος βασιλιάς είναι ματ
-                //////////////////////////////////////////////////
+            //    //////////////////////////////////////////////////
+            //    // Έλεγχος αν ο μαύρος βασιλιάς είναι ματ
+            //    //////////////////////////////////////////////////
 
 
-                if (m_WhichColorPlays.CompareTo("Black") == 0)
-                {
+            //    if (m_WhichColorPlays.CompareTo("Black") == 0)
+            //    {
 
-                    ////////////////////////////////////////////////
-                    // Έλεγχος αν υπάρχει σαχ αυτή τη στιγμή
-                    ////////////////////////////////////////////////
+            //        ////////////////////////////////////////////////
+            //        // Έλεγχος αν υπάρχει σαχ αυτή τη στιγμή
+            //        ////////////////////////////////////////////////
 
-                    BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //        BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                    if (BlackKingCheck == false)     // Αν αυτή τη στιγμή δεν υφίσταται σαχ, τότε να μη συνεχιστεί ο έλεγχος
-                        DangerForMate = false;         // καθώς ΔΕΝ συνεχίζει να υφίσταται πιθανότητα να υπάρχει ματ.
+            //        if (BlackKingCheck == false)     // Αν αυτή τη στιγμή δεν υφίσταται σαχ, τότε να μη συνεχιστεί ο έλεγχος
+            //            DangerForMate = false;         // καθώς ΔΕΝ συνεχίζει να υφίσταται πιθανότητα να υπάρχει ματ.
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα πάνω
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα πάνω
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingBlKingRank < 8)
-                    {
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 + 1)];
+            //        if (StartingBlKingRank < 8)
+            //        {
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 + 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
-                            // Ο έλεγχος γίνεται μόνο αν στο τετράγωνο που μετακινείται προσωρινά ο βασιλιάς δεν υπάρχει άλλο κομμάτι
-                            // του ίδιου χρώματος που να τον εμποδίζει και αν, φυσικά, ο βασιλιάς δεν βγαίνει έξω από τη σκακιέρα με
-                            // αυτή του την κίνηση και αν, προφανώς, συνεχίζει να υπάρχει πιθανότητα να ύπάρχει ματ (καθώς αν δεν
-                            // υπάρχει τέτοια πιθανότητα, τότε ο έλεγχος είναι άχρηστος).
+            //                // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // Ο έλεγχος γίνεται μόνο αν στο τετράγωνο που μετακινείται προσωρινά ο βασιλιάς δεν υπάρχει άλλο κομμάτι
+            //                // του ίδιου χρώματος που να τον εμποδίζει και αν, φυσικά, ο βασιλιάς δεν βγαίνει έξω από τη σκακιέρα με
+            //                // αυτή του την κίνηση και αν, προφανώς, συνεχίζει να υπάρχει πιθανότητα να ύπάρχει ματ (καθώς αν δεν
+            //                // υπάρχει τέτοια πιθανότητα, τότε ο έλεγχος είναι άχρηστος).
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 + 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 + 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 + 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 + 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα πάνω-δεξιά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα πάνω-δεξιά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingBlKingColumn < 8) && (StartingBlKingRank < 8))
-                    {
+            //        if ((StartingBlKingColumn < 8) && (StartingBlKingRank < 8))
+            //        {
 
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 + 1)];
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 + 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 + 1) <= 7) && ((StartingBlKingColumn - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 + 1) <= 7) && ((StartingBlKingColumn - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 + 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 + 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 + 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 + 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα δεξιά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα δεξιά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingBlKingColumn < 8)
-                    {
+            //        if (StartingBlKingColumn < 8)
+            //        {
 
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1)];
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingColumn - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingColumn - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα κάτω-δεξιά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα κάτω-δεξιά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingBlKingColumn < 8) && (StartingBlKingRank > 1))
-                    {
+            //        if ((StartingBlKingColumn < 8) && (StartingBlKingRank > 1))
+            //        {
 
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 - 1)];
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 - 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 - 1) >= 0) && ((StartingBlKingColumn - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 - 1) >= 0) && ((StartingBlKingColumn - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 - 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 - 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 - 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1 + 1), (StartingBlKingRank - 1 - 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα κάτω
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα κάτω
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingBlKingRank > 1)
-                    {
+            //        if (StartingBlKingRank > 1)
+            //        {
 
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 - 1)];
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 - 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 - 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 - 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 - 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1 - 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα κάτω-αριστερά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα κάτω-αριστερά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingBlKingColumn > 1) && (StartingBlKingRank > 1))
-                    {
+            //        if ((StartingBlKingColumn > 1) && (StartingBlKingRank > 1))
+            //        {
 
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 - 1)];
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 - 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 - 1) >= 0) && ((StartingBlKingColumn - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 - 1) >= 0) && ((StartingBlKingColumn - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 - 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 - 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 - 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 - 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα αριστερά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα αριστερά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingBlKingColumn > 1)
-                    {
+            //        if (StartingBlKingColumn > 1)
+            //        {
 
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1)];
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingColumn - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingColumn - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα πάνω-αριστερά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο μαύρος βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα πάνω-αριστερά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingBlKingColumn > 1) && (StartingBlKingRank < 8))
-                    {
+            //        if ((StartingBlKingColumn > 1) && (StartingBlKingRank < 8))
+            //        {
 
-                        MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
-                        ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 + 1)];
+            //            MovingPieceCBM = BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)];
+            //            ProsorinoKommatiCBM = BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 + 1)];
 
-                        if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 + 1) <= 7) && ((StartingBlKingColumn - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCBM.CompareTo("Black Queen") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Rook") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Knight") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Bishop") == 1) && (ProsorinoKommatiCBM.CompareTo("Black Pawn") == 1) && (DangerForMate == true) && ((StartingBlKingRank - 1 + 1) <= 7) && ((StartingBlKingColumn - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
-                            BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 + 1)] = MovingPieceCBM;
-                            BlackKingCheck = CheckForBlackCheck(BMSkakiera);
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = "";
+            //                BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 + 1)] = MovingPieceCBM;
+            //                BlackKingCheck = CheckForBlackCheck(BMSkakiera);
 
-                            if (BlackKingCheck == false)
-                                DangerForMate = false;
+            //                if (BlackKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
-                            BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 + 1)] = ProsorinoKommatiCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1), (StartingBlKingRank - 1)] = MovingPieceCBM;
+            //                BMSkakiera[(StartingBlKingColumn - 1 - 1), (StartingBlKingRank - 1 + 1)] = ProsorinoKommatiCBM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
-                    if (DangerForMate == true)
-                        Mate = true;
+            //        if (DangerForMate == true)
+            //            Mate = true;
 
-                }
+            //    }
 
-                return Mate;
-            }
+            //    return Mate;
+            //}
 
             // v0.990 changes
             public static bool CheckForWhiteCheck(string[,] WCSkakiera)
@@ -1604,377 +1695,382 @@ namespace HuoChessW8
             }
 
             // v0.990 changes
-            public static bool CheckForWhiteMate(string[,] WMSkakiera)
-            {
-                // Check if the WK is under checkmate
+            // v0.992: Removed completely! It was not used!
+            //public static bool CheckForWhiteMate(string[,] WMSkakiera)
+            //{
+            //    // Check if the WK is under checkmate
 
-                bool Mate;
-                //v0.990: Changed MovingPiece and ProsorinoKommati with the CWM variables
-                String MovingPieceCWM;
-                String ProsorinoKommatiCWM;
+            //    bool Mate;
+            //    //v0.990: Changed MovingPiece and ProsorinoKommati with the CWM variables
+            //    String MovingPieceCWM;
+            //    String ProsorinoKommatiCWM;
 
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////
-                // Μεταβλητή που χρησιμεύει στον έλεγχο για το αν υπάρχει ματ (βλ. συναρτήσεις CheckForWhiteMate() και
-                // CheckForBlMate()).
-                // Αναλυτικότερα, το πρόγραμμα ελέγχει αν αρχικά υπάρχει σαχ και, αν υπάρχει, ελέγχει αν αυτό το
-                // σαχ μπορεί να αποφευχθεί με τη μετακίνηση του υπό απειλή βασιλιά σε κάποιο γειτονικό τετράγωνο.
-                // Η μεταβλητή καταγράφει το αν συνεχίζει να υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
-                /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //    // Μεταβλητή που χρησιμεύει στον έλεγχο για το αν υπάρχει ματ (βλ. συναρτήσεις CheckForWhiteMate() και
+            //    // CheckForBlMate()).
+            //    // Αναλυτικότερα, το πρόγραμμα ελέγχει αν αρχικά υπάρχει σαχ και, αν υπάρχει, ελέγχει αν αυτό το
+            //    // σαχ μπορεί να αποφευχθεί με τη μετακίνηση του υπό απειλή βασιλιά σε κάποιο γειτονικό τετράγωνο.
+            //    // Η μεταβλητή καταγράφει το αν συνεχίζει να υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
+            //    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                bool DangerForMate;
+            //    bool DangerForMate;
 
-                ////////////////////////////////////////////////////////////
-                // Έλεγχος του αν υπάρχει "ματ" στον λευκό βασιλιά
-                ////////////////////////////////////////////////////////////
+            //    ////////////////////////////////////////////////////////////
+            //    // Έλεγχος του αν υπάρχει "ματ" στον λευκό βασιλιά
+            //    ////////////////////////////////////////////////////////////
 
-                Mate = false;
-                DangerForMate = true;    // Αρχικά, προφανώς υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
-                                         // Αν, ωστόσο, κάποια στιγμή βρεθεί ότι αν ο βασιλιάς μπορεί να μετακινηθεί
-                                         // σε ένα διπλανό τετράγωνο και να πάψει να υφίσταται σαχ, τότε παύει να
-                                         // υπάρχει πιθανότητα να υπάρχει ματ (προφανώς) και η μεταβλητή παίρνει την
-                                         // τιμή false.
+            //    Mate = false;
+            //    DangerForMate = true;    // Αρχικά, προφανώς υπάρχει πιθανότητα να υπάρχει ματ στη σκακιέρα.
+            //                             // Αν, ωστόσο, κάποια στιγμή βρεθεί ότι αν ο βασιλιάς μπορεί να μετακινηθεί
+            //                             // σε ένα διπλανό τετράγωνο και να πάψει να υφίσταται σαχ, τότε παύει να
+            //                             // υπάρχει πιθανότητα να υπάρχει ματ (προφανώς) και η μεταβλητή παίρνει την
+            //                             // τιμή false.
 
 
-                //////////////////////////////////////////////////////////////
-                // Εύρεση των αρχικών συντεταγμένων του βασιλιά
-                //////////////////////////////////////////////////////////////
+            //    //////////////////////////////////////////////////////////////
+            //    // Εύρεση των αρχικών συντεταγμένων του βασιλιά
+            //    //////////////////////////////////////////////////////////////
 
-                for (i = 0; i <= 7; i++)
-                {
-                    for (j = 0; j <= 7; j++)
-                    {
+            //    for (i = 0; i <= 7; i++)
+            //    {
+            //        for (j = 0; j <= 7; j++)
+            //        {
 
-                        if (WMSkakiera[(i), (j)].CompareTo("White King") == 0)
-                        {
-                            StartingWhiteKingColumn = (i + 1);
-                            StartingWhiteKingRank = (j + 1);
-                        }
+            //            if (WMSkakiera[(i), (j)].CompareTo("White King") == 0)
+            //            {
+            //                StartingWhiteKingColumn = (i + 1);
+            //                StartingWhiteKingRank = (j + 1);
+            //            }
 
-                    }
-                }
+            //        }
+            //    }
 
 
-                //////////////////////////////////////////////////
-                // Έλεγχος αν ο λευκός βασιλιάς είναι ματ
-                //////////////////////////////////////////////////
+            //    //////////////////////////////////////////////////
+            //    // Έλεγχος αν ο λευκός βασιλιάς είναι ματ
+            //    //////////////////////////////////////////////////
 
 
-                if (m_WhichColorPlays.CompareTo("White") == 0)
-                {
+            //    if (m_WhichColorPlays.CompareTo("White") == 0)
+            //    {
 
-                    ////////////////////////////////////////////////
-                    // Έλεγχος αν υπάρχει σαχ αυτή τη στιγμή
-                    ////////////////////////////////////////////////
+            //        ////////////////////////////////////////////////
+            //        // Έλεγχος αν υπάρχει σαχ αυτή τη στιγμή
+            //        ////////////////////////////////////////////////
 
-                    WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //        WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                    if (WhiteKingCheck == false)     // Αν αυτή τη στιγμή δεν υφίσταται σαχ, τότε να μη συνεχιστεί ο έλεγχος
-                        DangerForMate = false;         // καθώς ΔΕΝ συνεχίζει να υφίσταται πιθανότητα να υπάρχει ματ.
+            //        if (WhiteKingCheck == false)     // Αν αυτή τη στιγμή δεν υφίσταται σαχ, τότε να μη συνεχιστεί ο έλεγχος
+            //            DangerForMate = false;         // καθώς ΔΕΝ συνεχίζει να υφίσταται πιθανότητα να υπάρχει ματ.
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα πάνω
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα πάνω
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingWhiteKingRank < 8)
-                    {
+            //        if (StartingWhiteKingRank < 8)
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 + 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 + 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
-                            // Ο έλεγχος γίνεται μόνο αν στο τετράγωνο που μετακινείται προσωρινά ο βασιλιάς δεν υπάρχει άλλο κομμάτι
-                            // του ίδιου χρώματος που να τον εμποδίζει και αν, φυσικά, ο βασιλιάς δεν βγαίνει έξω από τη σκακιέρα με
-                            // αυτή του την κίνηση και αν, προφανώς, συνεχίζει να υπάρχει πιθανότητα να ύπάρχει ματ (καθώς αν δεν
-                            // υπάρχει τέτοια πιθανότητα, τότε ο έλεγχος είναι άχρηστος).
+            //                // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // Ο έλεγχος γίνεται μόνο αν στο τετράγωνο που μετακινείται προσωρινά ο βασιλιάς δεν υπάρχει άλλο κομμάτι
+            //                // του ίδιου χρώματος που να τον εμποδίζει και αν, φυσικά, ο βασιλιάς δεν βγαίνει έξω από τη σκακιέρα με
+            //                // αυτή του την κίνηση και αν, προφανώς, συνεχίζει να υπάρχει πιθανότητα να ύπάρχει ματ (καθώς αν δεν
+            //                // υπάρχει τέτοια πιθανότητα, τότε ο έλεγχος είναι άχρηστος).
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 + 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 + 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 + 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 + 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα πάνω-δεξιά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα πάνω-δεξιά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingWhiteKingColumn < 8) && (StartingWhiteKingRank < 8))
-                    {
+            //        if ((StartingWhiteKingColumn < 8) && (StartingWhiteKingRank < 8))
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 + 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 + 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 + 1) <= 7) && ((StartingWhiteKingColumn - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 + 1) <= 7) && ((StartingWhiteKingColumn - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 + 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 + 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 + 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 + 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα δεξιά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα δεξιά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingWhiteKingColumn < 8)
-                    {
+            //        if (StartingWhiteKingColumn < 8)
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingColumn - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingColumn - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα κάτω-δεξιά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα κάτω-δεξιά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingWhiteKingColumn < 8) && (StartingWhiteKingRank > 1))
-                    {
+            //        if ((StartingWhiteKingColumn < 8) && (StartingWhiteKingRank > 1))
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 - 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 - 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 - 1) >= 0) && ((StartingWhiteKingColumn - 1 + 1) <= 7))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 - 1) >= 0) && ((StartingWhiteKingColumn - 1 + 1) <= 7))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 - 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 - 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 - 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 + 1), (StartingWhiteKingRank - 1 - 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα κάτω
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα κάτω
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingWhiteKingRank > 1)
-                    {
+            //        if (StartingWhiteKingRank > 1)
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 - 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 - 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά προς τα πάνω και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 - 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 - 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 - 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1 - 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα κάτω-αριστερά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα κάτω-αριστερά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingWhiteKingColumn > 1) && (StartingWhiteKingRank > 1))
-                    {
+            //        if ((StartingWhiteKingColumn > 1) && (StartingWhiteKingRank > 1))
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 - 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 - 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 - 1) >= 0) && ((StartingWhiteKingColumn - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 - 1) >= 0) && ((StartingWhiteKingColumn - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 - 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 - 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 - 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 - 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα αριστερά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα αριστερά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if (StartingWhiteKingColumn > 1)
-                    {
+            //        if (StartingWhiteKingColumn > 1)
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingColumn - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingColumn - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
 
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
-                    // προς τα πάνω-αριστερά
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //        // Έλεγχος του αν θα συνεχίσει να υπάρχει σαχ αν ο λευκός βασιλιάς προσπαθήσει να διαφύγει μετακινούμενος
+            //        // προς τα πάνω-αριστερά
+            //        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                    if ((StartingWhiteKingColumn > 1) && (StartingWhiteKingRank < 8))
-                    {
+            //        if ((StartingWhiteKingColumn > 1) && (StartingWhiteKingRank < 8))
+            //        {
 
-                        MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
-                        ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 + 1)];
+            //            MovingPieceCWM = WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)];
+            //            ProsorinoKommatiCWM = WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 + 1)];
 
-                        if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 + 1) <= 7) && ((StartingWhiteKingColumn - 1 - 1) >= 0))
-                        {
+            //            if ((ProsorinoKommatiCWM.CompareTo("White Queen") == 1) && (ProsorinoKommatiCWM.CompareTo("White Rook") == 1) && (ProsorinoKommatiCWM.CompareTo("White Knight") == 1) && (ProsorinoKommatiCWM.CompareTo("White Bishop") == 1) && (ProsorinoKommatiCWM.CompareTo("White Pawn") == 1) && (DangerForMate == true) && ((StartingWhiteKingRank - 1 + 1) <= 7) && ((StartingWhiteKingColumn - 1 - 1) >= 0))
+            //            {
 
-                            // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
+            //                // (Προσωρινή) μετακίνηση του βασιλιά και έλεγχος του αν συνεχίζει τότε να υπάρχει σαχ.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
-                            WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 + 1)] = MovingPieceCWM;
-                            WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = "";
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 + 1)] = MovingPieceCWM;
+            //                WhiteKingCheck = CheckForWhiteCheck(WMSkakiera);
 
-                            if (WhiteKingCheck == false)
-                                DangerForMate = false;
+            //                if (WhiteKingCheck == false)
+            //                    DangerForMate = false;
 
-                            // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
-                            // σκοπούς του ελέγχου.
+            //                // Επαναφορά της σκακιέρας στην κατάσταση στην οποία βρισκόταν πριν μετακινηθεί ο βασιλιάς για τους
+            //                // σκοπούς του ελέγχου.
 
-                            WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
-                            WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 + 1)] = ProsorinoKommatiCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1), (StartingWhiteKingRank - 1)] = MovingPieceCWM;
+            //                WMSkakiera[(StartingWhiteKingColumn - 1 - 1), (StartingWhiteKingRank - 1 + 1)] = ProsorinoKommatiCWM;
 
-                        }
+            //            }
 
-                    }
+            //        }
 
-                    if (DangerForMate == true)
-                        Mate = true;
+            //        if (DangerForMate == true)
+            //            Mate = true;
 
-                }
+            //    }
 
-                return Mate;
-            }
+            //    return Mate;
+            //}
 
             // v0.990 changes
             public static void CheckMove(string[,] CMSkakiera, int m_StartingRankCM, int m_StartingColumnNumberCM, int m_FinishingRankCM, int m_FinishingColumnNumberCM, String MovingPieceCM)
             {
                 #region WriteLog
-                //huo_sw1.WriteLine("");
-                //huo_sw1.WriteLine("ChMo -- Entered CheckMove");
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Depth analyzed: ", Move_Analyzed.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of moves analyzed: ", number_of_moves_analysed.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Move analyzed: ", m_StartingColumnNumber_HY.ToString(), m_StartingRank_HY.ToString(), " -> ", m_FinishingColumnNumber_HY.ToString(), m_FinishingRank_HY.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
-                //huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
-                //huo_sw1.WriteLine("");
+                if (activateLogs == true)
+                {
+                    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("ChMo -- Entered CheckMove");
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Depth analyzed: ", Move_Analyzed.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of moves analyzed: ", number_of_moves_analysed.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Move analyzed: ", m_StartingColumnNumber_HY.ToString(), m_StartingRank_HY.ToString(), " -> ", m_FinishingColumnNumber_HY.ToString(), m_FinishingRank_HY.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("ChMo -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
+                    huo_sw1.WriteLine("");
+                }
                 #endregion WriteLog
 
                 String ProsorinoKommatiCM;
 
+                //v0.992: Potentially can be removed and use CMSkakiera everywhere
                 for (int iii = 0; iii <= 7; iii++)
                 {
                     for (int jjj = 0; jjj <= 7; jjj++)
@@ -1997,91 +2093,96 @@ namespace HuoChessW8
                 // Restore the normal value of the m_WhoPlays
                 m_WhoPlays = "HY";
 
+                //v0.992: Put the check for check centrally in ElegxosNomimotitas? I tried but something funny happens...
+                //        No, everything is ok! (2021-03-12 Goku Super Sayian! A perfect day full of happiness...)
+                //        Select all area CheckCheck and uncomment, to reuse the area code if you need.
                 #region CheckCheck
+                //if (m_NomimotitaKinisis == true)
+                //{
+                //    // Temporarily move the piece to see if the king will continue to be under check
+                //    Skakiera_CM_Check[(m_StartingColumnNumberCM - 1), (m_StartingRankCM - 1)] = "";
+                //    ProsorinoKommatiCM = Skakiera_CM_Check[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)];
+                //    // Προσωρινή αποθήκευση του κομματιού που βρίσκεται στο τετράγωνο προορισμού
+                //    // (βλ. μετά για τη χρησιμότητα του, εκεί που γίνεται έλεγχος για το αν συνεχίζει να υφίσταται σαχ).
+                //    Skakiera_CM_Check[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)] = MovingPieceCM;
 
-                // Temporarily move the piece to see if the king will continue to be under check
-                Skakiera_CM_Check[(m_StartingColumnNumberCM - 1), (m_StartingRankCM - 1)] = "";
-                ProsorinoKommatiCM = Skakiera_CM_Check[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)];
-                // Προσωρινή αποθήκευση του κομματιού που βρίσκεται στο τετράγωνο προορισμού
-                // (βλ. μετά για τη χρησιμότητα του, εκεί που γίνεται έλεγχος για το αν συνεχίζει να υφίσταται σαχ).
-                Skakiera_CM_Check[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)] = MovingPieceCM;
+                //    #region Remove
+                //    //v0.990: Need to check again the dangerous squares? The computer might attempt to move
+                //    //        his piece to a square where the moving piece was the only defender!
+                //    //v0.990 change: The dangerous squares must be checked AGAIN after the move!
+                //    //The moving piece might be moving into a dangerous square!
+                //    //v0.990 change: Added this section here!
+                //    /*
+                //    #region DangerousSquares
 
-                #region Remove
-                //v0.990: Need to check again the dangerous squares? The computer might attempt to move
-                //        his piece to a square where the moving piece was the only defender!
-                //v0.990 change: The dangerous squares must be checked AGAIN after the move!
-                //The moving piece might be moving into a dangerous square!
-                //v0.990 change: Added this section here!
-                /*
-                #region DangerousSquares
-           
-                Danger_for_piece = false;
+                //    Danger_for_piece = false;
 
-                for (int o1 = 0; o1 <= 7; o1++)
-                {
-                    for (int p1 = 0; p1 <= 7; p1++)
-                    {
-                        //v0.980: Change small Strings to Int
-                        Skakiera_Dangerous_Squares_2[(o1), (p1)] = 0;
-                    }
-                }
+                //    for (int o1 = 0; o1 <= 7; o1++)
+                //    {
+                //        for (int p1 = 0; p1 <= 7; p1++)
+                //        {
+                //            //v0.980: Change small Strings to Int
+                //            Skakiera_Dangerous_Squares_2[(o1), (p1)] = 0;
+                //        }
+                //    }
 
-                // Find attackers-defenders
-                FindAttackers(CMSkakiera);
-                FindDefenders(CMSkakiera);
+                //    // Find attackers-defenders
+                //    FindAttackers(CMSkakiera);
+                //    FindDefenders(CMSkakiera);
 
-                // Determine dangerous squares
-                for (int o1 = 0; o1 <= 7; o1++)
-                {
-                    for (int p1 = 0; p1 <= 7; p1++)
-                    {
-                        //v0.990 debug
-                        //MessageBox.Show(String.Concat("Number of attackers for ", (o1 + 1).ToString(), (p1 + 1).ToString(), " : ", Number_of_attackers[o1, p1].ToString()));
-                        //MessageBox.Show(String.Concat("Number of defenders for ", (o1 + 1).ToString(), (p1 + 1).ToString(), " : ", Number_of_defenders[o1, p1].ToString()));
+                //    // Determine dangerous squares
+                //    for (int o1 = 0; o1 <= 7; o1++)
+                //    {
+                //        for (int p1 = 0; p1 <= 7; p1++)
+                //        {
+                //            //v0.990 debug
+                //            //MessageBox.Show(String.Concat("Number of attackers for ", (o1 + 1).ToString(), (p1 + 1).ToString(), " : ", Number_of_attackers[o1, p1].ToString()));
+                //            //MessageBox.Show(String.Concat("Number of defenders for ", (o1 + 1).ToString(), (p1 + 1).ToString(), " : ", Number_of_defenders[o1, p1].ToString()));
 
-                        //v0.990 change: Changed ">" to ">="
-                        if (Number_of_attackers[o1, p1] >= Number_of_defenders[o1, p1])
-                            //if (Number_of_attackers[o1, p1] > Number_of_defenders[o1, p1])
-                            //v0.980: Change small Strings to Int
-                            Skakiera_Dangerous_Squares_2[(o1), (p1)] = 1;
-                    }
-                }
-                #endregion DangerousSquares
+                //            //v0.990 change: Changed ">" to ">="
+                //            if (Number_of_attackers[o1, p1] >= Number_of_defenders[o1, p1])
+                //                //if (Number_of_attackers[o1, p1] > Number_of_defenders[o1, p1])
+                //                //v0.980: Change small Strings to Int
+                //                Skakiera_Dangerous_Squares_2[(o1), (p1)] = 1;
+                //        }
+                //    }
+                //    #endregion DangerousSquares
 
-                if(Skakiera_Dangerous_Squares_2[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)] == 1)
-                    m_NomimotitaKinisis = false;
-                */
-                #endregion Remove
+                //    if(Skakiera_Dangerous_Squares_2[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)] == 1)
+                //        m_NomimotitaKinisis = false;
+                //    */
+                //    #endregion Remove
 
-                //////////////////////////////////////////////////////////////////////////
-                // is the king still under check?
-                //////////////////////////////////////////////////////////////////////////
+                //    //////////////////////////////////////////////////////////////////////////
+                //    // is the king still under check?
+                //    //////////////////////////////////////////////////////////////////////////
 
-                //v0.990
-                WhiteKingCheck = CheckForWhiteCheck(Skakiera_CM_Check);
-                //WhiteKingCheck = CheckForWhiteCheck(CMSkakiera);
+                //    //v0.990
+                //    WhiteKingCheck = CheckForWhiteCheck(Skakiera_CM_Check);
+                //    //WhiteKingCheck = CheckForWhiteCheck(CMSkakiera);
 
-                if ((m_WhichColorPlays.CompareTo("White") == 0) && (WhiteKingCheck == true))
-                {
-                    m_NomimotitaKinisis = false;
-                }
+                //    if ((m_WhichColorPlays.CompareTo("White") == 0) && (WhiteKingCheck == true))
+                //    {
+                //        m_NomimotitaKinisis = false;
+                //    }
 
-                ///////////////////////////////////////////////////////////////////////////
-                // is the black king under check?
-                ///////////////////////////////////////////////////////////////////////////
+                //    ///////////////////////////////////////////////////////////////////////////
+                //    // is the black king under check?
+                //    ///////////////////////////////////////////////////////////////////////////
 
-                //v0.990
-                //BlackKingCheck = CheckForBlackCheck(CMSkakiera);
-                BlackKingCheck = CheckForBlackCheck(Skakiera_CM_Check);
+                //    //v0.990
+                //    //BlackKingCheck = CheckForBlackCheck(CMSkakiera);
+                //    BlackKingCheck = CheckForBlackCheck(Skakiera_CM_Check);
 
-                if ((m_WhichColorPlays.CompareTo("Black") == 0) && (BlackKingCheck == true))
-                {
-                    m_NomimotitaKinisis = false;
-                }
+                //    if ((m_WhichColorPlays.CompareTo("Black") == 0) && (BlackKingCheck == true))
+                //    {
+                //        m_NomimotitaKinisis = false;
+                //    }
 
-                // Restore pieces to their initial positions
-                // CMSkakiera[(m_StartingColumnNumberCM - 1), (m_StartingRankCM - 1)] = MovingPieceCM;
-                // CMSkakiera[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)] = ProsorinoKommatiCM;
+                //    // Restore pieces to their initial positions
+                //    // CMSkakiera[(m_StartingColumnNumberCM - 1), (m_StartingRankCM - 1)] = MovingPieceCM;
+                //    // CMSkakiera[(m_FinishingColumnNumberCM - 1), (m_FinishingRankCM - 1)] = ProsorinoKommatiCM;
+                //}
                 #endregion CheckCheck
 
             }
@@ -2090,228 +2191,229 @@ namespace HuoChessW8
             {
                 // v0.991: Ability to activate/ deactivate logs easily
                 #region WriteLog
-                //if (activateLogs == true)
-                //{
-                //    huo_sw1.WriteLine("");
-                //    huo_sw1.WriteLine("CoMo -- Entered ComputerMove");
-                //    huo_sw1.WriteLine(string.Concat("CoMo -- Depth analyzed: ", Move_Analyzed.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CoMo -- Number of moves analyzed: ", number_of_moves_analysed.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CoMo -- Move analyzed: ", m_StartingColumnNumber_HY.ToString(), m_StartingRank_HY.ToString(), " -> ", m_FinishingColumnNumber_HY.ToString(), m_FinishingRank_HY.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
+                if (activateLogs == true)
+                {
+                    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("CoMo -- Entered ComputerMove");
+                    huo_sw1.WriteLine(string.Concat("CoMo -- Depth analyzed: ", Move_Analyzed.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CoMo -- Number of moves analyzed: ", number_of_moves_analysed.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CoMo -- Move analyzed: ", m_StartingColumnNumber_HY.ToString(), m_StartingRank_HY.ToString(), " -> ", m_FinishingColumnNumber_HY.ToString(), m_FinishingRank_HY.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
 
-                //    #region checkInitialComputerMoveValues
-                //    ////Write initial values of variables (to solve the variables initialization issue - SOLVED)
-                //    //huo_sw1.WriteLine("Global Variables...");
-                //    //huo_sw1.WriteLine(String.Concat("DoNotMakeStupidMove           : ", ThisIsStupidMove));
-                //    //huo_sw1.WriteLine(String.Concat("Danger_for_piece              : ", Danger_for_piece.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("possibility_to_eat_back       : ", possibility_to_eat_back.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("ValueOfHumanMovingPiece       : ", ValueOfHumanMovingPiece.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("ValueOfMovingPiece            : ", ValueOfMovingPiece.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Temp_Score_Move_0             : ", Temp_Score_Move_0.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Temp_Score_Move_1_human       : ", Temp_Score_Move_1_human.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Temp_Score_Move_2             : ", Temp_Score_Move_2.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Nodes_Total_count             : ", Nodes_Total_count.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("NodeLevel_0_count             : ", NodeLevel_0_count.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("NodeLevel_1_count             : ", NodeLevel_1_count.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("NodeLevel_2_count             : ", NodeLevel_2_count.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Human_last_move_target_column : ", Human_last_move_target_column.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Human_last_move_target_row    : ", Human_last_move_target_row.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_PlayerColor                 : ", m_PlayerColor));
-                //    //huo_sw1.WriteLine(String.Concat("m_WhoPlays                    : ", m_WhoPlays));
-                //    //huo_sw1.WriteLine(String.Concat("m_WhichColorPlays             : ", m_WhichColorPlays));
-                //    //huo_sw1.WriteLine(String.Concat("MovingPiece                   : ", MovingPiece));
-                //    //huo_sw1.WriteLine(String.Concat("ProsorinoKommati              : ", ProsorinoKommati));
-                //    //huo_sw1.WriteLine(String.Concat("exit_elegxos_nomimothtas      : ", exit_elegxos_nomimothtas.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Move_Analyzed                 : ", Move_Analyzed.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("First_Call                    : ", First_Call.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Who_Is_Analyzed               : ", Who_Is_Analyzed.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("First_Call                    : ", Stop_Analyzing.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Stop_Analyzing                : ", First_Call.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("h                             : ", h.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("p                             : ", p.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("KingCheck                     : ", KingCheck.ToString()));
-                //    ////huo_sw1.WriteLine(String.Concat("m_StartingRank              : ", m_StartingRank.ToString()));
-                //    ////huo_sw1.WriteLine(String.Concat("m_StartingColumn            : ", m_StartingColumn.ToString()));
-                //    ////huo_sw1.WriteLine(String.Concat("m_FinishingColumn           : ", m_FinishingColumn.ToString()));
-                //    ////huo_sw1.WriteLine(String.Concat("m_FinishingRank             : ", m_FinishingRank.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("enpassant_occured             : ", enpassant_occured.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("number_of_moves_analysed      : ", number_of_moves_analysed.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Promotion_Occured             : ", Promotion_Occured.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Castling_Occured              : ", Castling_Occured.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("WhiteKingColumn               : ", WhiteKingColumn.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("WhiteKingRank                 : ", WhiteKingRank.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("BlKingColumn                  : ", BlKingColumn.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("BlKingRank                    : ", BlKingRank.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("WhiteKingCheck                : ", WhiteKingCheck.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("BlackKingCheck                : ", BlackKingCheck.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Best_Move_Found               : ", Best_Move_Found.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("DangerFromDown                : ", DangerFromDown.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("DangerFromDownLeft            : ", DangerFromDownLeft.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("DangerFromDownRight           : ", DangerFromDownRight.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("DangerFromLeft                : ", DangerFromLeft.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("DangerFromRight               : ", DangerFromRight.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("DangerFromUp                  : ", DangerFromUp.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("StartingBlKingColumn          : ", StartingBlKingColumn.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("StartingBlKingRank            : ", StartingBlKingRank.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("StartingWhiteKingColumn       : ", StartingWhiteKingColumn.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("StartingWhiteKingRank         : ", StartingWhiteKingRank.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_OrthotitaKinisis            : ", m_OrthotitaKinisis.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_NomimotitaKinisis           : ", m_NomimotitaKinisis.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_WrongColumn                 : ", m_WrongColumn.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("i                             : ", i.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("j                             : ", j.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("ApophasiXristi                : ", ApophasiXristi.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("choise_of_user                : ", choise_of_user.ToString()));
+                    #region checkInitialComputerMoveValues
+                    ////Write initial values of variables (to solve the variables initialization issue - SOLVED)
+                    //huo_sw1.WriteLine("Global Variables...");
+                    //huo_sw1.WriteLine(String.Concat("DoNotMakeStupidMove           : ", ThisIsStupidMove));
+                    //huo_sw1.WriteLine(String.Concat("Danger_for_piece              : ", Danger_for_piece.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("possibility_to_eat_back       : ", possibility_to_eat_back.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("ValueOfHumanMovingPiece       : ", ValueOfHumanMovingPiece.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("ValueOfMovingPiece            : ", ValueOfMovingPiece.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Temp_Score_Move_0             : ", Temp_Score_Move_0.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Temp_Score_Move_1_human       : ", Temp_Score_Move_1_human.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Temp_Score_Move_2             : ", Temp_Score_Move_2.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Nodes_Total_count             : ", Nodes_Total_count.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("NodeLevel_0_count             : ", NodeLevel_0_count.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("NodeLevel_1_count             : ", NodeLevel_1_count.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("NodeLevel_2_count             : ", NodeLevel_2_count.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Human_last_move_target_column : ", Human_last_move_target_column.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Human_last_move_target_row    : ", Human_last_move_target_row.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_PlayerColor                 : ", m_PlayerColor));
+                    //huo_sw1.WriteLine(String.Concat("m_WhoPlays                    : ", m_WhoPlays));
+                    //huo_sw1.WriteLine(String.Concat("m_WhichColorPlays             : ", m_WhichColorPlays));
+                    //huo_sw1.WriteLine(String.Concat("MovingPiece                   : ", MovingPiece));
+                    //huo_sw1.WriteLine(String.Concat("ProsorinoKommati              : ", ProsorinoKommati));
+                    //huo_sw1.WriteLine(String.Concat("exit_elegxos_nomimothtas      : ", exit_elegxos_nomimothtas.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Move_Analyzed                 : ", Move_Analyzed.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("First_Call                    : ", First_Call.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Who_Is_Analyzed               : ", Who_Is_Analyzed.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("First_Call                    : ", Stop_Analyzing.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Stop_Analyzing                : ", First_Call.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("h                             : ", h.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("p                             : ", p.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("KingCheck                     : ", KingCheck.ToString()));
+                    ////huo_sw1.WriteLine(String.Concat("m_StartingRank              : ", m_StartingRank.ToString()));
+                    ////huo_sw1.WriteLine(String.Concat("m_StartingColumn            : ", m_StartingColumn.ToString()));
+                    ////huo_sw1.WriteLine(String.Concat("m_FinishingColumn           : ", m_FinishingColumn.ToString()));
+                    ////huo_sw1.WriteLine(String.Concat("m_FinishingRank             : ", m_FinishingRank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("enpassant_occured             : ", enpassant_occured.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("number_of_moves_analysed      : ", number_of_moves_analysed.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Promotion_Occured             : ", Promotion_Occured.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Castling_Occured              : ", Castling_Occured.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("WhiteKingColumn               : ", WhiteKingColumn.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("WhiteKingRank                 : ", WhiteKingRank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("BlKingColumn                  : ", BlKingColumn.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("BlKingRank                    : ", BlKingRank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("WhiteKingCheck                : ", WhiteKingCheck.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("BlackKingCheck                : ", BlackKingCheck.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Best_Move_Found               : ", Best_Move_Found.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("DangerFromDown                : ", DangerFromDown.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("DangerFromDownLeft            : ", DangerFromDownLeft.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("DangerFromDownRight           : ", DangerFromDownRight.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("DangerFromLeft                : ", DangerFromLeft.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("DangerFromRight               : ", DangerFromRight.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("DangerFromUp                  : ", DangerFromUp.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("StartingBlKingColumn          : ", StartingBlKingColumn.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("StartingBlKingRank            : ", StartingBlKingRank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("StartingWhiteKingColumn       : ", StartingWhiteKingColumn.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("StartingWhiteKingRank         : ", StartingWhiteKingRank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_OrthotitaKinisis            : ", m_OrthotitaKinisis.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_NomimotitaKinisis           : ", m_NomimotitaKinisis.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_WrongColumn                 : ", m_WrongColumn.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("i                             : ", i.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("j                             : ", j.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("ApophasiXristi                : ", ApophasiXristi.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("choise_of_user                : ", choise_of_user.ToString()));
 
-                //    //huo_sw1.WriteLine(String.Concat("Skakiera_Move_0               : ", Skakiera_Move_0.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Skakiera_Move_0               : ", Skakiera_Move_0.ToString()));
 
-                //    ////for (i = 0; i <= 7; i++)
-                //    ////{
-                //    ////    huo_sw1.WriteLine(String.Concat(Skakiera_Move_0[i, 0].ToString(),
-                //    ////                                    Skakiera_Move_0[i, 1].ToString(),
-                //    ////                                    Skakiera_Move_0[i, 2].ToString(),
-                //    ////                                    Skakiera_Move_0[i, 3].ToString(),
-                //    ////                                    Skakiera_Move_0[i, 4].ToString(),
-                //    ////                                    Skakiera_Move_0[i, 5].ToString(),
-                //    ////                                    Skakiera_Move_0[i, 6].ToString(),
-                //    ////                                    Skakiera_Move_0[i, 7].ToString()));
-                //    ////}
+                    ////for (i = 0; i <= 7; i++)
+                    ////{
+                    ////    huo_sw1.WriteLine(String.Concat(Skakiera_Move_0[i, 0].ToString(),
+                    ////                                    Skakiera_Move_0[i, 1].ToString(),
+                    ////                                    Skakiera_Move_0[i, 2].ToString(),
+                    ////                                    Skakiera_Move_0[i, 3].ToString(),
+                    ////                                    Skakiera_Move_0[i, 4].ToString(),
+                    ////                                    Skakiera_Move_0[i, 5].ToString(),
+                    ////                                    Skakiera_Move_0[i, 6].ToString(),
+                    ////                                    Skakiera_Move_0[i, 7].ToString()));
+                    ////}
 
-                //    //huo_sw1.WriteLine(String.Concat("Skakiera_Thinking             : ", Skakiera_Thinking.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Skakiera_Thinking             : ", Skakiera_Thinking.ToString()));
 
-                //    ////for (i = 0; i <= 7; i++)
-                //    ////{
-                //    ////    huo_sw1.WriteLine(String.Concat(Skakiera_Thinking[i, 0].ToString(),
-                //    ////                                    Skakiera_Thinking[i, 1].ToString(),
-                //    ////                                    Skakiera_Thinking[i, 2].ToString(),
-                //    ////                                    Skakiera_Thinking[i, 3].ToString(),
-                //    ////                                    Skakiera_Thinking[i, 4].ToString(),
-                //    ////                                    Skakiera_Thinking[i, 5].ToString(),
-                //    ////                                    Skakiera_Thinking[i, 6].ToString(),
-                //    ////                                    Skakiera_Thinking[i, 7].ToString()));
-                //    ////}
+                    ////for (i = 0; i <= 7; i++)
+                    ////{
+                    ////    huo_sw1.WriteLine(String.Concat(Skakiera_Thinking[i, 0].ToString(),
+                    ////                                    Skakiera_Thinking[i, 1].ToString(),
+                    ////                                    Skakiera_Thinking[i, 2].ToString(),
+                    ////                                    Skakiera_Thinking[i, 3].ToString(),
+                    ////                                    Skakiera_Thinking[i, 4].ToString(),
+                    ////                                    Skakiera_Thinking[i, 5].ToString(),
+                    ////                                    Skakiera_Thinking[i, 6].ToString(),
+                    ////                                    Skakiera_Thinking[i, 7].ToString()));
+                    ////}
 
-                //    //huo_sw1.WriteLine(String.Concat("Current_Move_Score            : ", Current_Move_Score.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Best_Move_FinishingColumnNumber : ", Best_Move_FinishingColumnNumber.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Best_Move_FinishingRank         : ", Best_Move_FinishingRank.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Best_Move_StartingColumnNumber  : ", Best_Move_StartingColumnNumber.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Best_Move_StartingRank        : ", Best_Move_StartingRank.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Best_Move_Found               : ", Best_Move_Found.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Move_Analyzed                 : ", Move_Analyzed.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Stop_Analyzing                : ", Stop_Analyzing.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("Thinking_Depth                : ", Thinking_Depth.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_StartingColumnNumber_HY     : ", m_StartingColumnNumber_HY.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_StartingRank_HY             : ", m_StartingRank_HY.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_FinishingColumnNumber_HY    : ", m_FinishingColumnNumber_HY.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("m_FinishingRank_HY            : ", m_FinishingRank_HY.ToString()));
-                //    ////huo_sw1.WriteLine(String.Concat("MovingPiece_HY                : ", MovingPiece_HY.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("enpassant_occured             : ", enpassant_occured.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("enpassant_possible_target_column          : ", enpassant_possible_target_column.ToString()));
-                //    //huo_sw1.WriteLine(String.Concat("First_Caenpassant_possible_target_rankll  : ", enpassant_possible_target_rank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Current_Move_Score            : ", Current_Move_Score.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Best_Move_FinishingColumnNumber : ", Best_Move_FinishingColumnNumber.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Best_Move_FinishingRank         : ", Best_Move_FinishingRank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Best_Move_StartingColumnNumber  : ", Best_Move_StartingColumnNumber.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Best_Move_StartingRank        : ", Best_Move_StartingRank.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Best_Move_Found               : ", Best_Move_Found.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Move_Analyzed                 : ", Move_Analyzed.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Stop_Analyzing                : ", Stop_Analyzing.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("Thinking_Depth                : ", Thinking_Depth.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_StartingColumnNumber_HY     : ", m_StartingColumnNumber_HY.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_StartingRank_HY             : ", m_StartingRank_HY.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_FinishingColumnNumber_HY    : ", m_FinishingColumnNumber_HY.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("m_FinishingRank_HY            : ", m_FinishingRank_HY.ToString()));
+                    ////huo_sw1.WriteLine(String.Concat("MovingPiece_HY                : ", MovingPiece_HY.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("enpassant_occured             : ", enpassant_occured.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("enpassant_possible_target_column          : ", enpassant_possible_target_column.ToString()));
+                    //huo_sw1.WriteLine(String.Concat("First_Caenpassant_possible_target_rankll  : ", enpassant_possible_target_rank.ToString()));
 
-                //    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
-                //    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
-                //    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
-                //    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
+                    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
+                    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
+                    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
+                    ////huo_sw1.WriteLine(string.Concat("CoMo -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
 
-                //    //////v0.990
-                //    ////huo_sw1.WriteLine("");
-                //    ////huo_sw1.WriteLine("CHESSBOARD when calling ComputerMove");
-                //    ////huo_sw1.WriteLine("-----------------------------------------");
-                //    ////for (int yj = 7; yj >= 0; yj--)
-                //    ////{
-                //    ////    huo_sw1.WriteLine(String.Concat("| ", Skakiera_Thinking_init[0, yj], " | ", Skakiera_Thinking_init[1, yj], " | ", Skakiera_Thinking_init[2, yj], " | ", Skakiera_Thinking_init[3, yj], " | ", Skakiera_Thinking_init[4, yj], " | ", Skakiera_Thinking_init[5, yj], " | ", Skakiera_Thinking_init[6, yj], " | ", Skakiera_Thinking_init[7, yj], " |"));
-                //    ////    huo_sw1.WriteLine("-----------------------------------------");
-                //    ////}
-                //    ////huo_sw1.WriteLine("");
-                //    #endregion checkInitialComputerMoveValues
+                    //////v0.990
+                    ////huo_sw1.WriteLine("");
+                    ////huo_sw1.WriteLine("CHESSBOARD when calling ComputerMove");
+                    ////huo_sw1.WriteLine("-----------------------------------------");
+                    ////for (int yj = 7; yj >= 0; yj--)
+                    ////{
+                    ////    huo_sw1.WriteLine(String.Concat("| ", Skakiera_Thinking_init[0, yj], " | ", Skakiera_Thinking_init[1, yj], " | ", Skakiera_Thinking_init[2, yj], " | ", Skakiera_Thinking_init[3, yj], " | ", Skakiera_Thinking_init[4, yj], " | ", Skakiera_Thinking_init[5, yj], " | ", Skakiera_Thinking_init[6, yj], " | ", Skakiera_Thinking_init[7, yj], " |"));
+                    ////    huo_sw1.WriteLine("-----------------------------------------");
+                    ////}
+                    ////huo_sw1.WriteLine("");
+                    #endregion checkInitialComputerMoveValues
 
-                //    //#region WriteLog
-                //    //v0.990
-                //    for (i = 0; i <= 7; i++)
-                //    {
-                //        for (j = 0; j <= 7; j++)
-                //        {
-                //            switch (Skakiera_Thinking_init[(i), (j)])
-                //            {
-                //                case "White Rook":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WR";
-                //                    break;
+                    //#region WriteLog
+                    //v0.990
+                    for (i = 0; i <= 7; i++)
+                    {
+                        for (j = 0; j <= 7; j++)
+                        {
+                            switch (Skakiera_Thinking_init[(i), (j)])
+                            {
+                                case "White Rook":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WR";
+                                    break;
 
-                //                case "White Knight":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WN";
-                //                    break;
+                                case "White Knight":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WN";
+                                    break;
 
-                //                case "White Bishop":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WB";
-                //                    break;
+                                case "White Bishop":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WB";
+                                    break;
 
-                //                case "White Queen":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WQ";
-                //                    break;
+                                case "White Queen":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WQ";
+                                    break;
 
-                //                case "White King":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WK";
-                //                    break;
+                                case "White King":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WK";
+                                    break;
 
-                //                case "White Pawn":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WP";
-                //                    break;
+                                case "White Pawn":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "WP";
+                                    break;
 
-                //                case "Black Rook":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BR";
-                //                    break;
+                                case "Black Rook":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BR";
+                                    break;
 
-                //                case "Black Knight":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BN";
-                //                    break;
+                                case "Black Knight":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BN";
+                                    break;
 
-                //                case "Black Bishop":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BB";
-                //                    break;
+                                case "Black Bishop":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BB";
+                                    break;
 
-                //                case "Black Queen":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BQ";
-                //                    break;
+                                case "Black Queen":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BQ";
+                                    break;
 
-                //                case "Black King":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BK";
-                //                    break;
+                                case "Black King":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BK";
+                                    break;
 
-                //                case "Black Pawn":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BP";
-                //                    break;
+                                case "Black Pawn":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "BP";
+                                    break;
 
-                //                case "":
-                //                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "  ";
-                //                    break;
-                //            }
-                //        }
-                //    }
+                                case "":
+                                    NodesAnalysis0_Chessboard_before[i, j, NodeLevel_0_count] = "  ";
+                                    break;
+                            }
+                        }
+                    }
 
-                //    huo_sw1.WriteLine("");
-                //    huo_sw1.WriteLine("CHESSBOARD Computer Move (upon calling function)");
-                //    huo_sw1.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis0_Chessboard_before[0, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[1, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[2, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[3, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[4, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[5, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[6, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[7, yj, NodeLevel_0_count], " |"));
-                //        huo_sw1.WriteLine("-----------------------------------------");
-                //    }
-                //    huo_sw1.WriteLine("CHESSBOARD END");
-                //    //huo_sw1.WriteLine("");
-                //    //#endregion WriteLog
+                    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("CHESSBOARD Computer Move (upon calling function)");
+                    huo_sw1.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis0_Chessboard_before[0, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[1, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[2, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[3, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[4, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[5, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[6, yj, NodeLevel_0_count], " | ", NodesAnalysis0_Chessboard_before[7, yj, NodeLevel_0_count], " |"));
+                        huo_sw1.WriteLine("-----------------------------------------");
+                    }
+                    huo_sw1.WriteLine("CHESSBOARD END");
+                    //huo_sw1.WriteLine("");
+                    //#endregion WriteLog
 
-                //    ////huo_sw1.WriteLine("");
-                //}
+                    ////huo_sw1.WriteLine("");
+                }
                 #endregion WriteLog
 
                 //v0.990: Added to be sure that all variables are the same at every cycle. Potentially not needed.
                 #region Initialize
                 // v0.990 change: The best score for every move will be stored at each level. Only if the new move analyzed
                 // has a better score than the best score, will it be analyzed (target: trim the analysis tree)
-                int bestScoreLevel0 = 0;
+                // v0.992: This is not needed. The tree is not trimmed here.
+                // int bestScoreLevel0 = 0;
                 //V0.990: Initialized the values
                 int iii = 0;
                 int jjj = 0;
@@ -2355,23 +2457,32 @@ namespace HuoChessW8
                 //int m_StartingRank;
                 //int m_FinishingRank;
                 // v0.991
-                //Best_Variant_text = "";
+                Best_Variant_text = "";
 
                 //v0.990
-                String[,] Skakiera_Move_After_0 = new String[8, 8];
+                //V0.992: Not needed anymore
+                //String[,] Skakiera_Move_After_0 = new String[8, 8];
 
                 // If there is a possibility to eat back what was eaten, then go for it!
                 possibility_to_eat_back = false;
                 possibility_to_eat = false;
+
+                //v0.992
+                Mate_Found = false;
+                Pat_Found = false;
+                m_StartingColumnNumber_mate = 0;
+                m_FinishingColumnNumber_mate = 0;
+                m_StartingRank_mate = 0;
+                m_FinishingRank_mate = 0;
 
                 #region InitializeNodes
                 // START [MiniMax algorithm - skakos]
                 NodeLevel_0_count = 0;
                 NodeLevel_1_count = 0;
                 NodeLevel_2_count = 0;
-                //v0.980: Removed unwanted nodes (+total nodes)
-                //NodeLevel_3_count = 0;
-                //NodeLevel_4_count = 0;
+                //v0.980: Removed unwanted nodes (+total nodes) v.0.992: Re-entered nodes 3 and 4 initialization
+                NodeLevel_3_count = 0;
+                NodeLevel_4_count = 0;
                 Nodes_Total_count = 0;
 
                 //v0.990 Added initialization of variables
@@ -2409,19 +2520,58 @@ namespace HuoChessW8
                     }
                 }
 
+                // v0.992
+                for (int dimension1 = 0; dimension1 < 10000000; dimension1++)
+                {
+                    for (int dimension2 = 0; dimension2 < 2; dimension2++)
+                    {
+                        NodesAnalysis3[dimension1, dimension2] = 0;
+
+                        // v0.992: Goal 2.3 (Not working as expected, perhaps not needed?
+                        //if (m_PlayerColor.CompareTo("White") == 0)
+                        //    NodesAnalysis3[dimension1, dimension2] = 99;
+                        //else if (m_PlayerColor.CompareTo("Black") == 0)
+                        //    NodesAnalysis3[dimension1, dimension2] = -99;
+                    }
+                }
+
+                // v0.992
+                for (int dimension1 = 0; dimension1 < 10000000; dimension1++)
+                {
+                    for (int dimension2 = 0; dimension2 < 2; dimension2++)
+                    {
+                        NodesAnalysis4[dimension1, dimension2] = 0;
+
+                        // v0.992: Goal 2.3 (Not working as expected, perhaps not needed?
+                        //if (m_PlayerColor.CompareTo("White") == 0)
+                        //    NodesAnalysis4[dimension1, dimension2] = -99;
+                        //else if (m_PlayerColor.CompareTo("Black") == 0)
+                        //    NodesAnalysis4[dimension1, dimension2] = 99;
+                    }
+                }
+
                 // v0.991
-                //for (int dimension1 = 0; dimension1 < 1000000; dimension1++)
-                //{
-                //    NodesAnalysis0_MoveText[dimension1] = "";
-                //    NodesAnalysis1_MoveText[dimension1] = "";
-                //    NodesAnalysis2_MoveText[dimension1] = "";
-                //}
+                for (int dimension1 = 0; dimension1 < 1000000; dimension1++)
+                {
+                    NodesAnalysis0_MoveText[dimension1] = "";
+                    NodesAnalysis1_MoveText[dimension1] = "";
+                    NodesAnalysis2_MoveText[dimension1] = "";
+                }
+
+                // v0.992
+                for (int dimension1 = 0; dimension1 < 100000; dimension1++)
+                {
+                    NodesAnalysis3_MoveText[dimension1] = "";
+                    NodesAnalysis4_MoveText[dimension1] = "";
+                }
 
                 #endregion InitializeNodes
 
                 #endregion Initialize
 
-                // v0.992: Is this needed at all?
+                //MessageBox.Show(m_WhoPlays);
+
+                // v0.992: Is this needed at all? Yes it is. At least I need to think about it. Skakiera_Thinking is used everywhere.
                 #region StoreInitialPosition
                 // Store the initial position in the chessboard
                 for (iii = 0; iii <= 7; iii++)
@@ -2551,8 +2701,13 @@ namespace HuoChessW8
                             for (op_jjj = 0; op_jjj <= 7; op_jjj++)
                             {
                                 line_in_opening_book = sr.ReadLine();
+
+                                //MessageBox.Show(String.Concat("i = ", op_iii.ToString(), ", j = ", op_jjj.ToString(), "\nOpening file: ", line_in_opening_book, ", Skakiera:", Skakiera_Thinking[op_iii, op_jjj].ToString()));
+
                                 if (Skakiera_Thinking[op_iii, op_jjj].CompareTo(line_in_opening_book) != 0)
+                                {
                                     match_found = false;
+                                }
                             }
                         }
 
@@ -2582,6 +2737,7 @@ namespace HuoChessW8
                             Best_Move_FinishingRank = Int32.Parse(line_in_opening_book);
 
                             foundOpening = true;
+                            //MessageBox.Show("Found position in opening book!");
                         }
                     }
                     else
@@ -2634,9 +2790,10 @@ namespace HuoChessW8
                         //MessageBox.Show(String.Concat("Value_of_defenders for ", (o1 + 1).ToString(), (p1 + 1).ToString(), " : ", Value_of_defenders[o1, p1].ToString()));
                         //MessageBox.Show(String.Concat("Value_of_attackers for ", (o1 + 1).ToString(), (p1 + 1).ToString(), " : ", Value_of_attackers[o1, p1].ToString()));
 
-                        //v0.990 change: Should ">" change to ">=" ??? No!
-                        //The case where the only defender is the moving piece can only be captured 
-                        //in the CheckMove function!
+                        // v0.990 change: Should ">" change to ">=" ??? No!
+                        // The case where the only defender is the moving piece can only be captured 
+                        // in the CheckMove function!
+                        // Potential improvement: Should we have a range of 'dangerousness' values, instead of just 0 and 1?
                         if (Number_of_attackers[o1, p1] > Number_of_defenders[o1, p1])
                             //v0.980: Change small Strings to Int
                             Skakiera_Dangerous_Squares[(o1), (p1)] = 1;
@@ -2644,139 +2801,140 @@ namespace HuoChessW8
                 }
 
                 #region WriteLog
-                //if (activateLogs == true)
-                //{
-                //    //v0.990
-                //    for (i = 0; i <= 7; i++)
-                //    {
-                //        for (j = 0; j <= 7; j++)
-                //        {
-                //            switch (Skakiera_Thinking_init[(i), (j)])
-                //            {
-                //                case "White Rook":
-                //                    SkakieraLog[i, j] = "WR";
-                //                    break;
+                if (activateLogs == true)
+                {
+                    //v0.990
+                    for (i = 0; i <= 7; i++)
+                    {
+                        for (j = 0; j <= 7; j++)
+                        {
+                            switch (Skakiera_Thinking_init[(i), (j)])
+                            {
+                                case "White Rook":
+                                    SkakieraLog[i, j] = "WR";
+                                    break;
 
-                //                case "White Knight":
-                //                    SkakieraLog[i, j] = "WN";
-                //                    break;
+                                case "White Knight":
+                                    SkakieraLog[i, j] = "WN";
+                                    break;
 
-                //                case "White Bishop":
-                //                    SkakieraLog[i, j] = "WB";
-                //                    break;
+                                case "White Bishop":
+                                    SkakieraLog[i, j] = "WB";
+                                    break;
 
-                //                case "White Queen":
-                //                    SkakieraLog[i, j] = "WQ";
-                //                    break;
+                                case "White Queen":
+                                    SkakieraLog[i, j] = "WQ";
+                                    break;
 
-                //                case "White King":
-                //                    SkakieraLog[i, j] = "WK";
-                //                    break;
+                                case "White King":
+                                    SkakieraLog[i, j] = "WK";
+                                    break;
 
-                //                case "White Pawn":
-                //                    SkakieraLog[i, j] = "WP";
-                //                    break;
+                                case "White Pawn":
+                                    SkakieraLog[i, j] = "WP";
+                                    break;
 
-                //                case "Black Rook":
-                //                    SkakieraLog[i, j] = "BR";
-                //                    break;
+                                case "Black Rook":
+                                    SkakieraLog[i, j] = "BR";
+                                    break;
 
-                //                case "Black Knight":
-                //                    SkakieraLog[i, j] = "BN";
-                //                    break;
+                                case "Black Knight":
+                                    SkakieraLog[i, j] = "BN";
+                                    break;
 
-                //                case "Black Bishop":
-                //                    SkakieraLog[i, j] = "BB";
-                //                    break;
+                                case "Black Bishop":
+                                    SkakieraLog[i, j] = "BB";
+                                    break;
 
-                //                case "Black Queen":
-                //                    SkakieraLog[i, j] = "BQ";
-                //                    break;
+                                case "Black Queen":
+                                    SkakieraLog[i, j] = "BQ";
+                                    break;
 
-                //                case "Black King":
-                //                    SkakieraLog[i, j] = "BK";
-                //                    break;
+                                case "Black King":
+                                    SkakieraLog[i, j] = "BK";
+                                    break;
 
-                //                case "Black Pawn":
-                //                    SkakieraLog[i, j] = "BP";
-                //                    break;
+                                case "Black Pawn":
+                                    SkakieraLog[i, j] = "BP";
+                                    break;
 
-                //                case "":
-                //                    SkakieraLog[i, j] = "  ";
-                //                    break;
-                //            }
-                //        }
-                //    }
+                                case "":
+                                    SkakieraLog[i, j] = "  ";
+                                    break;
+                            }
+                        }
+                    }
 
-                //    huo_sw_attackers.WriteLine("CHESSBOARD");
-                //    huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw_attackers.WriteLine(String.Concat("| ", SkakieraLog[0, yj], " | ", SkakieraLog[1, yj], " | ", SkakieraLog[2, yj], " | ", SkakieraLog[3, yj], " | ", SkakieraLog[4, yj], " | ", SkakieraLog[5, yj], " | ", SkakieraLog[6, yj], " | ", SkakieraLog[7, yj], " |"));
-                //        huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    }
+                    huo_sw_attackers.WriteLine("CHESSBOARD");
+                    huo_sw_attackers.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw_attackers.WriteLine(String.Concat("| ", SkakieraLog[0, yj], " | ", SkakieraLog[1, yj], " | ", SkakieraLog[2, yj], " | ", SkakieraLog[3, yj], " | ", SkakieraLog[4, yj], " | ", SkakieraLog[5, yj], " | ", SkakieraLog[6, yj], " | ", SkakieraLog[7, yj], " |"));
+                        huo_sw_attackers.WriteLine("-----------------------------------------");
+                    }
 
-                //    huo_sw_attackers.WriteLine("");
-                //    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
 
-                //    huo_sw_attackers.WriteLine("CHESSBOARD: Number of attackers");
-                //    huo_sw_attackers.WriteLine(String.Concat("Move = ", Move.ToString()));
-                //    huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw_attackers.WriteLine(String.Concat("| ", Number_of_attackers[0, yj], " | ", Number_of_attackers[1, yj], " | ", Number_of_attackers[2, yj], " | ", Number_of_attackers[3, yj], " | ", Number_of_attackers[4, yj], " | ", Number_of_attackers[5, yj], " | ", Number_of_attackers[6, yj], " | ", Number_of_attackers[7, yj], " |"));
-                //        huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    }
+                    huo_sw_attackers.WriteLine("CHESSBOARD: Number of attackers");
+                    huo_sw_attackers.WriteLine(String.Concat("Move = ", Move.ToString()));
+                    huo_sw_attackers.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw_attackers.WriteLine(String.Concat("| ", Number_of_attackers[0, yj], " | ", Number_of_attackers[1, yj], " | ", Number_of_attackers[2, yj], " | ", Number_of_attackers[3, yj], " | ", Number_of_attackers[4, yj], " | ", Number_of_attackers[5, yj], " | ", Number_of_attackers[6, yj], " | ", Number_of_attackers[7, yj], " |"));
+                        huo_sw_attackers.WriteLine("-----------------------------------------");
+                    }
 
-                //    huo_sw_attackers.WriteLine("");
-                //    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
 
-                //    huo_sw_attackers.WriteLine("CHESSBOARD: Value of attackers");
-                //    huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw_attackers.WriteLine(String.Concat("| ", Value_of_attackers[0, yj], " | ", Value_of_attackers[1, yj], " | ", Value_of_attackers[2, yj], " | ", Value_of_attackers[3, yj], " | ", Value_of_attackers[4, yj], " | ", Value_of_attackers[5, yj], " | ", Value_of_attackers[6, yj], " | ", Value_of_attackers[7, yj], " |"));
-                //        huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    }
+                    huo_sw_attackers.WriteLine("CHESSBOARD: Value of attackers");
+                    huo_sw_attackers.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw_attackers.WriteLine(String.Concat("| ", Value_of_attackers[0, yj], " | ", Value_of_attackers[1, yj], " | ", Value_of_attackers[2, yj], " | ", Value_of_attackers[3, yj], " | ", Value_of_attackers[4, yj], " | ", Value_of_attackers[5, yj], " | ", Value_of_attackers[6, yj], " | ", Value_of_attackers[7, yj], " |"));
+                        huo_sw_attackers.WriteLine("-----------------------------------------");
+                    }
 
-                //    huo_sw_attackers.WriteLine("");
-                //    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
 
-                //    huo_sw_attackers.WriteLine("CHESSBOARD: Number of defenders");
-                //    huo_sw_attackers.WriteLine(String.Concat("Move = ", Move.ToString()));
-                //    huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw_attackers.WriteLine(String.Concat("| ", Number_of_defenders[0, yj], " | ", Number_of_defenders[1, yj], " | ", Number_of_defenders[2, yj], " | ", Number_of_defenders[3, yj], " | ", Number_of_defenders[4, yj], " | ", Number_of_defenders[5, yj], " | ", Number_of_defenders[6, yj], " | ", Number_of_defenders[7, yj], " |"));
-                //        huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    }
+                    huo_sw_attackers.WriteLine("CHESSBOARD: Number of defenders");
+                    huo_sw_attackers.WriteLine(String.Concat("Move = ", Move.ToString()));
+                    huo_sw_attackers.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw_attackers.WriteLine(String.Concat("| ", Number_of_defenders[0, yj], " | ", Number_of_defenders[1, yj], " | ", Number_of_defenders[2, yj], " | ", Number_of_defenders[3, yj], " | ", Number_of_defenders[4, yj], " | ", Number_of_defenders[5, yj], " | ", Number_of_defenders[6, yj], " | ", Number_of_defenders[7, yj], " |"));
+                        huo_sw_attackers.WriteLine("-----------------------------------------");
+                    }
 
-                //    huo_sw_attackers.WriteLine("");
-                //    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
 
-                //    huo_sw_attackers.WriteLine("CHESSBOARD: Value of defenders");
-                //    huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw_attackers.WriteLine(String.Concat("| ", Value_of_defenders[0, yj], " | ", Value_of_defenders[1, yj], " | ", Value_of_defenders[2, yj], " | ", Value_of_defenders[3, yj], " | ", Value_of_defenders[4, yj], " | ", Value_of_defenders[5, yj], " | ", Value_of_defenders[6, yj], " | ", Value_of_defenders[7, yj], " |"));
-                //        huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    }
+                    huo_sw_attackers.WriteLine("CHESSBOARD: Value of defenders");
+                    huo_sw_attackers.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw_attackers.WriteLine(String.Concat("| ", Value_of_defenders[0, yj], " | ", Value_of_defenders[1, yj], " | ", Value_of_defenders[2, yj], " | ", Value_of_defenders[3, yj], " | ", Value_of_defenders[4, yj], " | ", Value_of_defenders[5, yj], " | ", Value_of_defenders[6, yj], " | ", Value_of_defenders[7, yj], " |"));
+                        huo_sw_attackers.WriteLine("-----------------------------------------");
+                    }
 
-                //    huo_sw_attackers.WriteLine("");
-                //    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
+                    huo_sw_attackers.WriteLine("");
 
-                //    huo_sw_attackers.WriteLine("CHESSBOARD: Dangerous squares");
-                //    huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw_attackers.WriteLine(String.Concat("| ", Skakiera_Dangerous_Squares[0, yj], " | ", Skakiera_Dangerous_Squares[1, yj], " | ", Skakiera_Dangerous_Squares[2, yj], " | ", Skakiera_Dangerous_Squares[3, yj], " | ", Skakiera_Dangerous_Squares[4, yj], " | ", Skakiera_Dangerous_Squares[5, yj], " | ", Skakiera_Dangerous_Squares[6, yj], " | ", Skakiera_Dangerous_Squares[7, yj], " |"));
-                //        huo_sw_attackers.WriteLine("-----------------------------------------");
-                //    }
-                //}
+                    huo_sw_attackers.WriteLine("CHESSBOARD: Dangerous squares");
+                    huo_sw_attackers.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw_attackers.WriteLine(String.Concat("| ", Skakiera_Dangerous_Squares[0, yj], " | ", Skakiera_Dangerous_Squares[1, yj], " | ", Skakiera_Dangerous_Squares[2, yj], " | ", Skakiera_Dangerous_Squares[3, yj], " | ", Skakiera_Dangerous_Squares[4, yj], " | ", Skakiera_Dangerous_Squares[5, yj], " | ", Skakiera_Dangerous_Squares[6, yj], " | ", Skakiera_Dangerous_Squares[7, yj], " |"));
+                        huo_sw_attackers.WriteLine("-----------------------------------------");
+                    }
+                }
                 #endregion WriteLog
 
                 #endregion DangerousSquares
 
+                #region checkForCheck
                 // v0.990
                 // Check if HY is currently under check
                 ThereIsCheck = false;
@@ -2785,6 +2943,7 @@ namespace HuoChessW8
                     ThereIsCheck = CheckForBlackCheck(Skakiera_Thinking);
                 else if (m_PlayerColor.CompareTo("Black") == 0)
                     ThereIsCheck = CheckForBlackCheck(Skakiera_Thinking);
+                #endregion checkForCheck
 
                 //---------------------------------------
                 // CHECK ALL POSSIBLE MOVES!
@@ -2805,6 +2964,14 @@ namespace HuoChessW8
                                 {
                                     for (int r = 0; r <= 7; r++)
                                     {
+                                        // v0.992 - Initialization (if we don't, the target piece value from the previous run
+                                        // will be still in the variables if in the next pass there is no target piece at the
+                                        // target square, thus leading to problems - activate the logs to see the difference
+                                        // if the initialization does not happen)
+                                        ProsorinoKommati = "";
+                                        ValueOfMovingPiece = 0;
+                                        ValueOfTargetPiece = 0;
+
                                         //v0.980: Removed. It was not used.
                                         //Danger_penalty = false;
                                         MovingPiece = Skakiera_Thinking[(iii), (jjj)];
@@ -2812,6 +2979,8 @@ namespace HuoChessW8
                                         m_FinishingColumnNumber = w + 1;
                                         m_StartingRank = jjj + 1;
                                         m_FinishingRank = r + 1;
+                                        // v0.992
+                                        ProsorinoKommati = Skakiera_Thinking[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)];
 
                                         #region ObsoleteCode
                                         // Store temporary move data in local variables, so as to use them in the Undo of the move
@@ -2838,44 +3007,45 @@ namespace HuoChessW8
                                         //v0.990: MovingPiece -> MovingPiece (AND all other related variables)
                                         //v0.990 test: Remove for now the stupid move checks... (for testing)
                                         //if (Move < 0)
+                                        // v0.992: Some of these checks are already in the CountScore, so I will remove them from here!
                                         if (Move < 5)
                                         {
-                                            if ((MovingPiece.CompareTo("White Queen") == 0) || (MovingPiece.CompareTo("Black Queen") == 0) ||
-                                                    (MovingPiece.CompareTo("White Rook") == 0) || (MovingPiece.CompareTo("Black Rook") == 0))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
-                                            else if (((MovingPiece.CompareTo("White Knight") == 0) || (MovingPiece.CompareTo("Black Knight") == 0))
-                                                    && (m_FinishingColumnNumber == 1))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
-                                            else if (((MovingPiece.CompareTo("White Knight") == 0) || (MovingPiece.CompareTo("Black Knight") == 0))
-                                                    && (m_FinishingColumnNumber == 8))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
-                                            else if ((MovingPiece.CompareTo("White Knight") == 0) && (m_FinishingRank == 2) && (m_FinishingColumnNumber == 4)
-                                                    && (Skakiera_Thinking[(2), (0)].CompareTo("White Bishop") == 0))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
-                                            else if ((MovingPiece.CompareTo("White Knight") == 0) && (m_FinishingRank == 2) && (m_FinishingColumnNumber == 5)
-                                                    && (Skakiera_Thinking[(5), (0)].CompareTo("White Bishop") == 0))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
-                                            else if ((MovingPiece.CompareTo("Black Knight") == 0) && (m_FinishingRank == 7) && (m_FinishingColumnNumber == 4)
-                                                    && (Skakiera_Thinking[(2), (7)].CompareTo("Black Bishop") == 0))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
-                                            else if ((MovingPiece.CompareTo("Black Knight") == 0) && (m_FinishingRank == 7) && (m_FinishingColumnNumber == 5)
-                                                    && (Skakiera_Thinking[(5), (7)].CompareTo("Black Bishop") == 0))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
-                                            else if ((MovingPiece.CompareTo("White Pawn") == 0) && ((m_StartingColumnNumber == 1) || (m_StartingColumnNumber == 2)))
+                                            //if ((MovingPiece.CompareTo("White Queen") == 0) || (MovingPiece.CompareTo("Black Queen") == 0) ||
+                                            //        (MovingPiece.CompareTo("White Rook") == 0) || (MovingPiece.CompareTo("Black Rook") == 0))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
+                                            //else if (((MovingPiece.CompareTo("White Knight") == 0) || (MovingPiece.CompareTo("Black Knight") == 0))
+                                            //        && (m_FinishingColumnNumber == 1))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
+                                            //else if (((MovingPiece.CompareTo("White Knight") == 0) || (MovingPiece.CompareTo("Black Knight") == 0))
+                                            //        && (m_FinishingColumnNumber == 8))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
+                                            //else if ((MovingPiece.CompareTo("White Knight") == 0) && (m_FinishingRank == 2) && (m_FinishingColumnNumber == 4)
+                                            //        && (Skakiera_Thinking[(2), (0)].CompareTo("White Bishop") == 0))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
+                                            //else if ((MovingPiece.CompareTo("White Knight") == 0) && (m_FinishingRank == 2) && (m_FinishingColumnNumber == 5)
+                                            //        && (Skakiera_Thinking[(5), (0)].CompareTo("White Bishop") == 0))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
+                                            //else if ((MovingPiece.CompareTo("Black Knight") == 0) && (m_FinishingRank == 7) && (m_FinishingColumnNumber == 4)
+                                            //        && (Skakiera_Thinking[(2), (7)].CompareTo("Black Bishop") == 0))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
+                                            //else if ((MovingPiece.CompareTo("Black Knight") == 0) && (m_FinishingRank == 7) && (m_FinishingColumnNumber == 5)
+                                            //        && (Skakiera_Thinking[(5), (7)].CompareTo("Black Bishop") == 0))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
+                                            if ((MovingPiece.CompareTo("White Pawn") == 0) && ((m_StartingColumnNumber == 1) || (m_StartingColumnNumber == 2)))
                                             {
                                                 ThisIsStupidMove = "Y";
                                             }
@@ -2891,18 +3061,30 @@ namespace HuoChessW8
                                             {
                                                 ThisIsStupidMove = "Y";
                                             }
+                                            // Do not move the 'f' pawns!
+                                            else if ((MovingPiece.CompareTo("White Pawn") == 0) && ((m_StartingColumnNumber == 6) && (m_StartingRank == 2)))
+                                            {
+                                                ThisIsStupidMove = "Y";
+                                            }
+                                            else if ((MovingPiece.CompareTo("Black Pawn") == 0) && ((m_StartingColumnNumber == 6) && (m_StartingRank == 7)))
+                                            {
+                                                ThisIsStupidMove = "Y";
+                                            }
                                             else if ((MovingPiece.CompareTo("White King") == 0) || (MovingPiece.CompareTo("Black King") == 0))
                                             {
                                                 ThisIsStupidMove = "Y";
                                             }
-                                            else if (((MovingPiece.CompareTo("White Bishop") == 0) || (MovingPiece.CompareTo("Black Bishop") == 0))
-                                                && ((m_FinishingRank == 3) || (m_FinishingRank == 5) || (m_FinishingRank == 6)))
-                                            {
-                                                ThisIsStupidMove = "Y";
-                                            }
+                                            //else if (((MovingPiece.CompareTo("White Bishop") == 0) || (MovingPiece.CompareTo("Black Bishop") == 0))
+                                            //    && ((m_FinishingRank == 3) || (m_FinishingRank == 5) || (m_FinishingRank == 6)))
+                                            //{
+                                            //    ThisIsStupidMove = "Y";
+                                            //}
                                         }
 
                                         // v0.970
+                                        // v0.990: Find value of moving piece and of the target piece eaten
+                                        #region findValueOfPieces
+
                                         // Store the value of the moving piece
                                         if ((MovingPiece.CompareTo("White Rook") == 0) || (MovingPiece.CompareTo("Black Rook") == 0))
                                             ValueOfMovingPiece = 5;
@@ -2917,6 +3099,45 @@ namespace HuoChessW8
                                         if ((MovingPiece.CompareTo("White Pawn") == 0) || (MovingPiece.CompareTo("Black Pawn") == 0))
                                             ValueOfMovingPiece = 1;
 
+                                        // v0.992: Improvement: We have the value of the moving piece in ValueOfMovingPiece! (see above) Perhaps I should consolidate the code.
+                                        // We now find the value of the pieces only in the Check Stupid Move section and not in two places.
+                                        //if ((MovingPiece.CompareTo("White Rook") == 0) || (MovingPiece.CompareTo("Black Rook") == 0))
+                                        //    ValueOfKommati = 5;
+                                        //if ((MovingPiece.CompareTo("White Knight") == 0) || (MovingPiece.CompareTo("Black Knight") == 0))
+                                        //    ValueOfKommati = 3;
+                                        //if ((MovingPiece.CompareTo("White Bishop") == 0) || (MovingPiece.CompareTo("Black Bishop") == 0))
+                                        //    ValueOfKommati = 3;
+                                        //if ((MovingPiece.CompareTo("White Queen") == 0) || (MovingPiece.CompareTo("Black Queen") == 0))
+                                        //    ValueOfKommati = 9;
+                                        //if ((MovingPiece.CompareTo("White King") == 0) || (MovingPiece.CompareTo("Black King") == 0))
+                                        //    ValueOfKommati = 119;
+                                        //if ((MovingPiece.CompareTo("White Pawn") == 0) || (MovingPiece.CompareTo("Black Pawn") == 0))
+                                        //    ValueOfKommati = 1;
+
+                                        //v0.992: Gathered all pieces valuations in one place
+
+                                        if ((ProsorinoKommati.CompareTo("White Rook") == 0) || (ProsorinoKommati.CompareTo("Black Rook") == 0))
+                                            ValueOfTargetPiece = 5;
+                                        if ((ProsorinoKommati.CompareTo("White Knight") == 0) || (ProsorinoKommati.CompareTo("Black Knight") == 0))
+                                            ValueOfTargetPiece = 3;
+                                        if ((ProsorinoKommati.CompareTo("White Bishop") == 0) || (ProsorinoKommati.CompareTo("Black Bishop") == 0))
+                                            ValueOfTargetPiece = 3;
+                                        if ((ProsorinoKommati.CompareTo("White Queen") == 0) || (ProsorinoKommati.CompareTo("Black Queen") == 0))
+                                            ValueOfTargetPiece = 9;
+                                        if ((ProsorinoKommati.CompareTo("White King") == 0) || (ProsorinoKommati.CompareTo("Black King") == 0))
+                                            ValueOfTargetPiece = 119;
+                                        if ((ProsorinoKommati.CompareTo("White Pawn") == 0) || (ProsorinoKommati.CompareTo("Black Pawn") == 0))
+                                            ValueOfTargetPiece = 1;
+
+                                        //v0.992 Debug
+                                        //if (activateLogs == true)
+                                        //{
+                                        //    huo_ProsorinoKommati.WriteLine(String.Concat(MovingPiece, " ", m_StartingColumnNumber.ToString(), m_StartingRank.ToString(), " -> ", m_FinishingColumnNumber.ToString(), m_FinishingRank.ToString(), " - ", ProsorinoKommati, " - ", ValueOfTargetPiece.ToString()));
+                                        //}
+
+                                        #endregion findValueOfPieces
+
+                                        #region ObsoleteCode
                                         //v0.990 debug
                                         //if ((m_StartingColumnNumber == 3)  &&
                                         //    (m_StartingRank == 1)          &&
@@ -2935,20 +3156,33 @@ namespace HuoChessW8
                                         //    MessageBox.Show(String.Concat("Moving ", MovingPiece, ": ", m_StartingColumnNumber.ToString(), m_StartingRank.ToString(), " -> ", m_FinishingColumnNumber.ToString(), m_FinishingRank.ToString()));
                                         //    MessageBox.Show(Skakiera_Dangerous_Squares[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)].ToString());
                                         //}
+                                        #endregion ObsoleteCode
 
-                                        //v0.990: Here we use the w and r variables, while the move is defined by the m_FinishingColumnNumber, m_FinishingRank variables!
+                                        // v0.990: Here we use the w and r variables, while the move is defined by the m_FinishingColumnNumber, m_FinishingRank variables!
                                         // The change was not needed! w = m_FinishingColumnNumber - 1 anyway!
                                         // (and in the same way r is also correct!)
                                         // Left the change for clarity purposes!
                                         // If a pieve of lower value attacks the square where the computer moves, then... stupid move!
-                                        //if ((Number_of_attackers[w, r] == 1) && (Value_of_attackers[w, r] < ValueOfMovingPiece))
-                                        //No need to have the "Number of attackers = 1" condition, changed it to >=
-                                        //v0.990: m_FinishingColumnNumber -> m_FinishingColumnNumber - 1
+                                        // if ((Number_of_attackers[w, r] == 1) && (Value_of_attackers[w, r] < ValueOfMovingPiece))
+                                        // No need to have the "Number of attackers = 1" condition, changed it to >=
+                                        // v0.990: m_FinishingColumnNumber -> m_FinishingColumnNumber - 1
+                                        // Potential improvement: Are the below conditions correct? Should we take the sum of the value of all attackers or just the lower one?
                                         if ((Number_of_attackers[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] >= 1) && (Value_of_attackers[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] < ValueOfMovingPiece))
                                         {
                                             ThisIsStupidMove = "Y";
                                         }
                                         #endregion CheckStupidMove
+
+                                        // v0.992: Add move_dangerousness flag (finally not needed? Depends on how the trimming rules analysis will go)
+                                        #region dangerousnessFlag
+                                        move_dangerousness = false;
+
+                                        // Potential improvement: Should we have a range of 'dangerousness' values, instead of just 0 and 1?
+                                        if ((Skakiera_Dangerous_Squares[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] != 0))
+                                        {
+                                            move_dangerousness = true;
+                                        }
+                                        #endregion dangerousnessFlag
 
                                         #region HuoChessHistory
                                         //V0.990 Helsinki fix
@@ -2978,7 +3212,7 @@ namespace HuoChessW8
                                             if (((m_OrthotitaKinisis == true) && (m_NomimotitaKinisis == true)) && (Move_Analyzed == 0))
                                             {
                                                 // Store the move to ***_HY variables (because after continuous calls of ComputerMove the initial move under analysis will be lost...)
-
+                                                // v0.992: Are these used anymore?
                                                 MovingPiece_HY = MovingPiece;
                                                 m_StartingColumnNumber_HY = m_StartingColumnNumber;
                                                 m_FinishingColumnNumber_HY = m_FinishingColumnNumber;
@@ -3012,130 +3246,149 @@ namespace HuoChessW8
                                             {
                                                 // v0.991
                                                 #region MoveText
-                                                //String m_StartingColumnNumber_moveText;
-                                                //String m_FinishingColumnNumber_moveText;
+                                                String m_StartingColumnNumber_moveText;
+                                                String m_FinishingColumnNumber_moveText;
 
-                                                //switch (m_StartingColumnNumber)
-                                                //{
-                                                //    case (1):
-                                                //        m_StartingColumnNumber_moveText = "a";
-                                                //        break;
+                                                switch (m_StartingColumnNumber)
+                                                {
+                                                    case (1):
+                                                        m_StartingColumnNumber_moveText = "a";
+                                                        break;
 
-                                                //    case (2):
-                                                //        m_StartingColumnNumber_moveText = "b";
-                                                //        break;
+                                                    case (2):
+                                                        m_StartingColumnNumber_moveText = "b";
+                                                        break;
 
-                                                //    case (3):
-                                                //        m_StartingColumnNumber_moveText = "c";
-                                                //        break;
+                                                    case (3):
+                                                        m_StartingColumnNumber_moveText = "c";
+                                                        break;
 
-                                                //    case (4):
-                                                //        m_StartingColumnNumber_moveText = "d";
-                                                //        break;
+                                                    case (4):
+                                                        m_StartingColumnNumber_moveText = "d";
+                                                        break;
 
-                                                //    case (5):
-                                                //        m_StartingColumnNumber_moveText = "e";
-                                                //        break;
+                                                    case (5):
+                                                        m_StartingColumnNumber_moveText = "e";
+                                                        break;
 
-                                                //    case (6):
-                                                //        m_StartingColumnNumber_moveText = "f";
-                                                //        break;
+                                                    case (6):
+                                                        m_StartingColumnNumber_moveText = "f";
+                                                        break;
 
-                                                //    case (7):
-                                                //        m_StartingColumnNumber_moveText = "g";
-                                                //        break;
+                                                    case (7):
+                                                        m_StartingColumnNumber_moveText = "g";
+                                                        break;
 
-                                                //    case (8):
-                                                //        m_StartingColumnNumber_moveText = "h";
-                                                //        break;
+                                                    case (8):
+                                                        m_StartingColumnNumber_moveText = "h";
+                                                        break;
 
-                                                //    default:
-                                                //        m_StartingColumnNumber_moveText = "Error";
-                                                //        break;
-                                                //}
+                                                    default:
+                                                        m_StartingColumnNumber_moveText = "Error";
+                                                        break;
+                                                }
 
-                                                //switch (m_FinishingColumnNumber)
-                                                //{
-                                                //    case (1):
-                                                //        m_FinishingColumnNumber_moveText = "a";
-                                                //        break;
+                                                switch (m_FinishingColumnNumber)
+                                                {
+                                                    case (1):
+                                                        m_FinishingColumnNumber_moveText = "a";
+                                                        break;
 
-                                                //    case (2):
-                                                //        m_FinishingColumnNumber_moveText = "b";
-                                                //        break;
+                                                    case (2):
+                                                        m_FinishingColumnNumber_moveText = "b";
+                                                        break;
 
-                                                //    case (3):
-                                                //        m_FinishingColumnNumber_moveText = "c";
-                                                //        break;
+                                                    case (3):
+                                                        m_FinishingColumnNumber_moveText = "c";
+                                                        break;
 
-                                                //    case (4):
-                                                //        m_FinishingColumnNumber_moveText = "d";
-                                                //        break;
+                                                    case (4):
+                                                        m_FinishingColumnNumber_moveText = "d";
+                                                        break;
 
-                                                //    case (5):
-                                                //        m_FinishingColumnNumber_moveText = "e";
-                                                //        break;
+                                                    case (5):
+                                                        m_FinishingColumnNumber_moveText = "e";
+                                                        break;
 
-                                                //    case (6):
-                                                //        m_FinishingColumnNumber_moveText = "f";
-                                                //        break;
+                                                    case (6):
+                                                        m_FinishingColumnNumber_moveText = "f";
+                                                        break;
 
-                                                //    case (7):
-                                                //        m_FinishingColumnNumber_moveText = "g";
-                                                //        break;
+                                                    case (7):
+                                                        m_FinishingColumnNumber_moveText = "g";
+                                                        break;
 
-                                                //    case (8):
-                                                //        m_FinishingColumnNumber_moveText = "h";
-                                                //        break;
+                                                    case (8):
+                                                        m_FinishingColumnNumber_moveText = "h";
+                                                        break;
 
-                                                //    default:
-                                                //        m_FinishingColumnNumber_moveText = "Error";
-                                                //        break;
-                                                //}
+                                                    default:
+                                                        m_FinishingColumnNumber_moveText = "Error";
+                                                        break;
+                                                }
 
-                                                //Move0_text = String.Concat(m_StartingColumnNumber_moveText,
-                                                //                           m_StartingRank.ToString(), " -> ",
-                                                //                           m_FinishingColumnNumber_moveText,
-                                                //                           m_FinishingRank.ToString());
+                                                Move0_text = String.Concat(m_StartingColumnNumber_moveText,
+                                                                           m_StartingRank.ToString(), " -> ",
+                                                                           m_FinishingColumnNumber_moveText,
+                                                                           m_FinishingRank.ToString());
 
-                                                //NodesAnalysis0_MoveText[NodeLevel_0_count] = Move0_text;
+                                                NodesAnalysis0_MoveText[NodeLevel_0_count] = Move0_text;
                                                 #endregion MoveText
 
                                                 // Do the move
-                                                ProsorinoKommati = Skakiera_Thinking[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)];
+
+                                                #region ObsoleteCode
+                                                // v0.992: Obsolete - ProsorinoKommati is already set above.
+                                                //         But if I add the ProsorinoKommati definition above, the behaviour changes!
+                                                //         Explanation: Potentially there is a problem when checking the value of ProsorinoKommati.
+                                                //                      If the next move analyzed is not valid, then the value of the previous
+                                                //                      ProsorinoKommati is still left in the variable. I need to initialize?
+                                                // ProsorinoKommati = Skakiera_Thinking[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)];
+
+                                                // if ((ProsorinoKommati22.CompareTo(ProsorinoKommati) < 0) || (ProsorinoKommati22.CompareTo(ProsorinoKommati) > 0))
+                                                //     MessageBox.Show(String.Concat(ProsorinoKommati.ToString(), " - ", ProsorinoKommati22.ToString()));
+                                                #endregion ObsoleteCode
+
                                                 Skakiera_Thinking[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = "";
                                                 Skakiera_Thinking[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = MovingPiece;
 
-                                                // v0.990: Find value of moving piece and of the target piece eaten
-                                                #region findValueOfPieces
-                                                if ((MovingPiece.CompareTo("White Rook") == 0) || (MovingPiece.CompareTo("Black Rook") == 0))
-                                                    ValueOfKommati = 5;
-                                                if ((MovingPiece.CompareTo("White Knight") == 0) || (MovingPiece.CompareTo("Black Knight") == 0))
-                                                    ValueOfKommati = 3;
-                                                if ((MovingPiece.CompareTo("White Bishop") == 0) || (MovingPiece.CompareTo("Black Bishop") == 0))
-                                                    ValueOfKommati = 3;
-                                                if ((MovingPiece.CompareTo("White Queen") == 0) || (MovingPiece.CompareTo("Black Queen") == 0))
-                                                    ValueOfKommati = 9;
-                                                if ((MovingPiece.CompareTo("White King") == 0) || (MovingPiece.CompareTo("Black King") == 0))
-                                                    ValueOfKommati = 119;
-                                                if ((MovingPiece.CompareTo("White Pawn") == 0) || (MovingPiece.CompareTo("Black Pawn") == 0))
-                                                    ValueOfKommati = 1;
-
-                                                if ((ProsorinoKommati.CompareTo("White Rook") == 0) || (ProsorinoKommati.CompareTo("Black Rook") == 0))
-                                                    ValueOfTargetPiece = 5;
-                                                if ((ProsorinoKommati.CompareTo("White Knight") == 0) || (ProsorinoKommati.CompareTo("Black Knight") == 0))
-                                                    ValueOfTargetPiece = 3;
-                                                if ((ProsorinoKommati.CompareTo("White Bishop") == 0) || (ProsorinoKommati.CompareTo("Black Bishop") == 0))
-                                                    ValueOfTargetPiece = 3;
-                                                if ((ProsorinoKommati.CompareTo("White Queen") == 0) || (ProsorinoKommati.CompareTo("Black Queen") == 0))
-                                                    ValueOfTargetPiece = 9;
-                                                if ((ProsorinoKommati.CompareTo("White King") == 0) || (ProsorinoKommati.CompareTo("Black King") == 0))
-                                                    ValueOfTargetPiece = 119;
-                                                if ((ProsorinoKommati.CompareTo("White Pawn") == 0) || (ProsorinoKommati.CompareTo("Black Pawn") == 0))
-                                                    ValueOfTargetPiece = 1;
-                                                #endregion findValueOfPieces
-
                                                 #region ObsoleteCode
+                                                // v0.990: Find value of moving piece and of the target piece eaten
+                                                //#region findValueOfPieces
+                                                //if ((MovingPiece.CompareTo("White Rook") == 0) || (MovingPiece.CompareTo("Black Rook") == 0))
+                                                //    ValueOfKommati = 5;
+                                                //if ((MovingPiece.CompareTo("White Knight") == 0) || (MovingPiece.CompareTo("Black Knight") == 0))
+                                                //    ValueOfKommati = 3;
+                                                //if ((MovingPiece.CompareTo("White Bishop") == 0) || (MovingPiece.CompareTo("Black Bishop") == 0))
+                                                //    ValueOfKommati = 3;
+                                                //if ((MovingPiece.CompareTo("White Queen") == 0) || (MovingPiece.CompareTo("Black Queen") == 0))
+                                                //    ValueOfKommati = 9;
+                                                //if ((MovingPiece.CompareTo("White King") == 0) || (MovingPiece.CompareTo("Black King") == 0))
+                                                //    ValueOfKommati = 119;
+                                                //if ((MovingPiece.CompareTo("White Pawn") == 0) || (MovingPiece.CompareTo("Black Pawn") == 0))
+                                                //    ValueOfKommati = 1;
+
+                                                //if ((ProsorinoKommati.CompareTo("White Rook") == 0) || (ProsorinoKommati.CompareTo("Black Rook") == 0))
+                                                //    ValueOfTargetPiece = 5;
+                                                //if ((ProsorinoKommati.CompareTo("White Knight") == 0) || (ProsorinoKommati.CompareTo("Black Knight") == 0))
+                                                //    ValueOfTargetPiece = 3;
+                                                //if ((ProsorinoKommati.CompareTo("White Bishop") == 0) || (ProsorinoKommati.CompareTo("Black Bishop") == 0))
+                                                //    ValueOfTargetPiece = 3;
+                                                //if ((ProsorinoKommati.CompareTo("White Queen") == 0) || (ProsorinoKommati.CompareTo("Black Queen") == 0))
+                                                //    ValueOfTargetPiece = 9;
+                                                //if ((ProsorinoKommati.CompareTo("White King") == 0) || (ProsorinoKommati.CompareTo("Black King") == 0))
+                                                //    ValueOfTargetPiece = 119;
+                                                //if ((ProsorinoKommati.CompareTo("White Pawn") == 0) || (ProsorinoKommati.CompareTo("Black Pawn") == 0))
+                                                //    ValueOfTargetPiece = 1;
+
+                                                //v0.992 Debug
+                                                //if (activateLogs == true)
+                                                //{
+                                                    //huo_ProsorinoKommati_old.WriteLine(String.Concat(MovingPiece, " ", m_StartingColumnNumber.ToString(), m_StartingRank.ToString(), " -> ", m_FinishingColumnNumber.ToString(), m_FinishingRank.ToString(), " - ", ProsorinoKommati_old, " - ", ValueOfTargetPiece.ToString()));
+                                                //}
+
+                                                //#endregion findValueOfPieces
+
                                                 // Check the score after the computer move
                                                 //v0.990: Removed the (Move_Analyzed == 0) part
                                                 //if (Move_Analyzed == 0)
@@ -3144,20 +3397,42 @@ namespace HuoChessW8
                                                 // NodeLevel_0_count++;
                                                 #endregion ObsoleteCode
 
+                                                // Count the score of the move
                                                 Temp_Score_Move_0 = CountScore(Skakiera_Thinking);
+
+                                                // v0.992: Score and parent for each move analyzed are stored on the spot and not at the end of the thinking depth
+                                                // since some branches of the thinking tree might be trimmed, thus not available at the end of the thinking depth for
+                                                // their score and parent to be stored!
+                                                // Store scores
+                                                NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
+                                                //NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
+                                                //NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+                                                //NodesAnalysis3[NodeLevel_3_count, 0] = Temp_Score_Move_3_human;
+                                                //NodesAnalysis4[NodeLevel_4_count, 0] = Temp_Score_Move_4;
+                                                // Store parents
+                                                // For initial level of thought, there is no parent (i.e. value = 0)
+                                                NodesAnalysis0[NodeLevel_0_count, 1] = 0;
+                                                //NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
+                                                //NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
+                                                //NodesAnalysis3[NodeLevel_3_count, 1] = NodeLevel_2_count;
+                                                //NodesAnalysis4[NodeLevel_4_count, 1] = NodeLevel_3_count;
+
+                                                //v0.992: Store the variant text
+                                                //NodesAnalysis0_MoveText[NodeLevel_0_count] = String.Concat(Move0_text);
 
                                                 // v0.990 change
                                                 // Store the best move score at this level
                                                 // v0.991: Attention! Here this section will be removed if we want to start trimming the tree from this function!
                                                 // (see the Analyze_Move_2 for details on how this happens)
-                                                if ((m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_0 > bestScoreLevel0))
-                                                {
-                                                    bestScoreLevel0 = Temp_Score_Move_0;
-                                                }
-                                                else if ((m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_0 < bestScoreLevel0))
-                                                {
-                                                    bestScoreLevel0 = Temp_Score_Move_0;
-                                                }
+                                                // v0.992: This is not needed. The tree is not trimmed here.
+                                                //if ((m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_0 > bestScoreLevel0))
+                                                //{
+                                                //    bestScoreLevel0 = Temp_Score_Move_0;
+                                                //}
+                                                //else if ((m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_0 < bestScoreLevel0))
+                                                //{
+                                                //    bestScoreLevel0 = Temp_Score_Move_0;
+                                                //}
 
                                                 #region ObsoleteCode
                                                 //}
@@ -3243,14 +3518,17 @@ namespace HuoChessW8
                                                 // -------------------------------------------------------
                                                 // Check if the computer can eat a piece of the opponent
                                                 // -------------------------------------------------------
+                                                // v0.992: Replaced ValueOfKommati with ValueOfMovingPiece
                                                 #region Eat
-                                                if (ValueOfKommati < ValueOfTargetPiece)
+                                                if (ValueOfMovingPiece < ValueOfTargetPiece)
                                                 {
+                                                    //v0.992: Storing the values is probably not needed, since I just use the possibility_to_eat_back flag
                                                     Best_Move_StartingColumnNumber = m_StartingColumnNumber;
                                                     Best_Move_StartingRank = m_StartingRank;
                                                     Best_Move_FinishingColumnNumber = m_FinishingColumnNumber;
                                                     Best_Move_FinishingRank = m_FinishingRank;
 
+                                                    //v0.992: Do I initialize that?
                                                     possibility_to_eat = true;
                                                 }
                                                 #endregion Eat
@@ -3269,6 +3547,7 @@ namespace HuoChessW8
                                                     Best_Move_FinishingColumnNumber = m_FinishingColumnNumber;
                                                     Best_Move_FinishingRank = m_FinishingRank;
 
+                                                    //v0.992: Do I initialize that?
                                                     possibility_to_eat_back = true;
                                                 }
                                                 #endregion EatBack
@@ -3287,6 +3566,7 @@ namespace HuoChessW8
                                                 // If thinking depth not reached and there is not an easy option to eat back...
                                                 if ((Move_Analyzed < Thinking_Depth) && (possibility_to_eat_back == false))
                                                 {
+                                                    // From Move 0 (the initial) we now go to Move 1 (the first response of human opponent - see Analyze_Move_1_HumanMove)
                                                     Move_Analyzed = Move_Analyzed + 1;
 
                                                     #region HuoChessHistory
@@ -3304,7 +3584,8 @@ namespace HuoChessW8
                                                     {
                                                         for (j = 0; j <= 7; j++)
                                                         {
-                                                            Skakiera_Move_After_0[(i), (j)] = Skakiera_Thinking[(i), (j)];
+                                                            //v0.992: Skakiera_Move_After_0 IS NOT NEEDED
+                                                            //Skakiera_Move_After_0[(i), (j)] = Skakiera_Thinking[(i), (j)];
                                                             Skakiera_Move_After_0_new[(i), (j)] = Skakiera_Thinking[(i), (j)];
                                                         }
                                                     }
@@ -3322,7 +3603,21 @@ namespace HuoChessW8
                                                     //v0.990 Helsinki
                                                     #endregion ObsoleteCode
 
+                                                    // v0.992: Switch which colour plays.
+                                                    // This is used for the check for check in ElegxosNomimotitas
+                                                    if (m_PlayerColor.CompareTo("Black") == 0)
+                                                        m_WhichColorPlays = "Black";
+                                                    else if (m_PlayerColor.CompareTo("White") == 0)
+                                                        m_WhichColorPlays = "White";
+
                                                     Analyze_Move_1_HumanMove(Skakiera_Move_After_0_new);
+
+                                                    // v0.992: Switch BACK which colour plays.
+                                                    // This is used for the check for check in ElegxosNomimotitas
+                                                    if (m_PlayerColor.CompareTo("Black") == 0)
+                                                        m_WhichColorPlays = "White";
+                                                    else if (m_PlayerColor.CompareTo("White") == 0)
+                                                        m_WhichColorPlays = "Black";
 
                                                     #region ObsoleteCode
                                                     //v0.990 Helsinki
@@ -3336,6 +3631,14 @@ namespace HuoChessW8
                                                 // Undo the move
                                                 Skakiera_Thinking[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = MovingPiece;
                                                 Skakiera_Thinking[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = ProsorinoKommati;
+
+                                                //v0.992
+                                                // If Pat (= Stalemate) found then reset the score!
+                                                if (Pat_Found == true)
+                                                {
+                                                    NodesAnalysis0[NodeLevel_0_count, 0] = 0;
+                                                    Pat_Found = false;
+                                                }
 
                                                 // v0.991 - This should be done here!
                                                 NodeLevel_0_count++;
@@ -3386,72 +3689,98 @@ namespace HuoChessW8
 
                 // v0.990 test: Add a log of the nodes
                 #region WriteLog
-                //if (activateLogs == true)
-                //{
-                //    StreamWriter huo_sw4 = new StreamWriter("HUO_CHESS_LOG_Minmax_Before.txt", true);
+                if (activateLogs == true)
+                {
+                    StreamWriter huo_sw4 = new StreamWriter("HUO_CHESS_LOG_Minmax_Before.txt", true);
 
-                //    //V0.990 test: Add a log
-                //    huo_sw4.WriteLine("");
-                //    huo_sw4.WriteLine("----------- BEFORE ---------");
-                //    huo_sw4.WriteLine("");
-                //    huo_sw4.WriteLine("-------------- Level 2 Nodes (2nd computer move) -------------");
-                //    huo_sw4.WriteLine("");
-                //    for (int lala = 1; lala <= NodeLevel_2_count; lala++)
-                //    {
-                //        huo_sw4.WriteLine(String.Concat("NodeLevel2[", lala.ToString(), "] (Score)  = ", NodesAnalysis2[lala, 0].ToString(), " [Parent = ", NodesAnalysis2[lala, 1].ToString(), "]"));
-                //        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis2_MoveText[lala]));
-                //        huo_sw4.WriteLine("");
-                //        //huo_sw4.WriteLine("CHESSBOARD Nodes Level 2");
-                //        //v0.990
-                //        //huo_sw4.WriteLine("-----------------------------------------");
-                //        //for (int yj = 7; yj >= 0; yj--)
-                //        //{
-                //        //    huo_sw4.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard[0, yj, lala], " | ", NodesAnalysis2_Chessboard[1, yj, lala], " | ", NodesAnalysis2_Chessboard[2, yj, lala], " | ", NodesAnalysis2_Chessboard[3, yj, lala], " | ", NodesAnalysis2_Chessboard[4, yj, lala], " | ", NodesAnalysis2_Chessboard[5, yj, lala], " | ", NodesAnalysis2_Chessboard[6, yj, lala], " | ", NodesAnalysis2_Chessboard[7, yj, lala], " |"));
-                //        //    huo_sw4.WriteLine("-----------------------------------------");
-                //        //}
-                //        huo_sw4.WriteLine("");
-                //    }
+                    //V0.990 test: Add a log
+                    huo_sw4.WriteLine("");
+                    huo_sw4.WriteLine("----------- BEFORE ---------");
 
-                //    huo_sw4.WriteLine("");
-                //    huo_sw4.WriteLine("-------------- Level 1 Nodes (1st human response) -------------");
-                //    huo_sw4.WriteLine("");
-                //    for (int lala = 1; lala <= NodeLevel_1_count; lala++)
-                //    {
-                //        huo_sw4.WriteLine(String.Concat("NodeLevel1[", lala.ToString(), "] (Score)  = ", NodesAnalysis1[lala, 0].ToString(), " [Parent = ", NodesAnalysis1[lala, 1].ToString(), "]"));
-                //        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis1_MoveText[lala]));
-                //        huo_sw4.WriteLine("");
-                //        //huo_sw4.WriteLine("CHESSBOARD Nodes Level 1");
-                //        //v0.990
-                //        //huo_sw4.WriteLine("-----------------------------------------");
-                //        //for (int yj = 7; yj >= 0; yj--)
-                //        //{
-                //        //    huo_sw4.WriteLine(String.Concat("| ", NodesAnalysis1_Chessboard[0, yj, lala], " | ", NodesAnalysis1_Chessboard[1, yj, lala], " | ", NodesAnalysis1_Chessboard[2, yj, lala], " | ", NodesAnalysis1_Chessboard[3, yj, lala], " | ", NodesAnalysis1_Chessboard[4, yj, lala], " | ", NodesAnalysis1_Chessboard[5, yj, lala], " | ", NodesAnalysis1_Chessboard[6, yj, lala], " | ", NodesAnalysis1_Chessboard[7, yj, lala], " |"));
-                //        //    huo_sw4.WriteLine("-----------------------------------------");
-                //        //}
-                //        //huo_sw4.WriteLine("");
-                //    }
+                    // v0.992
+                    huo_sw4.WriteLine("");
+                    huo_sw4.WriteLine("-------------- Level 4 Nodes (3rd computer move) -------------");
+                    huo_sw4.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_4_count; lala++)
+                    {
+                        huo_sw4.WriteLine(String.Concat("NodeLevel4[", lala.ToString(), "] (Score)  = ", NodesAnalysis4[lala, 0].ToString(), " [Parent = ", NodesAnalysis4[lala, 1].ToString(), "]"));
+                        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis4_MoveText[lala]));
+                        huo_sw4.WriteLine("");
+                        huo_sw4.WriteLine("");
+                    }
 
-                //    huo_sw4.WriteLine("");
-                //    huo_sw4.WriteLine("-------------- Level 0 Nodes (initial computer move) -------------");
-                //    huo_sw4.WriteLine("");
-                //    for (int lala = 1; lala <= NodeLevel_0_count; lala++)
-                //    {
-                //        huo_sw4.WriteLine(String.Concat("NodeLevel0[", lala.ToString(), "] (Score)  = ", NodesAnalysis0[lala, 0].ToString(), " [Parent = ", NodesAnalysis0[lala, 1].ToString(), "]"));
-                //        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis0_MoveText[lala]));
-                //        huo_sw4.WriteLine("");
-                //        //huo_sw4.WriteLine("CHESSBOARD Nodes Level 0");
-                //        //v0.990
-                //        //huo_sw4.WriteLine("-----------------------------------------");
-                //        //for (int yj = 7; yj >= 0; yj--)
-                //        //{
-                //        //    huo_sw4.WriteLine(String.Concat("| ", NodesAnalysis0_Chessboard[0, yj, lala], " | ", NodesAnalysis0_Chessboard[1, yj, lala], " | ", NodesAnalysis0_Chessboard[2, yj, lala], " | ", NodesAnalysis0_Chessboard[3, yj, lala], " | ", NodesAnalysis0_Chessboard[4, yj, lala], " | ", NodesAnalysis0_Chessboard[5, yj, lala], " | ", NodesAnalysis0_Chessboard[6, yj, lala], " | ", NodesAnalysis0_Chessboard[7, yj, lala], " |"));
-                //        //    huo_sw4.WriteLine("-----------------------------------------");
-                //        //}
-                //        //huo_sw4.WriteLine("");
-                //    }
+                    // v0.992
+                    huo_sw4.WriteLine("");
+                    huo_sw4.WriteLine("-------------- Level 3 Nodes (2nd human move) -------------");
+                    huo_sw4.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_3_count; lala++)
+                    {
+                        huo_sw4.WriteLine(String.Concat("NodeLevel3[", lala.ToString(), "] (Score)  = ", NodesAnalysis3[lala, 0].ToString(), " [Parent = ", NodesAnalysis3[lala, 1].ToString(), "]"));
+                        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis3_MoveText[lala]));
+                        huo_sw4.WriteLine("");
+                        huo_sw4.WriteLine("");
+                    }
 
-                //    huo_sw4.Close();
-                //}
+                    // v0.992: Start counting from 0 until < NodeLevel_2_count! (applies to all, in the Before and After logs!)
+                    huo_sw4.WriteLine("");
+                    huo_sw4.WriteLine("-------------- Level 2 Nodes (2nd computer move) -------------");
+                    huo_sw4.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_2_count; lala++)
+                    {
+                        huo_sw4.WriteLine(String.Concat("NodeLevel2[", lala.ToString(), "] (Score)  = ", NodesAnalysis2[lala, 0].ToString(), " [Parent = ", NodesAnalysis2[lala, 1].ToString(), "]"));
+                        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis2_MoveText[lala]));
+                        huo_sw4.WriteLine("");
+                        //huo_sw4.WriteLine("CHESSBOARD Nodes Level 2");
+                        //v0.990
+                        //huo_sw4.WriteLine("-----------------------------------------");
+                        //for (int yj = 7; yj >= 0; yj--)
+                        //{
+                        //    huo_sw4.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard[0, yj, lala], " | ", NodesAnalysis2_Chessboard[1, yj, lala], " | ", NodesAnalysis2_Chessboard[2, yj, lala], " | ", NodesAnalysis2_Chessboard[3, yj, lala], " | ", NodesAnalysis2_Chessboard[4, yj, lala], " | ", NodesAnalysis2_Chessboard[5, yj, lala], " | ", NodesAnalysis2_Chessboard[6, yj, lala], " | ", NodesAnalysis2_Chessboard[7, yj, lala], " |"));
+                        //    huo_sw4.WriteLine("-----------------------------------------");
+                        //}
+                        huo_sw4.WriteLine("");
+                    }
+
+                    huo_sw4.WriteLine("");
+                    huo_sw4.WriteLine("-------------- Level 1 Nodes (1st human response) -------------");
+                    huo_sw4.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_1_count; lala++)
+                    {
+                        huo_sw4.WriteLine(String.Concat("NodeLevel1[", lala.ToString(), "] (Score)  = ", NodesAnalysis1[lala, 0].ToString(), " [Parent = ", NodesAnalysis1[lala, 1].ToString(), "]"));
+                        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis1_MoveText[lala]));
+                        huo_sw4.WriteLine("");
+                        //huo_sw4.WriteLine("CHESSBOARD Nodes Level 1");
+                        //v0.990
+                        //huo_sw4.WriteLine("-----------------------------------------");
+                        //for (int yj = 7; yj >= 0; yj--)
+                        //{
+                        //    huo_sw4.WriteLine(String.Concat("| ", NodesAnalysis1_Chessboard[0, yj, lala], " | ", NodesAnalysis1_Chessboard[1, yj, lala], " | ", NodesAnalysis1_Chessboard[2, yj, lala], " | ", NodesAnalysis1_Chessboard[3, yj, lala], " | ", NodesAnalysis1_Chessboard[4, yj, lala], " | ", NodesAnalysis1_Chessboard[5, yj, lala], " | ", NodesAnalysis1_Chessboard[6, yj, lala], " | ", NodesAnalysis1_Chessboard[7, yj, lala], " |"));
+                        //    huo_sw4.WriteLine("-----------------------------------------");
+                        //}
+                        //huo_sw4.WriteLine("");
+                    }
+
+                    huo_sw4.WriteLine("");
+                    huo_sw4.WriteLine("-------------- Level 0 Nodes (initial computer move) -------------");
+                    huo_sw4.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_0_count; lala++)
+                    {
+                        huo_sw4.WriteLine(String.Concat("NodeLevel0[", lala.ToString(), "] (Score)  = ", NodesAnalysis0[lala, 0].ToString(), " [Parent = ", NodesAnalysis0[lala, 1].ToString(), "]"));
+                        huo_sw4.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis0_MoveText[lala]));
+                        huo_sw4.WriteLine("");
+                        //huo_sw4.WriteLine("CHESSBOARD Nodes Level 0");
+                        //v0.990
+                        //huo_sw4.WriteLine("-----------------------------------------");
+                        //for (int yj = 7; yj >= 0; yj--)
+                        //{
+                        //    huo_sw4.WriteLine(String.Concat("| ", NodesAnalysis0_Chessboard[0, yj, lala], " | ", NodesAnalysis0_Chessboard[1, yj, lala], " | ", NodesAnalysis0_Chessboard[2, yj, lala], " | ", NodesAnalysis0_Chessboard[3, yj, lala], " | ", NodesAnalysis0_Chessboard[4, yj, lala], " | ", NodesAnalysis0_Chessboard[5, yj, lala], " | ", NodesAnalysis0_Chessboard[6, yj, lala], " | ", NodesAnalysis0_Chessboard[7, yj, lala], " |"));
+                        //    huo_sw4.WriteLine("-----------------------------------------");
+                        //}
+                        //huo_sw4.WriteLine("");
+                    }
+
+                    huo_sw4.Close();
+                }
                 #endregion WriteLog
 
                 // -------------------------------------------------------------------------------
@@ -3482,6 +3811,8 @@ namespace HuoChessW8
                     // -------------------------------------------------------------------
                     // v0.991 Added the move 4 section - Needed if Thinking_Depth = 4.
                     // -------------------------------------------------------------------
+                    // MiniMax algorithm example: https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-1-introduction/
+                    // -------------------------------------------------------------------
 
                     // Move 4 level (Computer)
 
@@ -3490,25 +3821,54 @@ namespace HuoChessW8
                     // v0.991: Added this so as to make this activated only when Thinking_Depth = 4.
                     if (Thinking_Depth == 4)
                     {
-                        // v0.991: Start from 0!
+                        // v0.991: Start from 0! Ends at "< NodeLevel_4_count" since the node count is increased before the next node is analyzed...
+                        // (see Checkpoint increaseNodeCount for example)
                         for (counter4 = 0; counter4 < NodeLevel_4_count; counter4++)
                         {
                             if (Int32.Parse(NodesAnalysis4[counter4, 1].ToString()) != parentNodeAnalyzed)
                             {
-                                //parentNodeAnalyzedchanged = true;
+                                // parentNodeAnalyzedchanged = true;
+                                // Update the parent node analyzed with the new one
                                 parentNodeAnalyzed = Int32.Parse(NodesAnalysis4[counter4, 1].ToString());
+                                // For the first parent node, store the score in the parent node. After that, compare to see if you need to replace!
                                 NodesAnalysis3[Int32.Parse(NodesAnalysis4[counter4, 1].ToString()), 0] = NodesAnalysis4[counter4, 0];
+                                // v0.992: Best variant move text propagation
+                                //NodesAnalysis3_MoveText[Int32.Parse(NodesAnalysis4[counter4, 1].ToString())] = String.Concat(NodesAnalysis3_MoveText[Int32.Parse(NodesAnalysis4[counter4, 1].ToString())].ToString(), " , ", NodesAnalysis4_MoveText[counter4].ToString());
+                                bestNode4 = counter4;
+                                bestNodes4[parentNodeAnalyzed] = counter4;
                             }
 
                             //v0.990: Do we need to check for "<=" here? Os should we start checking for ">="?
                             //v0.991: Start analysis with < instead of > ?
-                            if (NodesAnalysis4[counter4, 0] >= NodesAnalysis3[Int32.Parse(NodesAnalysis4[counter4, 1].ToString()), 0])
-                                NodesAnalysis3[Int32.Parse(NodesAnalysis4[counter4, 1].ToString()), 0] = NodesAnalysis4[counter4, 0];
+                            //v0.992: Fixed to work as the code in the node 2. Added the Best variant MoveText propagation.
+                            if (m_PlayerColor.CompareTo("White") == 0)
+                            {
+                                if (NodesAnalysis4[counter4, 0] <= NodesAnalysis3[Int32.Parse(NodesAnalysis4[counter4, 1].ToString()), 0])
+                                {
+                                    NodesAnalysis3[Int32.Parse(NodesAnalysis4[counter4, 1].ToString()), 0] = NodesAnalysis4[counter4, 0];
+                                    // v0.992: Best variant move text propagation
+                                    //NodesAnalysis3_MoveText[Int32.Parse(NodesAnalysis4[counter4, 1].ToString())] = String.Concat(NodesAnalysis3_MoveText[Int32.Parse(NodesAnalysis4[counter4, 1].ToString())].ToString(), " , ", NodesAnalysis4_MoveText[counter4].ToString());
+                                    bestNode4 = counter4;
+                                    bestNodes4[parentNodeAnalyzed] = counter4;
+                                }
+                            }
+                            else if (m_PlayerColor.CompareTo("Black") == 0)
+                            {
+                                if (NodesAnalysis4[counter4, 0] >= NodesAnalysis3[Int32.Parse(NodesAnalysis4[counter4, 1].ToString()), 0])
+                                {
+                                    NodesAnalysis3[Int32.Parse(NodesAnalysis4[counter4, 1].ToString()), 0] = NodesAnalysis4[counter4, 0];
+                                    // v0.992: Best variant move text propagation
+                                    //NodesAnalysis3_MoveText[Int32.Parse(NodesAnalysis4[counter4, 1].ToString())] = String.Concat(NodesAnalysis3_MoveText[Int32.Parse(NodesAnalysis4[counter4, 1].ToString())].ToString(), " , ", NodesAnalysis4_MoveText[counter4].ToString());
+                                    bestNode4 = counter4;
+                                    bestNodes4[parentNodeAnalyzed] = counter4;
+                                }
+                            }
                         }
 
                         // Move 3 level (Human)
 
-                        parentNodeAnalyzed = -999;
+                        //v0.992: Comment out this line if Thinking_Depth is set to 4!
+                        //parentNodeAnalyzed = -999;
 
                         //v0.992: Calculate the average value in every path to find the best move
                         #region AverageScore
@@ -3531,11 +3891,37 @@ namespace HuoChessW8
                                 //parentNodeAnalyzedchanged = true;
                                 parentNodeAnalyzed = Int32.Parse(NodesAnalysis3[counter3, 1].ToString());
                                 NodesAnalysis2[Int32.Parse(NodesAnalysis3[counter3, 1].ToString()), 0] = NodesAnalysis3[counter3, 0];
+                                // v0.992: Best variant move text propagation
+                                //NodesAnalysis2_MoveText[Int32.Parse(NodesAnalysis3[counter3, 1].ToString())] = String.Concat(NodesAnalysis2_MoveText[Int32.Parse(NodesAnalysis3[counter3, 1].ToString())].ToString(), " , ", NodesAnalysis3_MoveText[counter3].ToString());
+                                bestNode3 = counter3;
+                                bestNodes3[parentNodeAnalyzed] = counter3;
                             }
 
                             //v0.990: Do we need to check for "<=" here? Os should we start checking for ">="?
-                            if (NodesAnalysis3[counter3, 0] <= NodesAnalysis2[Int32.Parse(NodesAnalysis3[counter3, 1].ToString()), 0])
-                                NodesAnalysis2[Int32.Parse(NodesAnalysis3[counter3, 1].ToString()), 0] = NodesAnalysis3[counter3, 0];
+                            //v0.992: Fixed to work as the code in the node 2
+                            if (m_PlayerColor.CompareTo("White") == 0)
+                            {
+                                if (NodesAnalysis3[counter3, 0] >= NodesAnalysis2[Int32.Parse(NodesAnalysis3[counter3, 1].ToString()), 0])
+                                {
+                                    NodesAnalysis2[Int32.Parse(NodesAnalysis3[counter3, 1].ToString()), 0] = NodesAnalysis3[counter3, 0];
+                                    // v0.992: Best variant move text propagation
+                                    //NodesAnalysis2_MoveText[Int32.Parse(NodesAnalysis3[counter3, 1].ToString())] = String.Concat(NodesAnalysis2_MoveText[Int32.Parse(NodesAnalysis3[counter3, 1].ToString())].ToString(), " , ", NodesAnalysis3_MoveText[counter3].ToString());
+                                    bestNode3 = counter3;
+                                    bestNodes3[parentNodeAnalyzed] = counter3;
+                                }
+                            }
+                            else if (m_PlayerColor.CompareTo("Black") == 0)
+                            {
+                                if (NodesAnalysis3[counter3, 0] <= NodesAnalysis2[Int32.Parse(NodesAnalysis3[counter3, 1].ToString()), 0])
+                                {
+                                    NodesAnalysis2[Int32.Parse(NodesAnalysis3[counter3, 1].ToString()), 0] = NodesAnalysis3[counter3, 0];
+                                    // v0.992: Best variant move text propagation
+                                    //NodesAnalysis2_MoveText[Int32.Parse(NodesAnalysis3[counter3, 1].ToString())] = String.Concat(NodesAnalysis2_MoveText[Int32.Parse(NodesAnalysis3[counter3, 1].ToString())].ToString(), " , ", NodesAnalysis3_MoveText[counter3].ToString());
+                                    bestNode3 = counter3;
+                                    bestNodes3[parentNodeAnalyzed] = counter3;
+                                }
+
+                            }
                         }
 
                     }
@@ -3545,7 +3931,7 @@ namespace HuoChessW8
                     // Move 2 level (Computer) -- The analysis starts from here if Thinking_Depth = 2.
 
                     //v0.980: Remove
-                    parentNodeAnalyzed = -999;
+                    //parentNodeAnalyzed = -999;
 
                     //v0.992: Calculate the average value in every path to find the best move
                     #region AverageScore
@@ -3571,6 +3957,10 @@ namespace HuoChessW8
                             //parentNodeAnalyzedchanged = true;
                             parentNodeAnalyzed = Int32.Parse(NodesAnalysis2[counter2, 1].ToString());
                             NodesAnalysis1[Int32.Parse(NodesAnalysis2[counter2, 1].ToString()), 0] = NodesAnalysis2[counter2, 0];
+                            // v0.992: Best variant move text propagation
+                            //NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())] = String.Concat(NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())].ToString(), " , ", NodesAnalysis2_MoveText[counter2].ToString());
+                            bestNode2 = counter2;
+                            bestNodes2[parentNodeAnalyzed] = counter2;
                         }
 
                         // v0.991: Original: >=
@@ -3584,6 +3974,10 @@ namespace HuoChessW8
                             {
                                 NodesAnalysis1[Int32.Parse(NodesAnalysis2[counter2, 1].ToString()), 0] = NodesAnalysis2[counter2, 0];
                                 //NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())] = NodesAnalysis2_MoveText[counter2];
+                                // v0.992: Best variant move text propagation
+                                //NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())] = String.Concat(NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())].ToString(), " , ", NodesAnalysis2_MoveText[counter2].ToString());
+                                bestNode2 = counter2;
+                                bestNodes2[parentNodeAnalyzed] = counter2;
                             }
                         }
                         else if (m_PlayerColor.CompareTo("Black") == 0)
@@ -3592,6 +3986,10 @@ namespace HuoChessW8
                             {
                                 NodesAnalysis1[Int32.Parse(NodesAnalysis2[counter2, 1].ToString()), 0] = NodesAnalysis2[counter2, 0];
                                 //NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())] = NodesAnalysis2_MoveText[counter2];
+                                // v0.992: Best variant move text propagation
+                                //NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())] = String.Concat(NodesAnalysis1_MoveText[Int32.Parse(NodesAnalysis2[counter2, 1].ToString())].ToString(), " , ", NodesAnalysis2_MoveText[counter2].ToString());
+                                bestNode2 = counter2;
+                                bestNodes2[parentNodeAnalyzed] = counter2;
                             }
                         }
                     }
@@ -3611,6 +4009,10 @@ namespace HuoChessW8
                             //parentNodeAnalyzedchanged = true;
                             parentNodeAnalyzed = Int32.Parse(NodesAnalysis1[counter1, 1].ToString());
                             NodesAnalysis0[Int32.Parse(NodesAnalysis1[counter1, 1].ToString()), 0] = NodesAnalysis1[counter1, 0];
+                            // v0.992: Best variant move text propagation
+                            //NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())] = String.Concat(NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())].ToString(), " , ", NodesAnalysis1_MoveText[counter1].ToString());
+                            bestNode1 = counter1;
+                            bestNodes1[parentNodeAnalyzed] = counter1;
                         }
 
                         // v0.991: Choose different based on colour!
@@ -3621,6 +4023,10 @@ namespace HuoChessW8
                             {
                                 NodesAnalysis0[Int32.Parse(NodesAnalysis1[counter1, 1].ToString()), 0] = NodesAnalysis1[counter1, 0];
                                 //NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())] = NodesAnalysis1_MoveText[counter1];
+                                // v0.992: Best variant move text propagation
+                                //NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())] = String.Concat(NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())].ToString(), " , ", NodesAnalysis1_MoveText[counter1].ToString());
+                                bestNode1 = counter1;
+                                bestNodes1[parentNodeAnalyzed] = counter1;
                             }
                         }
                         else if (m_PlayerColor.CompareTo("Black") == 0)
@@ -3630,6 +4036,10 @@ namespace HuoChessW8
                             {
                                 NodesAnalysis0[Int32.Parse(NodesAnalysis1[counter1, 1].ToString()), 0] = NodesAnalysis1[counter1, 0];
                                 //NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())] = NodesAnalysis1_MoveText[counter1];
+                                // v0.992: Best variant move text propagation
+                                //NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())] = String.Concat(NodesAnalysis0_MoveText[Int32.Parse(NodesAnalysis1[counter1, 1].ToString())].ToString(), " , ", NodesAnalysis1_MoveText[counter1].ToString());
+                                bestNode1 = counter1;
+                                bestNodes1[parentNodeAnalyzed] = counter1;
                             }
                         }
                     }
@@ -3643,22 +4053,47 @@ namespace HuoChessW8
                     // Initialize the score with the first score and move found
                     // v0.991: Start from 0!
                     double temp_score = NodesAnalysis0[0, 0];
-                    //Best_Variant_text = "";
-                    Best_Move_StartingColumnNumber = Int32.Parse(NodesAnalysis0[1, 2].ToString());
-                    Best_Move_StartingRank = Int32.Parse(NodesAnalysis0[1, 4].ToString());
-                    Best_Move_FinishingColumnNumber = Int32.Parse(NodesAnalysis0[1, 3].ToString());
-                    Best_Move_FinishingRank = Int32.Parse(NodesAnalysis0[1, 5].ToString());
+                    Best_Variant_text = "";
+                    // v0.992: Start from 0 also here!
+                    Best_Move_StartingColumnNumber = Int32.Parse(NodesAnalysis0[0, 2].ToString());
+                    Best_Move_StartingRank = Int32.Parse(NodesAnalysis0[0, 4].ToString());
+                    Best_Move_FinishingColumnNumber = Int32.Parse(NodesAnalysis0[0, 3].ToString());
+                    Best_Move_FinishingRank = Int32.Parse(NodesAnalysis0[0, 5].ToString());
+                    // v0.992
+                    bestNode0 = 0;
+                    //v0.992: Randomize moves
+                    //int randomMoveNum = randomMove.Next(100);
                     // v0.991: Added the variant analyzed text (mainly for the logs)
-                    //Best_Variant_text = NodesAnalysis0_MoveText[0];
+                    // Best_Variant_text = NodesAnalysis0_MoveText[0];
                     // MessageBox.Show(String.Concat("Best variant: ", Best_Variant_text));
 
                     for (counter0 = 0; counter0 < NodeLevel_0_count; counter0++)
                     {
+                        //v0.992: Add a penalty if the move is the same as the previous one, so as to avoid threefold repetition!
+                        //(if the finishing column and rank is the same as the starting column and rank of the previous move and the moving piece is the same)
+                        if((NodesAnalysis0[counter0, 3] == prev_Best_Move_StartingColumnNumber) &&
+                           (NodesAnalysis0[counter0, 5] == prev_Best_Move_StartingRank) &&
+                           (MovingPiece.CompareTo(prev_MovingPiece) == 0))
+                        {
+                            if (m_PlayerColor.CompareTo("Black") == 0)
+                            {
+                                NodesAnalysis0[counter0, 0] = NodesAnalysis0[counter0, 0] - 10;
+                            }
+                            else if (m_PlayerColor.CompareTo("White") == 0)
+                            {
+                                NodesAnalysis0[counter0, 0] = NodesAnalysis0[counter0, 0] + 10;
+                            }
+                        }
+
                         // v0.991: Choose different based on colour!
                         if (m_PlayerColor.CompareTo("Black") == 0)
                         {
                             //v0.991: Original: >
+                            //v0.992: Add the randomizer
+                            //PREVIOUS WORKING (6/2/2021): if (NodesAnalysis0[counter0, 0] > temp_score)
                             if (NodesAnalysis0[counter0, 0] > temp_score)
+                            //v0.992 attempt (failed): Add randomizer of moves
+                            //if ((NodesAnalysis0[counter0, 0] > temp_score) && (randomMoveNum > 50))
                             {
                                 temp_score = NodesAnalysis0[counter0, 0];
 
@@ -3666,12 +4101,18 @@ namespace HuoChessW8
                                 Best_Move_StartingRank = Int32.Parse(NodesAnalysis0[counter0, 4].ToString());
                                 Best_Move_FinishingColumnNumber = Int32.Parse(NodesAnalysis0[counter0, 3].ToString());
                                 Best_Move_FinishingRank = Int32.Parse(NodesAnalysis0[counter0, 5].ToString());
-                                //Best_Variant_text = NodesAnalysis0_MoveText[counter0];
+                                // Best_Variant_text = NodesAnalysis0_MoveText[counter0];
+                                // v0.992
+                                bestNode0 = counter0;
                             }
                         }
                         else if (m_PlayerColor.CompareTo("White") == 0)
                         {
+                            //v0.992: Add the randomizer
+                            //PREVIOUS WORKING (6/2/2021): if (NodesAnalysis0[counter0, 0] < temp_score)
                             if (NodesAnalysis0[counter0, 0] < temp_score)
+                            //v0.992 attempt (failed): Add randomizer of moves
+                            //if ((NodesAnalysis0[counter0, 0] < temp_score) && (randomMoveNum < 51))
                             {
                                 temp_score = NodesAnalysis0[counter0, 0];
 
@@ -3680,54 +4121,139 @@ namespace HuoChessW8
                                 Best_Move_FinishingColumnNumber = Int32.Parse(NodesAnalysis0[counter0, 3].ToString());
                                 Best_Move_FinishingRank = Int32.Parse(NodesAnalysis0[counter0, 5].ToString());
                                 //Best_Variant_text = NodesAnalysis0_MoveText[counter0];
+                                // v0.992
+                                bestNode0 = counter0;
                             }
                         }
                     }
 
+                    //v0.992: If mate is found, go for it!
+                    if (Mate_Found == true)
+                    {
+                        Best_Move_StartingColumnNumber = m_StartingColumnNumber_mate;
+                        Best_Move_FinishingColumnNumber = m_FinishingColumnNumber_mate;
+                        Best_Move_StartingRank = m_StartingRank_mate;
+                        Best_Move_FinishingRank = m_FinishingRank_mate;
+                    }
+
+                    //v0.992
+                    //Store the best move starting column and rank, so that the move is not repeated next time
+                    //(see above - this was added to remove the possibility of threefold repetition)
+                    prev_MovingPiece = MovingPiece;
+                    prev_Best_Move_StartingColumnNumber = Best_Move_StartingColumnNumber;
+                    prev_Best_Move_StartingRank = Best_Move_StartingRank;
+
+                    // 0.992: Improve best variant text
+                    // Best_Variant_text = NodesAnalysis4_MoveText[bestNode4];
+
+                    //Best_Variant_text = String.Concat(
+                    //                        NodesAnalysis0_MoveText[bestNode0].ToString(), " , ",
+                    //                        NodesAnalysis1_MoveText[bestNode1].ToString(), " , ",
+                    //                        NodesAnalysis2_MoveText[bestNode2].ToString(), " , ",
+                    //                        NodesAnalysis3_MoveText[bestNode3].ToString(), " , ",
+                    //                        NodesAnalysis4_MoveText[bestNode4]
+                    //                        );
+
+                    // Print the best variant
+                    // Note: This variant text might have issues, since it is the result of the nodes after the
+                    // trimming and this might have as a result that some nodes are "missing". Need to fix this...
+
+                    // If the tree was not trimmed (so there are level 3 and 4 moves...)
+                    //if (bestNodes3[bestNodes2[bestNodes1[bestNode0]]] > 0)
+                    //{
+                        Best_Variant_text = String.Concat(
+                            NodesAnalysis0_MoveText[bestNode0].ToString(), " , ",
+                            NodesAnalysis1_MoveText[bestNodes1[bestNode0]].ToString(), " , ",
+                            NodesAnalysis2_MoveText[bestNodes2[bestNodes1[bestNode0]]].ToString(), " , ",
+                            NodesAnalysis3_MoveText[bestNodes3[bestNodes2[bestNodes1[bestNode0]]]].ToString(), " , ",
+                            NodesAnalysis4_MoveText[bestNodes4[bestNodes3[bestNodes2[bestNodes1[bestNode0]]]]].ToString()
+                            );
+                    //}
+                    // or if the tree was trimmed (so you must only show the moves of the branches which exist)
+                    //else
+                    //{
+                    //    Best_Variant_text = String.Concat(
+                    //        NodesAnalysis0_MoveText[bestNode0].ToString(), " , ",
+                    //        NodesAnalysis1_MoveText[bestNodes1[bestNode0]].ToString(), " , ",
+                    //        NodesAnalysis2_MoveText[bestNodes2[bestNodes1[bestNode0]]].ToString()
+                    //        );
+                    //}
+
+                    //MessageBox.Show(String.Concat("Node0: ", NodesAnalysis0_MoveText[bestNode0].ToString()));
+                    //MessageBox.Show(String.Concat("Node1: ", NodesAnalysis1_MoveText[bestNode1].ToString()));
+                    //MessageBox.Show(String.Concat("Node2: ", NodesAnalysis2_MoveText[bestNode2].ToString()));
+                    //MessageBox.Show(String.Concat("Node3: ", NodesAnalysis3_MoveText[bestNode3].ToString()));
+                    //MessageBox.Show(String.Concat("Node4: ", NodesAnalysis4_MoveText[bestNode4].ToString()));
                 }
 
                 // Total final positions analyzed is...
                 HuoChess_main.FinalPositions = Nodes_Total_count.ToString();
 
                 // v0.990 test: Add a log of the nodes
-                //StreamWriter huo_sw5 = new StreamWriter("HUO_CHESS_LOG_Minmax_After.txt", true);
+                StreamWriter huo_sw5 = new StreamWriter("HUO_CHESS_LOG_Minmax_After.txt", true);
 
                 // v0.990 test: Add a log
                 #region WriteLog
-                //if (activateLogs == true)
-                //{
-                //    huo_sw5.WriteLine("");
-                //    huo_sw5.WriteLine("----------- AFTER ---------");
-                //    huo_sw5.WriteLine("");
-                //    huo_sw5.WriteLine("-------------- Node 2 -------------");
-                //    huo_sw5.WriteLine("");
-                //    for (int lala = 1; lala <= NodeLevel_2_count; lala++)
-                //    {
-                //        huo_sw5.WriteLine("");
-                //        huo_sw5.WriteLine(String.Concat("NodeLevel2[2,", lala.ToString(), "] (Score)  = ", NodesAnalysis2[lala, 0].ToString(), " [Parent = ", NodesAnalysis2[lala, 1].ToString(), "]"));
-                //        huo_sw5.WriteLine(String.Concat("Variant in this node: ", NodesAnalysis2_MoveText[lala]));
-                //    }
-                //    huo_sw5.WriteLine("");
-                //    huo_sw5.WriteLine("-------------- Node 1 -------------");
-                //    huo_sw5.WriteLine("");
-                //    for (int lala = 1; lala <= NodeLevel_1_count; lala++)
-                //    {
-                //        huo_sw5.WriteLine("");
-                //        huo_sw5.WriteLine(String.Concat("NodeLevel1[1,", lala.ToString(), "] (Score)  = ", NodesAnalysis1[lala, 0].ToString(), " [Parent = ", NodesAnalysis1[lala, 1].ToString(), "]"));
-                //        huo_sw5.WriteLine(String.Concat("Variant in this node: ", NodesAnalysis1_MoveText[lala]));
-                //    }
-                //    huo_sw5.WriteLine("");
-                //    huo_sw5.WriteLine("-------------- Node 0 -------------");
-                //    huo_sw5.WriteLine("");
-                //    for (int lala = 1; lala <= NodeLevel_0_count; lala++)
-                //    {
-                //        huo_sw5.WriteLine("");
-                //        huo_sw5.WriteLine(String.Concat("NodeLevel0[0,", lala.ToString(), "] (Score)  = ", NodesAnalysis0[lala, 0].ToString(), " [Parent = ", NodesAnalysis0[lala, 1].ToString(), "]"));
-                //        huo_sw5.WriteLine(String.Concat("Variant in this node: ", NodesAnalysis0_MoveText[lala]));
-                //    }
+                if (activateLogs == true)
+                {
+                    huo_sw5.WriteLine("");
+                    huo_sw5.WriteLine("----------- AFTER ---------");
 
-                //    huo_sw5.Close();
-                //}
+                    // v0.992
+                    huo_sw5.WriteLine("");
+                    huo_sw5.WriteLine("-------------- Level 4 Nodes (3rd computer move) -------------");
+                    huo_sw5.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_4_count; lala++)
+                    {
+                        huo_sw5.WriteLine(String.Concat("NodeLevel4[", lala.ToString(), "] (Score)  = ", NodesAnalysis4[lala, 0].ToString(), " [Parent = ", NodesAnalysis4[lala, 1].ToString(), "]"));
+                        huo_sw5.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis4_MoveText[lala]));
+                        huo_sw5.WriteLine("");
+                        huo_sw5.WriteLine("");
+                    }
+
+                    // v0.992
+                    huo_sw5.WriteLine("");
+                    huo_sw5.WriteLine("-------------- Level 3 Nodes (2nd human move) -------------");
+                    huo_sw5.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_3_count; lala++)
+                    {
+                        huo_sw5.WriteLine(String.Concat("NodeLevel3[", lala.ToString(), "] (Score)  = ", NodesAnalysis3[lala, 0].ToString(), " [Parent = ", NodesAnalysis3[lala, 1].ToString(), "]"));
+                        huo_sw5.WriteLine(String.Concat("Variant in the node: ", NodesAnalysis3_MoveText[lala]));
+                        huo_sw5.WriteLine("");
+                        huo_sw5.WriteLine("");
+                    }
+
+                    // v0.992: Start from 0 and end up < NodeLevel_2_count! (applies to all)
+                    huo_sw5.WriteLine("");
+                    huo_sw5.WriteLine("-------------- Node 2 -------------");
+                    huo_sw5.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_2_count; lala++)
+                    {
+                        huo_sw5.WriteLine("");
+                        huo_sw5.WriteLine(String.Concat("NodeLevel2[2,", lala.ToString(), "] (Score)  = ", NodesAnalysis2[lala, 0].ToString(), " [Parent = ", NodesAnalysis2[lala, 1].ToString(), "]"));
+                        huo_sw5.WriteLine(String.Concat("Variant in this node: ", NodesAnalysis2_MoveText[lala]));
+                    }
+                    huo_sw5.WriteLine("");
+                    huo_sw5.WriteLine("-------------- Node 1 -------------");
+                    huo_sw5.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_1_count; lala++)
+                    {
+                        huo_sw5.WriteLine("");
+                        huo_sw5.WriteLine(String.Concat("NodeLevel1[1,", lala.ToString(), "] (Score)  = ", NodesAnalysis1[lala, 0].ToString(), " [Parent = ", NodesAnalysis1[lala, 1].ToString(), "]"));
+                        huo_sw5.WriteLine(String.Concat("Variant in this node: ", NodesAnalysis1_MoveText[lala]));
+                    }
+                    huo_sw5.WriteLine("");
+                    huo_sw5.WriteLine("-------------- Node 0 -------------");
+                    huo_sw5.WriteLine("");
+                    for (int lala = 0; lala < NodeLevel_0_count; lala++)
+                    {
+                        huo_sw5.WriteLine("");
+                        huo_sw5.WriteLine(String.Concat("NodeLevel0[0,", lala.ToString(), "] (Score)  = ", NodesAnalysis0[lala, 0].ToString(), " [Parent = ", NodesAnalysis0[lala, 1].ToString(), "]"));
+                        huo_sw5.WriteLine(String.Concat("Variant in this node: ", NodesAnalysis0_MoveText[lala]));
+                    }
+
+                    huo_sw5.Close();
+                }
                 #endregion WriteLog
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3812,24 +4338,26 @@ namespace HuoChessW8
                     #endregion ObsoleteCode
 
                     // Is there a pawn to promote?
+                    // v0.992: Pawn promotion only checked once centrally through pawn promotion function!
+                    PawnPromotion();
 
                     // v0.980: (m_WhoPlays.CompareTo("HY") == 0) not needed, we are in ComputerMove anyway!
                     // if (((MovingPiece.CompareTo("White Pawn") == 0) || (MovingPiece.CompareTo("Black Pawn") == 0)) && (m_WhoPlays.CompareTo("HY") == 0))
-                    if ((MovingPiece.CompareTo("White Pawn") == 0) || (MovingPiece.CompareTo("Black Pawn") == 0))
-                    {
-                        if (Best_Move_FinishingRank == 8)
-                        {
-                            Skakiera[(Best_Move_FinishingColumnNumber - 1), (Best_Move_FinishingRank - 1)] = "White Queen";
-                            MessageBox.Show("Queen!");
-                            //Console.WriteLine("Queen!");
-                        }
-                        else if (Best_Move_FinishingRank == 1)
-                        {
-                            Skakiera[(Best_Move_FinishingColumnNumber - 1), (Best_Move_FinishingRank - 1)] = "Black Queen";
-                            MessageBox.Show("Queen!");
-                            //Console.WriteLine("Queen!");
-                        }
-                    }
+                    //if ((MovingPiece.CompareTo("White Pawn") == 0) || (MovingPiece.CompareTo("Black Pawn") == 0))
+                    //{
+                    //    if (Best_Move_FinishingRank == 8)
+                    //    {
+                    //        Skakiera[(Best_Move_FinishingColumnNumber - 1), (Best_Move_FinishingRank - 1)] = "White Queen";
+                    //        //MessageBox.Show("Queen!");
+                    //        //Console.WriteLine("Queen!");
+                    //    }
+                    //    else if (Best_Move_FinishingRank == 1)
+                    //    {
+                    //        Skakiera[(Best_Move_FinishingColumnNumber - 1), (Best_Move_FinishingRank - 1)] = "Black Queen";
+                    //        //MessageBox.Show("Queen!");
+                    //        //Console.WriteLine("Queen!");
+                    //    }
+                    //}
 
                     //////////////////////////////////////////////////////////////////////
                     // Show HY move
@@ -3888,10 +4416,58 @@ namespace HuoChessW8
             // v0.980: Changed to be more simple. Removed DangerWeight from the parameters of the function.
             // v0.990: Changes
             // v0.991: Added a penalty for stupid moves and moves to dangerous squares
+            // v0.992: Try to make the score double (from int), so as to be able to make more subtle scoring decisions. Did not do at the end due to memory problems.
+            // v0.992: Multipled all scores by 10-factor (e.g. score of a bishop is now 30 instead of 3), so that I can include additional checks for the position score.
+            // Without doing that I could not add the quality checks I added, e.g. the if (CSSkakiera[3, 4].CompareTo("Black Pawn") == 0) THEN positionScore = positionScore - 0.1.
+            // Now the additional score checks can be added with integers, e.g. if (CSSkakiera[3, 4].CompareTo("Black Pawn") == 0) THEN positionScore = positionScore - 1 for the above example.
+            // If I wanted to do what using decimals, then all positionScore, bestPositionScore, NodesAnalysis0... NodesAnalysis4 variables and arrays should de defined as DOUBLE, but then we would have memory problems...
+            // REMEMBER NOTATION: CSSkakiera[column, row] with columns and rows starting from zero.
             public static int CountScore(string[,] CSSkakiera)
             {
                 // White pieces: positive score
                 // Black pieces: negative score
+
+                // Scores are x10 so that we can have more detaile scores for specific positions
+
+                //v0.992
+                //int Score_Multiplier = 1;
+                int Score_Multiplier_White = 1;
+                int Score_Multiplier_Black = 1;
+                int WhiteKingColumn = 0;
+                int WhiteKingRank = 0;
+                int BlackKingColumn = 0;
+                int BlackKingRank = 0;
+
+                //v0.992
+                //Detect the kings
+                for (i = 0; i <= 7; i++)
+                {
+                    for (j = 0; j <= 7; j++)
+                    {
+                        if (CSSkakiera[(i), (j)].CompareTo("White King") == 0)
+                        {
+                            WhiteKingColumn = i;
+                            WhiteKingRank = j;
+                        }
+                        if (CSSkakiera[(i), (j)].CompareTo("Black King") == 0)
+                        {
+                            BlackKingColumn = i;
+                            BlackKingRank = j;
+                        }
+                    }
+                }
+
+                //v0.992
+                //At the ending, make computer more aggressive...
+                //if (Move > 30)
+                //{
+                //    Score_Multiplier = 2;
+
+                //    if (m_PlayerColor.CompareTo("White") == 0)
+                //        Score_Multiplier_White = 2;
+                //    else if (m_PlayerColor.CompareTo("Black") == 0)
+                //        Score_Multiplier_Black = 2;
+                //}
 
                 Current_Move_Score = 0;
 
@@ -3927,53 +4503,404 @@ namespace HuoChessW8
                     for (j = 0; j <= 7; j++)
                     {
                         if (CSSkakiera[(i), (j)].CompareTo("White Pawn") == 0)
-                            Current_Move_Score = Current_Move_Score + 1;
+                        {
+                            //Current_Move_Score = Current_Move_Score + 1;
+                            //v0.992: Added the score multipler (to all)
+                            Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
+                            //v0.992
+                            // Good pawn structure
+                            //if (Move < 20)
+                            //{
+                            //    if ((i - 1 >= 0) && (j - 1 >= 0))
+                            //    {
+                            //        if (CSSkakiera[(i - 1), (j - 1)].CompareTo("White Pawn") == 0)
+                            //        {
+                            //            Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            //        }
+                            //    }
+                            //    if ((i + 1 < 8) && (j - 1 >= 0))
+                            //    {
+                            //        if (CSSkakiera[(i + 1), (j - 1)].CompareTo("White Pawn") == 0)
+                            //        {
+                            //            Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            //        }
+                            //    }
+                            //}
+                            //Advanced pawns
+                            if ((Move > 10) && (j > 2))
+                            {
+                                Current_Move_Score = Current_Move_Score + 3 * Score_Multiplier_White;
+                            }
+                            if ((Move > 30) && (j > 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
+                            }
+                            if ((Move > 30) && (j == 7))
+                            {
+                                Current_Move_Score = Current_Move_Score + 90 * Score_Multiplier_White;
+                            }
+                        }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Rook") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score + 5;
+                            //Current_Move_Score = Current_Move_Score + 5;
+                            Current_Move_Score = Current_Move_Score + 50 * Score_Multiplier_White;
+
+                            //v0.992
+                            // Get near the King at the ending...
+                            //if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            //}
+                            //if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Knight") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score + 3;
+                            //Current_Move_Score = Current_Move_Score + 3;
+                            Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
+
+                            // Get near the King at the ending...
+                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Bishop") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score + 3;
+                            //Current_Move_Score = Current_Move_Score + 3;
+                            Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
+
+                            // Get near the King at the ending...
+                            //if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            //}
+                            //if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Queen") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score + 9;
+                            //Current_Move_Score = Current_Move_Score + 9;
+                            Current_Move_Score = Current_Move_Score + 90 * Score_Multiplier_White;
+
+                            // Get near the King at the ending...
+                            //if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            //}
+                            //if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White King") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score + 15;
+                            //Current_Move_Score = Current_Move_Score + 15;
+                            Current_Move_Score = Current_Move_Score + 150 * Score_Multiplier_White;
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Pawn") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score - 1;
+                            //Current_Move_Score = Current_Move_Score - 1;
+                            Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
+                            // Good pawn structure
+                            //if (Move < 20)
+                            //{
+                            //    if ((i - 1 >= 0) && (j + 1 < 8))
+                            //    {
+                            //        if (CSSkakiera[(i - 1), (j + 1)].CompareTo("Black Pawn") == 0)
+                            //        {
+                            //            Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_Black;
+                            //        }
+                            //    }
+                            //    if ((i + 1 < 8) && (j + 1 < 8))
+                            //    {
+                            //        if (CSSkakiera[(i + 1), (j + 1)].CompareTo("Black Pawn") == 0)
+                            //        {
+                            //            Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_Black;
+                            //        }
+                            //    }
+                            //}
+                            // Advanced pawns
+                            if ((Move > 10) && (j < 6))
+                            {
+                                Current_Move_Score = Current_Move_Score - 3 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 30) && (j < 5))
+                            {
+                                Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 30) && (j == 0))
+                            {
+                                Current_Move_Score = Current_Move_Score - 90 * Score_Multiplier_Black;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Rook") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score - 5;
+                            //Current_Move_Score = Current_Move_Score - 5;
+                            Current_Move_Score = Current_Move_Score - 50 * Score_Multiplier_Black;
+
+                            // Get near the King at the ending...
+                            //if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            //}
+                            //if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Knight") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score - 3;
+                            //Current_Move_Score = Current_Move_Score - 3;
+                            Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
                             // Decrease score based on the danger in which the piece is in
                             // v0.970: Delete tis polles malakies
                             // Current_Move_Score = Current_Move_Score + DangerWeight * CheckDanger_Bl(CSSkakiera, i, j);
+                            // Get near the King at the ending...
+                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Bishop") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score - 3;
+                            //Current_Move_Score = Current_Move_Score - 3;
+                            Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
+
+                            // Get near the King at the ending...
+                            //if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            //}
+                            //if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Queen") == 0)
                         {
-                            Current_Move_Score = Current_Move_Score - 9;
+                            //Current_Move_Score = Current_Move_Score - 9;
+                            Current_Move_Score = Current_Move_Score - 90 * Score_Multiplier_Black;
+
+                            // Get near the King at the ending...
+                            //if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            //}
+                            //if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black King") == 0)
-                            Current_Move_Score = Current_Move_Score - 15;    //v0.990: Changed + to -
+                        {
+                            //Current_Move_Score = Current_Move_Score - 15;    //v0.990: Changed + to -
+                            Current_Move_Score = Current_Move_Score - 150 * Score_Multiplier_Black;
+                        }
 
+                    }
+                }
+
+                // Position Quality Checks
+                // Take the center with the pawns
+                if (CSSkakiera[3, 3].CompareTo("White Pawn") == 0)
+                {
+                    Current_Move_Score = Current_Move_Score + 1;
+                }
+                if (CSSkakiera[4, 3].CompareTo("White Pawn") == 0)
+                {
+                    Current_Move_Score = Current_Move_Score + 1;
+                }
+                if (CSSkakiera[3, 4].CompareTo("Black Pawn") == 0)
+                {
+                    Current_Move_Score = Current_Move_Score - 1;
+                }
+                if (CSSkakiera[4, 4].CompareTo("Black Pawn") == 0)
+                {
+                    Current_Move_Score = Current_Move_Score - 1;
+                }
+
+                // Don't make stupid moves in the beginning
+                if (Move < 10)
+                {
+                    // WHITE PIECES
+                    // Move the knight
+                    if (CSSkakiera[1, 0].CompareTo("White Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    if (CSSkakiera[6, 0].CompareTo("White Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    // Move the bishop
+                    if (CSSkakiera[2, 0].CompareTo("White Bishop") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    if (CSSkakiera[5, 0].CompareTo("White Bishop") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    // Do not move the rook
+                    if (CSSkakiera[0, 0].CompareTo("") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    if (CSSkakiera[7, 0].CompareTo("") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    // Do not make stupid moves with knights
+                    if (CSSkakiera[0, 2].CompareTo("White Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    if (CSSkakiera[7, 2].CompareTo("White Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    // Do not make stupid moves with pawns
+                    if (CSSkakiera[0, 3].CompareTo("White Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    if (CSSkakiera[7, 3].CompareTo("White Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    // Do not move the queen
+                    if (CSSkakiera[3, 0].CompareTo("") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    // Do not move the king
+                    //if (CSSkakiera[4, 0].CompareTo("") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score - 1;
+                    //}
+
+                    // BLACK PIECES
+                    // Move the knight
+                    if (CSSkakiera[1, 7].CompareTo("Black Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    if (CSSkakiera[6, 7].CompareTo("Black Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    // Move the bishop
+                    if (CSSkakiera[2, 7].CompareTo("Black Bishop") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    if (CSSkakiera[5, 7].CompareTo("Black Bishop") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    // Do not move the rook
+                    if (CSSkakiera[0, 7].CompareTo("") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    if (CSSkakiera[7, 7].CompareTo("") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    // Do not make stupid moves with knights
+                    if (CSSkakiera[0, 5].CompareTo("Black Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    if (CSSkakiera[7, 5].CompareTo("Black Knight") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    // Do not make stupid moves with pawns
+                    if (CSSkakiera[0, 4].CompareTo("Black Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    if (CSSkakiera[7, 4].CompareTo("Black Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    // Do not move the queen
+                    if (CSSkakiera[3, 7].CompareTo("") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    // Do not move the king
+                    //if (CSSkakiera[4, 7].CompareTo("") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score + 1;
+                    //}
+                }
+
+                // v0.992
+                // Check for check
+                WhiteKingCheck = CheckForWhiteCheck(CSSkakiera);
+                BlackKingCheck = CheckForBlackCheck(CSSkakiera);
+
+                //v0.992
+                // Don't make stupid moves in the end...
+                //if (Move > 30)
+                //{
+                //    // Move the rook!
+                //    if (CSSkakiera[0, 0].CompareTo("White Rook") == 0)
+                //    {
+                //        Current_Move_Score = Current_Move_Score - 1;
+                //    }
+                //    if (CSSkakiera[7, 0].CompareTo("White Rook") == 0)
+                //    {
+                //        Current_Move_Score = Current_Move_Score - 1;
+                //    }
+                //    if (CSSkakiera[0, 7].CompareTo("Black Rook") == 0)
+                //    {
+                //        Current_Move_Score = Current_Move_Score + 1;
+                //    }
+                //    if (CSSkakiera[7, 7].CompareTo("Black Rook") == 0)
+                //    {
+                //        Current_Move_Score = Current_Move_Score + 1;
+                //    }
+
+                //    //Checking is a good thing...
+                //    //(but not too much)
+                //    if (WhiteKingCheck == true)
+                //    {
+                //        Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
+                //    }
+                //    if (BlackKingCheck == true)
+                //    {
+                //        Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                //    }
+                //}
+
+                // Finale...
+                if (Move > 40)
+                {
+                    //Checking is a good thing...
+                    //(but not too much)
+                    if (WhiteKingCheck == true)
+                    {
+                        Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
+                    }
+                    if (BlackKingCheck == true)
+                    {
+                        Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
                     }
                 }
 
@@ -4292,6 +5219,59 @@ namespace HuoChessW8
                         }
                     } while (exit_elegxos_nomimothtas == false);
                 }
+
+                // v0.992: The check if there is a check after the move is a check that should be always checked!
+                // ATTENTION: This did not work well! Potentially it messed up with a table. So I reverted to the previous situation where the check is done separately in EnterMove and ChecMove.
+                // ATTENTION: No, everything is ok! :)
+                // Yes: It is done in CheckMove AND EnterMove (for the human player's move)!
+                // But it is better to have it centrally and also do it for all moves in the thinking process (not only the first one)!
+                // Check for check (do it only for the first two levels of thinking, to speed up thinking)
+                if ((Nomimotita == true) && (Move_Analyzed < 2))
+                {
+                    // Check for check (before the move)
+                    //WhiteKingCheck_before = CheckForWhiteCheck(ENSkakiera);
+                    //BlackKingCheck_before = CheckForBlackCheck(ENSkakiera);
+
+                    // Make the move temporarily
+                    ENSkakiera[(startColumn - 1), (startRank - 1)] = "";
+                    ProsorinoKommati_EN = ENSkakiera[(finishColumn - 1), (finishRank - 1)];
+                    ENSkakiera[(finishColumn - 1), (finishRank - 1)] = MovingPiece_EN;
+
+                    // Check for check (after the move)
+
+                    // m_WhichColorPlays is not updated throughout the app!
+                    if (m_WhichColorPlays.CompareTo("White") == 0)
+                    {
+                        WhiteKingCheck = CheckForWhiteCheck(ENSkakiera);
+                    }
+                    else if (m_WhichColorPlays.CompareTo("Black") == 0)
+                    {
+                        BlackKingCheck = CheckForBlackCheck(ENSkakiera);
+                    }
+
+                    if ((m_WhichColorPlays.CompareTo("White") == 0) && (WhiteKingCheck == true))
+                    {
+                        Nomimotita = false;
+                    }
+                    if ((m_WhichColorPlays.CompareTo("Black") == 0) && (BlackKingCheck == true))
+                    {
+                        Nomimotita = false;
+                    }
+
+                    //if ((WhiteKingCheck_before == true) && (WhiteKingCheck == true))
+                    //{
+                    //    Nomimotita = false;
+                    //}
+                    //if ((BlackKingCheck_before == true) && (BlackKingCheck == true))
+                    //{
+                    //    Nomimotita = false;
+                    //}
+
+                    // Return pieces to original position (potentially not needed, but let's be consistent and ψείρες)
+                    ENSkakiera[(finishColumn - 1), (finishRank - 1)] = ProsorinoKommati_EN; //v0.990 ProsorinoKommati_KingCheck;
+                    ENSkakiera[(startColumn - 1), (startRank - 1)] = MovingPiece_EN;
+                }
+
                 return Nomimotita;
             }
 
@@ -4638,9 +5618,9 @@ namespace HuoChessW8
                 // m_FinishingRank (οι οποίες έχουν δηλωθεί σαν ακέραιοι που παίρνουν τιμές από 1 έως 8).
 
                 //v0.980: Convert small strings to Int. Make "else if" -> "if"
+                //v0.992: Is this needed? Need to check...
                 if (((m_WhoPlays.CompareTo("Human") == 0)) && (((m_WhichColorPlays.CompareTo("White") == 0) && ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White Pawn") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White Rook") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White Knight") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White Bishop") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White Queen") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White King") == 0))) || ((m_WhichColorPlays.CompareTo("Black") == 0) && ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black Pawn") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black Rook") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black Knight") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black Bishop") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black Queen") == 0) || (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black King") == 0)))))
                 {
-
                     m_WrongColumn = false;
                     MovingPiece = Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)];
                 }
@@ -4656,30 +5636,35 @@ namespace HuoChessW8
                 if (m_OrthotitaKinisis == true)
                     m_NomimotitaKinisis = ElegxosNomimotitas(Skakiera, 0, m_StartingRank, m_StartingColumnNumber, m_FinishingRank, m_FinishingColumnNumber, MovingPiece);
 
-                // Check if the Human's king is in check even after his move!
-                // Temporarily move the piece the user wants to move
-                Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = "";
-                ProsorinoKommati = Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)];
-                Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = MovingPiece;
+                //v0.992: Put the check for check centrally in ElegxosNomimotitas? I tried but something funny happens!
+                //        No, everything is fine after all! :)
+                //v0.992: Do the check only for valid (so far) moves
+                //if (m_NomimotitaKinisis == true)
+                //{
+                //    // Check if the Human's king is in check even after his move!
+                //    // Temporarily move the piece the user wants to move
+                //    Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = "";
+                //    ProsorinoKommati = Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)];
+                //    Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = MovingPiece;
 
-                // Check if king is still under check
-                WhiteKingCheck = CheckForWhiteCheck(Skakiera);
+                //    // Check if king is still under check
+                //    WhiteKingCheck = CheckForWhiteCheck(Skakiera);
 
-                if ((m_WhichColorPlays.CompareTo("White") == 0) && (WhiteKingCheck == true))
-                    m_NomimotitaKinisis = false;
+                //    if ((m_WhichColorPlays.CompareTo("White") == 0) && (WhiteKingCheck == true))
+                //        m_NomimotitaKinisis = false;
 
-                // Check if BK is still under check
-                BlackKingCheck = CheckForBlackCheck(Skakiera);
+                //    // Check if BK is still under check
+                //    BlackKingCheck = CheckForBlackCheck(Skakiera);
 
-                if ((m_WhichColorPlays.CompareTo("Black") == 0) && (BlackKingCheck == true))
-                    m_NomimotitaKinisis = false;
+                //    if ((m_WhichColorPlays.CompareTo("Black") == 0) && (BlackKingCheck == true))
+                //        m_NomimotitaKinisis = false;
 
-                // Restore all pieces to the initial state
-                Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = MovingPiece;
-                Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = ProsorinoKommati;
+                //    // Restore all pieces to the initial state
+                //    Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = MovingPiece;
+                //    Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = ProsorinoKommati;
+                //}
 
-
-                // CHECK IF THE Hu HAS ENTERED A CASTLING MOVE
+                // CHECK IF THE Human HAS ENTERED A CASTLING MOVE
                 // v0.980: Simplify & Add the m_OrthotitaKinisis = false cases so as to work correctly!
                 #region checkCastling
 
@@ -4732,6 +5717,9 @@ namespace HuoChessW8
                 }
                 #endregion checkCastling
 
+                // v0.992: Pawn promotion is checked once centrally through pawn promotion function PawnPromotion()!!
+                //         However this is needed here so as to calculate correctly the value of the human piece!
+                //         So since I do this here, the PawnPromotion() call is not needed... :P
                 // v0.990
                 // Promotion
                 if ((MovingPiece.CompareTo("White Pawn") == 0) && (m_FinishingRank == 8))
@@ -4763,8 +5751,10 @@ namespace HuoChessW8
                     // Erase initial square
                     Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = "";
 
+                    // Store last human move
                     Human_last_move_target_column = -1;
                     Human_last_move_target_row = -1;
+
                     // v0.980: String comparisons with '== 1' transformed to '!= 0'
                     if (Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)].CompareTo("") != 0)
                     {
@@ -4778,7 +5768,6 @@ namespace HuoChessW8
 
                     // Go to destination square
                     Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = MovingPiece;
-
 
                     // Check for en passant
                     #region checkEnPassant
@@ -4852,7 +5841,8 @@ namespace HuoChessW8
                     #endregion castlingOccured
 
                     // Does a pawn needs promotion?
-                    PawnPromotion();
+                    // Not needed here, the pawn is 'transformed' to queen some lines before...
+                    // PawnPromotion();
 
                     // v0.980: This is not required
                     //if ((m_PlayerColor.CompareTo("White") == 0) || (m_PlayerColor.CompareTo("Black") == 0))
@@ -4871,15 +5861,15 @@ namespace HuoChessW8
                     m_FinishingRank = 1;
 
                     // CHECK MESSAGE
-                    WhiteKingCheck = CheckForWhiteCheck(Skakiera);
-                    BlackKingCheck = CheckForBlackCheck(Skakiera);
+                    // v0.992: Not needed. Removed to reduce the code.
+                    //WhiteKingCheck = CheckForWhiteCheck(Skakiera);
+                    //BlackKingCheck = CheckForBlackCheck(Skakiera);
 
-                    if ((WhiteKingCheck == true) || (BlackKingCheck == true))
-                    {
-                        //Console.WriteLine("CHECK!");
-                        MessageBox.Show("CHECK!");
-                    }
-
+                    //if ((WhiteKingCheck == true) || (BlackKingCheck == true))
+                    //{
+                    //    //Console.WriteLine("CHECK!");
+                    //    MessageBox.Show("CHECK!");
+                    //}
 
                     // If it is the turn of the HY to play, then call the respective HY Thought function
                     if (m_WhoPlays.CompareTo("HY") == 0)
@@ -4912,7 +5902,9 @@ namespace HuoChessW8
             {
                 for (i = 0; i <= 7; i++)
                 {
-                    if ((Skakiera[(i), (0)].CompareTo("Black Pawn") == 0) && (m_WhoPlays.CompareTo("Human") == 0))
+                    //v0.992: Simplify. Just promote "all" pawns regardless of who plays. Anyway it will just be one!
+                    //if ((Skakiera[(i), (0)].CompareTo("Black Pawn") == 0) && (m_WhoPlays.CompareTo("Human") == 0))
+                    if (Skakiera[(i), (0)].CompareTo("Black Pawn") == 0)
                     {
                         ///////////////////////////
                         // Promote pawn
@@ -4946,8 +5938,9 @@ namespace HuoChessW8
 
                     }
 
-
-                    if ((Skakiera[(i), (7)].CompareTo("White Pawn") == 0) && (m_WhoPlays.CompareTo("Human") == 0))
+                    //v0.992: Simplify. Just promote "all" pawns regardless of who plays. Anyway it will just be one!
+                    //if ((Skakiera[(i), (7)].CompareTo("White Pawn") == 0) && (m_WhoPlays.CompareTo("Human") == 0))
+                    if (Skakiera[(i), (7)].CompareTo("White Pawn") == 0)
                     {
                         ///////////////////////////
                         // Promote pawn
@@ -5220,115 +6213,233 @@ namespace HuoChessW8
                 //Skakiera[(7), (6)] = "Black Pawn";
                 //Skakiera[(7), (7)] = "Black Rook";
 
+                // v0.992
+                // Test 1: Will the HY eat the bishop?
+                //Skakiera[(0), (0)] = "White Rook";
+                //Skakiera[(0), (1)] = "White Pawn";
+                //Skakiera[(0), (6)] = "Black Pawn";
+                //Skakiera[(0), (7)] = "Black Rook";
+                //Skakiera[(1), (0)] = "White Knight";
+                //Skakiera[(1), (1)] = "White Pawn";
+                //Skakiera[(1), (6)] = "Black Pawn";
+                //Skakiera[(1), (7)] = "Black Knight";
+                //Skakiera[(2), (0)] = "White Bishop";
+                //Skakiera[(2), (2)] = "White Pawn";
+                //Skakiera[(2), (6)] = "Black Pawn";
+                //Skakiera[(7), (2)] = "Black Bishop";
+                //Skakiera[(3), (0)] = "White Queen";
+                //Skakiera[(3), (3)] = "White Pawn";
+                //Skakiera[(3), (5)] = "Black Pawn";
+                //Skakiera[(3), (7)] = "Black Queen";
+                //Skakiera[(4), (0)] = "White King";
+                //Skakiera[(4), (1)] = "White Pawn";
+                //Skakiera[(4), (6)] = "Black Pawn";
+                //Skakiera[(4), (7)] = "Black King";
+                //Skakiera[(5), (0)] = "White Bishop";
+                //Skakiera[(5), (1)] = "White Pawn";
+                //Skakiera[(5), (6)] = "Black Pawn";
+                //Skakiera[(5), (7)] = "Black Bishop";
+                //Skakiera[(6), (0)] = "White Knight";
+                //Skakiera[(6), (1)] = "White Pawn";
+                //Skakiera[(6), (6)] = "Black Pawn";
+                //Skakiera[(6), (7)] = "Black Knight";
+                //Skakiera[(7), (0)] = "White Rook";
+                //Skakiera[(7), (1)] = "White Pawn";
+                //Skakiera[(7), (6)] = "Black Pawn";
+                //Skakiera[(7), (7)] = "Black Rook";
+
+                // ---------- QBASIC TEST ----------
+                // Result for Thinking Depth 2: Somewhat OK
+                // Problem: The sequence b4->e7 b2->a1 b7->a8 yields the same result (+1) at the end as the
+                //          sequence b7->a8 b2->a1 b4->e7 so the computer plays either of them... This can be
+                //          overcome by increasing the thinking depth somewhat, but the 'termination' problem
+                //          (i.e. the computer terminates its thinking at some point and does not see whether
+                //          the very next move results in catastrophy) will still be there.
+                // Deep Blue solution: Keep on thinking a variant where there is capturing of pieces until
+                //                     there is no capturing anymore.
+                // Result for Thinking Depth 4: Not playing, potentially due to problem with too many possible moves
+                //                              Need to apply SET OF RULES 1 in Analyze_Move_3 for the computer to play!
+
+                //Skakiera[(0), (0)] = "White Rook";
+                //Skakiera[(0), (1)] = "White Pawn";
+                //Skakiera[(1), (0)] = "White Knight";
+                //Skakiera[(1), (1)] = "Black Pawn";
+                //Skakiera[(2), (0)] = "";
+                //Skakiera[(2), (1)] = "White Pawn";
+                //Skakiera[(3), (0)] = "";
+                //Skakiera[(3), (1)] = "White Pawn";
+                //Skakiera[(4), (0)] = "White King";
+                //Skakiera[(4), (1)] = "";
+                //Skakiera[(5), (0)] = "";
+                //Skakiera[(5), (1)] = "White Pawn";
+                //Skakiera[(6), (0)] = "White Knight";
+                //Skakiera[(6), (1)] = "White Pawn";
+                //Skakiera[(7), (0)] = "White Rook";
+                //Skakiera[(7), (1)] = "";
+                //Skakiera[(0), (6)] = "";
+                //Skakiera[(0), (7)] = "Black Rook";
+                //Skakiera[(1), (6)] = "White Bishop";
+                //Skakiera[(1), (7)] = "Black Knight";
+                //Skakiera[(2), (6)] = "Black Pawn";
+                //Skakiera[(2), (7)] = "";
+                //Skakiera[(3), (6)] = "Black Pawn";
+                //Skakiera[(3), (7)] = "Black Queen";
+                //Skakiera[(4), (6)] = "Black Pawn";
+                //Skakiera[(4), (7)] = "Black King";
+                //Skakiera[(5), (6)] = "Black Pawn";
+                //Skakiera[(5), (7)] = "Black Bishop";
+                //Skakiera[(6), (6)] = "Black Pawn";
+                //Skakiera[(6), (7)] = "Black Knight";
+                //Skakiera[(7), (6)] = "Black Pawn";
+                //Skakiera[(7), (7)] = "Black Rook";
+                //Skakiera[(3), (3)] = "White Pawn";
+                //Skakiera[(1), (3)] = "White Bishop";
+                //Skakiera[(5), (3)] = "White Queen";
+                //Skakiera[(6), (5)] = "Black Bishop";
+
+                // CHECK TEST: Will the ElegxosNomimotitas work properly to detect the check?
+                //Skakiera[(0), (0)] = "White Rook";
+                //Skakiera[(0), (1)] = "White Pawn";
+                //Skakiera[(0), (5)] = "Black Pawn";
+                //Skakiera[(5), (7)] = "Black Rook";
+                //Skakiera[(5), (1)] = "White Knight";
+                //Skakiera[(1), (2)] = "White Pawn";
+                //Skakiera[(1), (3)] = "Black Pawn";
+                //Skakiera[(1), (7)] = "";
+                //Skakiera[(2), (0)] = "";
+                //Skakiera[(2), (3)] = "White Pawn";
+                //Skakiera[(2), (4)] = "Black Pawn";
+                //Skakiera[(2), (7)] = "Black Bishop";
+                //Skakiera[(2), (6)] = "White Queen";
+                //Skakiera[(3), (2)] = "White Pawn";
+                //Skakiera[(3), (5)] = "Black Pawn";
+                //Skakiera[(3), (7)] = "";
+                //Skakiera[(4), (1)] = "White King";
+                //Skakiera[(4), (3)] = "White Pawn";
+                //Skakiera[(4), (4)] = "Black Pawn";
+                //Skakiera[(5), (6)] = "Black King";
+                //Skakiera[(5), (0)] = "";
+                //Skakiera[(5), (4)] = "White Pawn";
+                //Skakiera[(5), (5)] = "Black Pawn";
+                //Skakiera[(4), (6)] = "Black Bishop";
+                //Skakiera[(6), (3)] = "White Knight";
+                //Skakiera[(6), (1)] = "";
+                //Skakiera[(5), (3)] = "Black Pawn";
+                //Skakiera[(6), (7)] = "";
+                //Skakiera[(7), (0)] = "";
+                //Skakiera[(7), (2)] = "White Pawn";
+                //Skakiera[(7), (3)] = "Black Pawn";
+                //Skakiera[(6), (2)] = "Black Rook";
+
                 m_WhichColorPlays = "White";
             }
 
             public static void Analyze_Move_1_HumanMove(string[,] Skakiera_Human_Thinking_2)
             {
                 #region WriteLog
-                //if (activateLogs == true)
-                //{
-                //    huo_sw1.WriteLine("");
-                //    huo_sw1.WriteLine("HMT2 -- Entered Analyze_Move_1_HumanMove");
-                //    huo_sw1.WriteLine(string.Concat("HMT2 -- Depth analyzed: ", Move_Analyzed.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of moves analyzed: ", number_of_moves_analysed.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("HMT2 -- Move analyzed: ", m_StartingColumnNumber_HY.ToString(), m_StartingRank_HY.ToString(), " -> ", m_FinishingColumnNumber_HY.ToString(), m_FinishingRank_HY.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
+                if (activateLogs == true)
+                {
+                    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("HMT2 -- Entered Analyze_Move_1_HumanMove");
+                    huo_sw1.WriteLine(string.Concat("HMT2 -- Depth analyzed: ", Move_Analyzed.ToString()));
+                    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of moves analyzed: ", number_of_moves_analysed.ToString()));
+                    huo_sw1.WriteLine(string.Concat("HMT2 -- Move analyzed: ", m_StartingColumnNumber_HY.ToString(), m_StartingRank_HY.ToString(), " -> ", m_FinishingColumnNumber_HY.ToString(), m_FinishingRank_HY.ToString()));
+                    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
 
-                //    //v0.990
-                //    //huo_sw1.WriteLine("");
-                //    //huo_sw1.WriteLine("CHESSBOARD MOVE 1 - START");
-                //    //huo_sw1.WriteLine("-----------------------------------------");
-                //    //for (int yj = 7; yj >= 0; yj--)
-                //    //{
-                //    //    huo_sw1.WriteLine(String.Concat("| ", Skakiera_Human_Thinking_2[0, yj], " | ", Skakiera_Human_Thinking_2[1, yj], " | ", Skakiera_Human_Thinking_2[2, yj], " | ", Skakiera_Human_Thinking_2[3, yj], " | ", Skakiera_Human_Thinking_2[4, yj], " | ", Skakiera_Human_Thinking_2[5, yj], " | ", Skakiera_Human_Thinking_2[6, yj], " | ", Skakiera_Human_Thinking_2[7, yj], " |"));
-                //    //    huo_sw1.WriteLine("-----------------------------------------");
-                //    //}
-                //    //huo_sw1.WriteLine("");
+                    //v0.990
+                    //huo_sw1.WriteLine("");
+                    //huo_sw1.WriteLine("CHESSBOARD MOVE 1 - START");
+                    //huo_sw1.WriteLine("-----------------------------------------");
+                    //for (int yj = 7; yj >= 0; yj--)
+                    //{
+                    //    huo_sw1.WriteLine(String.Concat("| ", Skakiera_Human_Thinking_2[0, yj], " | ", Skakiera_Human_Thinking_2[1, yj], " | ", Skakiera_Human_Thinking_2[2, yj], " | ", Skakiera_Human_Thinking_2[3, yj], " | ", Skakiera_Human_Thinking_2[4, yj], " | ", Skakiera_Human_Thinking_2[5, yj], " | ", Skakiera_Human_Thinking_2[6, yj], " | ", Skakiera_Human_Thinking_2[7, yj], " |"));
+                    //    huo_sw1.WriteLine("-----------------------------------------");
+                    //}
+                    //huo_sw1.WriteLine("");
 
-                //    #region WriteLog
-                //    //v0.990
-                //    for (i = 0; i <= 7; i++)
-                //    {
-                //        for (j = 0; j <= 7; j++)
-                //        {
-                //            switch (Skakiera_Human_Thinking_2[(i), (j)])
-                //            {
-                //                case "White Rook":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WR";
-                //                    break;
+                    #region WriteLog
+                    //v0.990
+                    for (i = 0; i <= 7; i++)
+                    {
+                        for (j = 0; j <= 7; j++)
+                        {
+                            switch (Skakiera_Human_Thinking_2[(i), (j)])
+                            {
+                                case "White Rook":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WR";
+                                    break;
 
-                //                case "White Knight":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WN";
-                //                    break;
+                                case "White Knight":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WN";
+                                    break;
 
-                //                case "White Bishop":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WB";
-                //                    break;
+                                case "White Bishop":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WB";
+                                    break;
 
-                //                case "White Queen":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WQ";
-                //                    break;
+                                case "White Queen":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WQ";
+                                    break;
 
-                //                case "White King":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WK";
-                //                    break;
+                                case "White King":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WK";
+                                    break;
 
-                //                case "White Pawn":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WP";
-                //                    break;
+                                case "White Pawn":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "WP";
+                                    break;
 
-                //                case "Black Rook":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BR";
-                //                    break;
+                                case "Black Rook":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BR";
+                                    break;
 
-                //                case "Black Knight":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BN";
-                //                    break;
+                                case "Black Knight":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BN";
+                                    break;
 
-                //                case "Black Bishop":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BB";
-                //                    break;
+                                case "Black Bishop":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BB";
+                                    break;
 
-                //                case "Black Queen":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BQ";
-                //                    break;
+                                case "Black Queen":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BQ";
+                                    break;
 
-                //                case "Black King":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BK";
-                //                    break;
+                                case "Black King":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BK";
+                                    break;
 
-                //                case "Black Pawn":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BP";
-                //                    break;
+                                case "Black Pawn":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "BP";
+                                    break;
 
-                //                case "":
-                //                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "  ";
-                //                    break;
-                //            }
-                //        }
-                //    }
+                                case "":
+                                    NodesAnalysis1_Chessboard_before[i, j, NodeLevel_1_count] = "  ";
+                                    break;
+                            }
+                        }
+                    }
 
-                //    huo_sw1.WriteLine("");
-                //    huo_sw1.WriteLine("CHESSBOARD Move 1 (upon calling function)");
-                //    huo_sw1.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis1_Chessboard_before[0, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[1, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[2, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[3, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[4, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[5, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[6, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[7, yj, NodeLevel_1_count], " |"));
-                //        huo_sw1.WriteLine("-----------------------------------------");
-                //    }
-                //    huo_sw1.WriteLine("CHESSBOARD Move 1 - END");
-                //    huo_sw1.WriteLine("");
-                //    #endregion WriteLog
+                    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("CHESSBOARD Move 1 (upon calling function)");
+                    huo_sw1.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis1_Chessboard_before[0, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[1, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[2, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[3, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[4, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[5, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[6, yj, NodeLevel_1_count], " | ", NodesAnalysis1_Chessboard_before[7, yj, NodeLevel_1_count], " |"));
+                        huo_sw1.WriteLine("-----------------------------------------");
+                    }
+                    huo_sw1.WriteLine("CHESSBOARD Move 1 - END");
+                    huo_sw1.WriteLine("");
+                    #endregion WriteLog
 
-                //    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
-                //    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
-                //    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
-                //    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
-                //    //huo_sw1.WriteLine("");
-                //}
+                    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
+                    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
+                    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
+                    //huo_sw1.WriteLine(string.Concat("HMT2 -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
+                    //huo_sw1.WriteLine("");
+                }
                 #endregion WriteLog
 
                 // v0.990 change: The best score for every move will be stored at each level. Only if the new move analyzed
@@ -5348,8 +6459,12 @@ namespace HuoChessW8
                 int m_StartingRank1 = 0;
                 int m_FinishingRank1 = 0;
 
+                //v0.992
+                Human_Move_Found = false;
+
                 // v0.990: Added a new separate chessboard ('skakiera' in Greek) to pass over information from one function to the other.
-                String[,] Skakiera_Move_After_1 = new String[8, 8];
+                // v0.992: Removed Skakiera_Move_After_1
+                // String[,] Skakiera_Move_After_1 = new String[8, 8];
 
                 // Check all possible moves
                 for (skakos1 = 0; skakos1 <= 7; skakos1++)
@@ -5369,6 +6484,12 @@ namespace HuoChessW8
                                     m_FinishingColumnNumber1 = w + 1;
                                     m_StartingRank1 = trelos35 + 1;
                                     m_FinishingRank1 = r + 1;
+
+                                    //v0.992
+                                    m_StartingColumnNumber1_public = m_StartingColumnNumber1;
+                                    m_FinishingColumnNumber1_public = m_FinishingColumnNumber1;
+                                    m_StartingRank1_public = m_StartingRank1;
+                                    m_FinishingRank1_public = m_FinishingRank1;
 
                                     #region ObsoleteCode
                                     // Store temporary move data in local variables, so as to use them in the Undo of the move
@@ -5401,99 +6522,103 @@ namespace HuoChessW8
                                     // If all ok, then do the move and measure it
                                     if ((m_OrthotitaKinisis == true) && (m_NomimotitaKinisis == true))
                                     {
+                                        //v0.992
+                                        Human_Move_Found = true;
+
                                         // v0.991
                                         #region MoveText
-                                        //String m_StartingColumnNumber1_moveText;
-                                        //String m_FinishingColumnNumber1_moveText;
+                                        String m_StartingColumnNumber1_moveText;
+                                        String m_FinishingColumnNumber1_moveText;
 
-                                        //switch (m_StartingColumnNumber1)
-                                        //{
-                                        //    case (1):
-                                        //        m_StartingColumnNumber1_moveText = "a";
-                                        //        break;
+                                        switch (m_StartingColumnNumber1)
+                                        {
+                                            case (1):
+                                                m_StartingColumnNumber1_moveText = "a";
+                                                break;
 
-                                        //    case (2):
-                                        //        m_StartingColumnNumber1_moveText = "b";
-                                        //        break;
+                                            case (2):
+                                                m_StartingColumnNumber1_moveText = "b";
+                                                break;
 
-                                        //    case (3):
-                                        //        m_StartingColumnNumber1_moveText = "c";
-                                        //        break;
+                                            case (3):
+                                                m_StartingColumnNumber1_moveText = "c";
+                                                break;
 
-                                        //    case (4):
-                                        //        m_StartingColumnNumber1_moveText = "d";
-                                        //        break;
+                                            case (4):
+                                                m_StartingColumnNumber1_moveText = "d";
+                                                break;
 
-                                        //    case (5):
-                                        //        m_StartingColumnNumber1_moveText = "e";
-                                        //        break;
+                                            case (5):
+                                                m_StartingColumnNumber1_moveText = "e";
+                                                break;
 
-                                        //    case (6):
-                                        //        m_StartingColumnNumber1_moveText = "f";
-                                        //        break;
+                                            case (6):
+                                                m_StartingColumnNumber1_moveText = "f";
+                                                break;
 
-                                        //    case (7):
-                                        //        m_StartingColumnNumber1_moveText = "g";
-                                        //        break;
+                                            case (7):
+                                                m_StartingColumnNumber1_moveText = "g";
+                                                break;
 
-                                        //    case (8):
-                                        //        m_StartingColumnNumber1_moveText = "h";
-                                        //        break;
+                                            case (8):
+                                                m_StartingColumnNumber1_moveText = "h";
+                                                break;
 
-                                        //    default:
-                                        //        m_StartingColumnNumber1_moveText = "Error";
-                                        //        break;
-                                        //}
+                                            default:
+                                                m_StartingColumnNumber1_moveText = "Error";
+                                                break;
+                                        }
 
-                                        //switch (m_FinishingColumnNumber1)
-                                        //{
-                                        //    case (1):
-                                        //        m_FinishingColumnNumber1_moveText = "a";
-                                        //        break;
+                                        switch (m_FinishingColumnNumber1)
+                                        {
+                                            case (1):
+                                                m_FinishingColumnNumber1_moveText = "a";
+                                                break;
 
-                                        //    case (2):
-                                        //        m_FinishingColumnNumber1_moveText = "b";
-                                        //        break;
+                                            case (2):
+                                                m_FinishingColumnNumber1_moveText = "b";
+                                                break;
 
-                                        //    case (3):
-                                        //        m_FinishingColumnNumber1_moveText = "c";
-                                        //        break;
+                                            case (3):
+                                                m_FinishingColumnNumber1_moveText = "c";
+                                                break;
 
-                                        //    case (4):
-                                        //        m_FinishingColumnNumber1_moveText = "d";
-                                        //        break;
+                                            case (4):
+                                                m_FinishingColumnNumber1_moveText = "d";
+                                                break;
 
-                                        //    case (5):
-                                        //        m_FinishingColumnNumber1_moveText = "e";
-                                        //        break;
+                                            case (5):
+                                                m_FinishingColumnNumber1_moveText = "e";
+                                                break;
 
-                                        //    case (6):
-                                        //        m_FinishingColumnNumber1_moveText = "f";
-                                        //        break;
+                                            case (6):
+                                                m_FinishingColumnNumber1_moveText = "f";
+                                                break;
 
-                                        //    case (7):
-                                        //        m_FinishingColumnNumber1_moveText = "g";
-                                        //        break;
+                                            case (7):
+                                                m_FinishingColumnNumber1_moveText = "g";
+                                                break;
 
-                                        //    case (8):
-                                        //        m_FinishingColumnNumber1_moveText = "h";
-                                        //        break;
+                                            case (8):
+                                                m_FinishingColumnNumber1_moveText = "h";
+                                                break;
 
-                                        //    default:
-                                        //        m_FinishingColumnNumber1_moveText = "Error";
-                                        //        break;
-                                        //}
+                                            default:
+                                                m_FinishingColumnNumber1_moveText = "Error";
+                                                break;
+                                        }
 
-                                        //Move1_text = String.Concat(m_StartingColumnNumber1_moveText,
-                                        //                           m_StartingRank1.ToString(), " -> ",
-                                        //                           m_FinishingColumnNumber1_moveText,
-                                        //                           m_FinishingRank1.ToString());
+                                        Move1_text = String.Concat(m_StartingColumnNumber1_moveText,
+                                                                   m_StartingRank1.ToString(), " -> ",
+                                                                   m_FinishingColumnNumber1_moveText,
+                                                                   m_FinishingRank1.ToString());
 
-                                        //NodesAnalysis1_MoveText[NodeLevel_1_count] = Move1_text;
+                                        NodesAnalysis1_MoveText[NodeLevel_1_count] = Move1_text;
                                         #endregion MoveText
 
                                         // Do the move
                                         // v0.990: ProsorinoKommati -> ProsorinoKommati1, MovingPiece -> MovingPiece1
+                                        // v0.992: Obsolete - ProsorinoKommati1 is already set above.
                                         ProsorinoKommati1 = Skakiera_Human_Thinking_2[(m_FinishingColumnNumber1 - 1), (m_FinishingRank1 - 1)];
                                         Skakiera_Human_Thinking_2[(m_StartingColumnNumber1 - 1), (m_StartingRank1 - 1)] = "";
                                         Skakiera_Human_Thinking_2[(m_FinishingColumnNumber1 - 1), (m_FinishingRank1 - 1)] = MovingPiece1;
@@ -5512,19 +6637,28 @@ namespace HuoChessW8
                                         //    Temp_Score_Move_1_human = Temp_Score_Move_1_human + 100;
                                         #endregion ObsoleteCode
 
+                                        // Count the score of the move
                                         Temp_Score_Move_1_human = CountScore(Skakiera_Human_Thinking_2);
 
-                                        // v0.990 change
-                                        // Store the best move at this level
-                                        // v0.991: Attention! Here this section will be removed if we want to start trimming the tree from this function! (see the Analyze_Move_2 for details on this)
-                                        if ((m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_1_human < bestScoreLevel1))
-                                        {
-                                            bestScoreLevel1 = Temp_Score_Move_1_human;
-                                        }
-                                        else if ((m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_1_human > bestScoreLevel1))
-                                        {
-                                            bestScoreLevel1 = Temp_Score_Move_1_human;
-                                        }
+                                        // v0.992: Score and parent for each move analyzed are stored on the spot and not at the end of the thinking depth
+                                        // since some branches of the thinking tree might be trimmed, thus not available at the end of the thinking depth for
+                                        // their score and parent to be stored!
+                                        // Store scores
+                                        //NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
+                                        NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
+                                        //NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+                                        //NodesAnalysis3[NodeLevel_3_count, 0] = Temp_Score_Move_3_human;
+                                        //NodesAnalysis4[NodeLevel_4_count, 0] = Temp_Score_Move_4;
+                                        // Store parents
+                                        //NodesAnalysis0[NodeLevel_0_count, 1] = 0;
+                                        NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
+                                        //NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
+                                        //NodesAnalysis3[NodeLevel_3_count, 1] = NodeLevel_2_count;
+                                        //NodesAnalysis4[NodeLevel_4_count, 1] = NodeLevel_3_count;
+
+                                        //v0.992: Store the variant text
+                                        //NodesAnalysis1_MoveText[NodeLevel_1_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text);
 
                                         #region WriteLog
                                         ////v0.990
@@ -5598,6 +6732,18 @@ namespace HuoChessW8
                                         // if ( ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_1_human >= bestScoreLevel1))
                                         //   || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_1_human <= bestScoreLevel1)) )
                                         {
+                                            // v0.990 change
+                                            // Store the best move at this level
+                                            // v0.991: Attention! Here this section will be removed if we want to start trimming the tree from this function! (see the Analyze_Move_2 for details on this)
+                                            //if ((m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_1_human < bestScoreLevel1))
+                                            //{
+                                            //    bestScoreLevel1 = Temp_Score_Move_1_human;
+                                            //}
+                                            //else if ((m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_1_human > bestScoreLevel1))
+                                            //{
+                                            //    bestScoreLevel1 = Temp_Score_Move_1_human;
+                                            //}
+
                                             // Call ComputerMove for the HY throught process to continue
                                             Move_Analyzed = Move_Analyzed + 1;
 
@@ -5606,7 +6752,7 @@ namespace HuoChessW8
                                             // v0.990: Added new chessboard to pass over information between functions.
                                             // v0.990: Why copy everything in Skakiera_Move_After?
                                             // Just use Skakiera_Human_Thinking_2 directly! No!
-                                            // Remember the problem with the "reference" of the array at with ElegxosNomimotitas!)
+                                            // Remember the problem with the "reference" of the array at with ElegxosNomimotitas!
                                             // Arrays can be passed as arguments to method parameters. Because arrays are reference types, the method can change the value of the elements.
                                             // SOURCES...
                                             // https://docs.microsoft.com/en-us/dotnet/articles/csharp/programming-guide/arrays/passing-arrays-as-arguments]
@@ -5619,12 +6765,14 @@ namespace HuoChessW8
                                             {
                                                 for (j = 0; j <= 7; j++)
                                                 {
-                                                    Skakiera_Move_After_1[(i), (j)] = Skakiera_Human_Thinking_2[(i), (j)];
+                                                    //Skakiera_Move_After_1[(i), (j)] = Skakiera_Human_Thinking_2[(i), (j)];
                                                     Skakiera_Move_After_1_new[(i), (j)] = Skakiera_Human_Thinking_2[(i), (j)];
                                                 }
                                             }
 
                                             // v0.990: Skakiera_Move_After -> Skakiera_Move_After_1 -> Skakiera_Move_After_1_new
+                                            // v0.992: Removed Skakiera_Move_After_1
+                                            // v0.992: The "if" is not needed here.
                                             if (Move_Analyzed == 2)
                                                 Analyze_Move_2_ComputerMove(Skakiera_Move_After_1_new);
                                         }
@@ -5635,6 +6783,7 @@ namespace HuoChessW8
 
                                         // v0.991 - This should be done here!
                                         NodeLevel_1_count++;
+                                        Nodes_Total_count++;
                                     }
 
                                 } // For 4
@@ -5644,6 +6793,48 @@ namespace HuoChessW8
 
                     } // For 2
                 } // For 1
+
+                //v0.992 suggestion: Check if there is mate or stalemate!
+                if (Human_Move_Found == false)
+                {
+                    // Check for check
+                    if (m_PlayerColor.CompareTo("White") == 0)
+                    {
+                        WhiteKingCheck = CheckForWhiteCheck(Skakiera_Human_Thinking_2);
+                    }
+                    else if (m_PlayerColor.CompareTo("Black") == 0)
+                    {
+                        BlackKingCheck = CheckForBlackCheck(Skakiera_Human_Thinking_2);
+                    }
+                    // If no move found and it is check, then it is mate! Go for it!
+                    if ((m_PlayerColor.CompareTo("White") == 0) && (WhiteKingCheck == true))
+                    {
+                        Mate_Found = true;
+                        m_StartingColumnNumber_mate = m_StartingColumnNumber_HY;
+                        m_FinishingColumnNumber_mate = m_FinishingColumnNumber_HY;
+                        m_StartingRank_mate = m_StartingRank_HY;
+                        m_FinishingRank_mate = m_FinishingRank_HY;
+                    }
+                    // If there is no move and the king is not under check, it is pat! (stalemate)
+                    if ((m_PlayerColor.CompareTo("White") == 0) && (WhiteKingCheck == false))
+                    {
+                        Pat_Found = true;
+                    }
+                    if ((m_PlayerColor.CompareTo("Black") == 0) && (BlackKingCheck == true))
+                    {
+                        Mate_Found = true;
+                        m_StartingColumnNumber_mate = m_StartingColumnNumber_HY;
+                        m_FinishingColumnNumber_mate = m_FinishingColumnNumber_HY;
+                        m_StartingRank_mate = m_StartingRank_HY;
+                        m_FinishingRank_mate = m_FinishingRank_HY;
+                    }
+                    // If there is no move and the king is not under check, it is pat! (stalemate)
+                    if ((m_PlayerColor.CompareTo("Black") == 0) && (BlackKingCheck == false))
+                    {
+                        //Pat! (= stalemate)
+                        Pat_Found = true;
+                    }
+                }
 
                 Move_Analyzed = Move_Analyzed - 1;
                 Who_Is_Analyzed = "HY";
@@ -5668,6 +6859,7 @@ namespace HuoChessW8
                 int m_StartingRank3 = 0;
                 int m_FinishingRank3 = 0;
 
+                //v0.990
                 String[,] Skakiera_Move_After_3 = new String[8, 8];
 
                 // Check all possible moves
@@ -5675,21 +6867,35 @@ namespace HuoChessW8
                 {
                     for (trelos35 = 0; trelos35 <= 7; trelos35++)
                     {
+                        // v0.990: (Who_Is_Analyzed.CompareTo("Hu") == 0) -> (Who_Is_Analyzed.CompareTo("Human") == 0)
                         if (((Who_Is_Analyzed.CompareTo("Human") == 0) && ((((Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("Black King") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("Black Queen") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("Black Rook") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("Black Knight") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("Black Bishop") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("Black Pawn") == 0)) && (m_PlayerColor.CompareTo("Black") == 0)) || (((Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("White King") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("White Queen") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("White Rook") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("White Knight") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("White Bishop") == 0) || (Skakiera_Human_Thinking_3[(skakos3), (trelos35)].CompareTo("White Pawn") == 0)) && (m_PlayerColor.CompareTo("White") == 0)))))
                         {
                             for (int w = 0; w <= 7; w++)
                             {
                                 for (int r = 0; r <= 7; r++)
                                 {
+                                    // v0.990: Removed the m_FinishingRank column and replace with m_FinishingRank3
                                     MovingPiece3 = Skakiera_Human_Thinking_3[(skakos3), (trelos35)];
                                     m_StartingColumnNumber3 = skakos3 + 1;
                                     m_FinishingColumnNumber3 = w + 1;
                                     m_StartingRank3 = trelos35 + 1;
                                     m_FinishingRank3 = r + 1;
-
                                     ProsorinoKommati3 = Skakiera_Human_Thinking_3[(m_FinishingColumnNumber3 - 1), (m_FinishingRank3 - 1)];
 
+                                    #region ObsoleteCode
+                                    // Store temporary move data in local variables, so as to use them in the Undo of the move
+                                    // at the end of this function (the MovingPiece, m_StartingColumnNumber, etc variables are
+                                    // changed by next functions as well, so using them leads to problems)
+                                    //v0.990: Removed the m_FinishingRank column and replace with m_FinishingRank3
+                                    //MovingPiece3 = MovingPiece;
+                                    //m_StartingColumnNumber3 = m_StartingColumnNumber;
+                                    //m_FinishingColumnNumber3 = m_FinishingColumnNumber;
+                                    //m_StartingRank3 = m_StartingRank;
+                                    //m_FinishingRank3 = m_FinishingRank;
+                                    #endregion ObsoleteCode
+
                                     // Check the move
+                                    // v0.980: Removed
                                     number_of_moves_analysed++;
 
                                     // Necessary values for variables for the ElegxosOrthotitas (check move corr1ectness) and
@@ -5704,46 +6910,217 @@ namespace HuoChessW8
                                     // If all ok, then do the move and measure it
                                     if ((m_OrthotitaKinisis == true) && (m_NomimotitaKinisis == true))
                                     {
+                                        // v0.992
+                                        #region MoveText
+                                        String m_StartingColumnNumber3_moveText;
+                                        String m_FinishingColumnNumber3_moveText;
+
+                                        switch (m_StartingColumnNumber3)
+                                        {
+                                            case (1):
+                                                m_StartingColumnNumber3_moveText = "a";
+                                                break;
+
+                                            case (2):
+                                                m_StartingColumnNumber3_moveText = "b";
+                                                break;
+
+                                            case (3):
+                                                m_StartingColumnNumber3_moveText = "c";
+                                                break;
+
+                                            case (4):
+                                                m_StartingColumnNumber3_moveText = "d";
+                                                break;
+
+                                            case (5):
+                                                m_StartingColumnNumber3_moveText = "e";
+                                                break;
+
+                                            case (6):
+                                                m_StartingColumnNumber3_moveText = "f";
+                                                break;
+
+                                            case (7):
+                                                m_StartingColumnNumber3_moveText = "g";
+                                                break;
+
+                                            case (8):
+                                                m_StartingColumnNumber3_moveText = "h";
+                                                break;
+
+                                            default:
+                                                m_StartingColumnNumber3_moveText = "Error";
+                                                break;
+                                        }
+
+                                        switch (m_FinishingColumnNumber3)
+                                        {
+                                            case (1):
+                                                m_FinishingColumnNumber3_moveText = "a";
+                                                break;
+
+                                            case (2):
+                                                m_FinishingColumnNumber3_moveText = "b";
+                                                break;
+
+                                            case (3):
+                                                m_FinishingColumnNumber3_moveText = "c";
+                                                break;
+
+                                            case (4):
+                                                m_FinishingColumnNumber3_moveText = "d";
+                                                break;
+
+                                            case (5):
+                                                m_FinishingColumnNumber3_moveText = "e";
+                                                break;
+
+                                            case (6):
+                                                m_FinishingColumnNumber3_moveText = "f";
+                                                break;
+
+                                            case (7):
+                                                m_FinishingColumnNumber3_moveText = "g";
+                                                break;
+
+                                            case (8):
+                                                m_FinishingColumnNumber3_moveText = "h";
+                                                break;
+
+                                            default:
+                                                m_FinishingColumnNumber3_moveText = "Error";
+                                                break;
+                                        }
+
+                                        Move3_text = String.Concat(m_StartingColumnNumber3_moveText,
+                                                                   m_StartingRank3.ToString(), " -> ",
+                                                                   m_FinishingColumnNumber3_moveText,
+                                                                   m_FinishingRank3.ToString());
+
+                                        //Move3_text = String.Concat(m_StartingColumnNumber.ToString(),
+                                        //                           m_StartingRank3.ToString(), " -> ",
+                                        //                           m_FinishingColumnNumber3.ToString(),
+                                        //                           m_FinishingRank3.ToString());
+
+                                        NodesAnalysis3_MoveText[NodeLevel_3_count] = Move3_text;
+                                        #endregion MoveText
+
                                         // Do the move
-                                        ProsorinoKommati3 = Skakiera_Human_Thinking_3[(m_FinishingColumnNumber3 - 1), (m_FinishingRank3 - 1)];
+                                        // v0.990: ProsorinoKommati -> ProsorinoKommati3, MovingPiece -> MovingPiece3
+                                        // ProsorinoKommati3 = Skakiera_Human_Thinking_3[(m_FinishingColumnNumber3 - 1), (m_FinishingRank3 - 1)];
                                         Skakiera_Human_Thinking_3[(m_StartingColumnNumber3 - 1), (m_StartingRank3 - 1)] = "";
                                         Skakiera_Human_Thinking_3[(m_FinishingColumnNumber3 - 1), (m_FinishingRank3 - 1)] = MovingPiece3;
 
-                                        NodeLevel_3_count++;
+                                        //v0.992
+                                        //NodeLevel_3_count++;
                                         Temp_Score_Move_3_human = CountScore(Skakiera_Human_Thinking_3);
 
-                                        if ( ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_3_human >= bestScoreLevel3))
-                                          || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_3_human <= bestScoreLevel3)) )
+                                        // v0.992: Score and parent for each move analyzed are stored on the spot and not at the end of the thinking depth
+                                        // since some branches of the thinking tree might be trimmed, thus not available at the end of the thinking depth for
+                                        // their score and parent to be stored!
+                                        // Store scores
+                                        //NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
+                                        //NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+                                        NodesAnalysis3[NodeLevel_3_count, 0] = Temp_Score_Move_3_human;
+                                        //NodesAnalysis4[NodeLevel_4_count, 0] = Temp_Score_Move_4;
+                                        // Store parents
+                                        //NodesAnalysis0[NodeLevel_0_count, 1] = 0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
+                                        //NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
+                                        NodesAnalysis3[NodeLevel_3_count, 1] = NodeLevel_2_count;
+                                        //NodesAnalysis4[NodeLevel_4_count, 1] = NodeLevel_3_count;
+
+                                        //v0.992: Store the variant text
+                                        //V0.992: NOT NEEDED!
+                                        //NodesAnalysis3_MoveText[NodeLevel_3_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text, " , ",
+                                        //                                                           Move2_text, " , ",
+                                        //                                                           Move3_text);
+
+                                        #region ObsoleteCode
+                                        //v0.990 test
+                                        //if ((ThisIsStupidMove.CompareTo("Y") == 0) && (m_PlayerColor.CompareTo("Black") == 0))
+                                        //    Temp_Score_Move_1_human = Temp_Score_Move_1_human - 100;
+                                        //else if ((ThisIsStupidMove.CompareTo("Y") == 0) && (m_PlayerColor.CompareTo("White") == 0))
+                                        //    Temp_Score_Move_1_human = Temp_Score_Move_1_human + 100;
+                                        //}
+                                        #endregion ObsoleteCode
+
+                                        // if (Move_Analyzed < Thinking_Depth)
+                                        // v0.990 Move 4 changes: Trim the tree!
+                                        // v0.992: Add more trimming rules
+                                        // LAST WORKING: SET 1 (6/2/2021)
+                                        // RULES SET 1: All rules
+                                        // RESULT: Not OK some times (when? I don't remember), but needed to filter out moves! (some scenarios, like the QBasic one, do not play without this filtering!)
+                                        //if ( ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_3_human >= bestScoreLevel3) && (move_dangerousness = false) && (ThisIsStupidMove.CompareTo("N") == 0) && (Math.Abs(m_StartingColumnNumber3 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank3 - m_StartingRank_HY) < 4))
+                                        //  || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_3_human <= bestScoreLevel3) && (move_dangerousness = false) && (ThisIsStupidMove.CompareTo("N") == 0) && (Math.Abs(m_StartingColumnNumber3 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank3 - m_StartingRank_HY) < 4)) )
+                                        // RULES SET 2: Proximity rule
+                                        // RESULT: Not OK.
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_3_human > bestScoreLevel3) && (Math.Abs(m_StartingColumnNumber3 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank3 - m_StartingRank_HY) < 4))
+                                        //  || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_3_human < bestScoreLevel3) && (Math.Abs(m_StartingColumnNumber3 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank3 - m_StartingRank_HY) < 4)))
+                                        // RULES SET 3: Only the score rule (use only the > instead of >= to reduce thinking time)
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_3_human >= bestScoreLevel3))
+                                        //  || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_3_human <= bestScoreLevel3)))
+                                        // RULES SET 4: Proximity rule at ending squares only
+                                        // RESULT: Not OK. Does not play. Too many moves to analyze? TBD. Tested it along with RULE 4 in Analyze_Move_2.
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Math.Abs(m_FinishingColumnNumber3 - m_FinishingColumnNumber_HY) < 4) && (Math.Abs(m_FinishingRank3 - m_FinishingRank_HY) < 4))
+                                        //  || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Math.Abs(m_FinishingColumnNumber3 - m_FinishingColumnNumber_HY) < 4) && (Math.Abs(m_FinishingRank3 - m_FinishingRank_HY) < 4)))
+                                        // RULES SET 5: Proximity rule targeting the ending square!
+                                        // RESULT: TBD
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber_HY) && (m_FinishingRank3 == m_FinishingRank_HY))
+                                        //    || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber_HY) && (m_FinishingRank3 == m_FinishingRank_HY)))
+                                        // RULES SET 6: Target the end square of the previous level!
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber2_public) && (m_FinishingRank3 == m_FinishingRank2_public))
+                                        //|| ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber2_public) && (m_FinishingRank3 == m_FinishingRank2_public)))
+                                        // RULES SET 7: Only if a piece is captured!
+                                        if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati3.CompareTo("") == 1))
                                         {
                                             // Call ComputerMove for the HY throught process to continue
                                             Move_Analyzed = Move_Analyzed + 1;
 
-                                            // v0.990 change: Store the best move at this level
-                                            bestScoreLevel3 = Temp_Score_Move_3_human;
+                                        // v0.990 change: Store the best move at this level
+                                        bestScoreLevel3 = Temp_Score_Move_3_human;
 
-                                            Who_Is_Analyzed = "HY";
+                                        Who_Is_Analyzed = "HY";
 
-                                            String[,] Skakiera_Move_After_3_new = new String[8, 8];
+                                        String[,] Skakiera_Move_After_3_new = new String[8, 8];
 
-                                            for (i = 0; i <= 7; i++)
+                                        for (i = 0; i <= 7; i++)
+                                        {
+                                            for (j = 0; j <= 7; j++)
                                             {
-                                                for (j = 0; j <= 7; j++)
-                                                {
-                                                    Skakiera_Move_After_3[(i), (j)] = Skakiera_Human_Thinking_3[(i), (j)];
-                                                    Skakiera_Move_After_3_new[(i), (j)] = Skakiera_Human_Thinking_3[(i), (j)];
-                                                }
+                                                //v0.992: Is Skakiera_Move_After_3 used anywhere?
+                                                Skakiera_Move_After_3[(i), (j)] = Skakiera_Human_Thinking_3[(i), (j)];
+                                                Skakiera_Move_After_3_new[(i), (j)] = Skakiera_Human_Thinking_3[(i), (j)];
                                             }
-
-                                            if (Move_Analyzed == 2)
-                                                Analyze_Move_2_ComputerMove(Skakiera_Move_After_3_new);
-                                            else if (Move_Analyzed == 4)
-                                                Analyze_Move_4_ComputerMove(Skakiera_Move_After_3_new);
                                         }
 
-                                        // Undo the move
-                                        Skakiera_Human_Thinking_3[(m_StartingColumnNumber3 - 1), (m_StartingRank3 - 1)] = MovingPiece3;
-                                        Skakiera_Human_Thinking_3[(m_FinishingColumnNumber3 - 1), (m_FinishingRank3 - 1)] = ProsorinoKommati3;
+                                        // v0.990: Skakiera_Move_After -> Skakiera_Move_After_3 -> Skakiera_Move_After_3_new
+                                        if (Move_Analyzed == 2)
+                                            Analyze_Move_2_ComputerMove(Skakiera_Move_After_3_new);
+                                        else if (Move_Analyzed == 4)
+                                            Analyze_Move_4_ComputerMove(Skakiera_Move_After_3_new);
                                     }
+
+                                    // Undo the move
+                                    Skakiera_Human_Thinking_3[(m_StartingColumnNumber3 - 1), (m_StartingRank3 - 1)] = MovingPiece3;
+                                    Skakiera_Human_Thinking_3[(m_FinishingColumnNumber3 - 1), (m_FinishingRank3 - 1)] = ProsorinoKommati3;
+
+                                    // v0.992
+                                    // Checkpoint increaseNodeCount
+                                    NodeLevel_3_count++;
+                                    Nodes_Total_count++;
+
+                                    //v0.992 fix - Needed for positions with many options?
+                                    //if (NodeLevel_3_count > 10000000)
+                                    //{
+                                    //    //Console.WriteLine("Limit of memory in NodesAnalysis array reached!");
+                                    //    //MessageBox.Show("Limit of memory in NodesAnalysis array reached!");
+                                    //    NodeLevel_3_count = 10000000;
+                                    //}
+                                }
 
                                 } // For 4
                             } // For 3
@@ -5760,105 +7137,105 @@ namespace HuoChessW8
             public static void Analyze_Move_2_ComputerMove(string[,] Skakiera_Thinking_HY_2)
             {
                 #region WriteLog
-                //if (activateLogs == true)
-                //{
-                //    huo_sw1.WriteLine("");
-                //    huo_sw1.WriteLine("CMT2 -- Entered Analyze_Move_2_ComputerMove");
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Depth analyzed: ", Move_Analyzed.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
+                if (activateLogs == true)
+                {
+                    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("CMT2 -- Entered Analyze_Move_2_ComputerMove");
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Depth analyzed: ", Move_Analyzed.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 0: ", NodeLevel_0_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 1: ", NodeLevel_1_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 2: ", NodeLevel_2_count.ToString()));
 
-                //    //v0.990
-                //    //huo_sw1.WriteLine("");
-                //    //huo_sw1.WriteLine("CHESSBOARD MOVE 2  - START");
-                //    //huo_sw1.WriteLine("-----------------------------------------");
-                //    //for (int yj = 7; yj >= 0; yj--)
-                //    //{
-                //    //    huo_sw1.WriteLine(String.Concat("| ", Skakiera_Thinking_HY_2[0, yj], " | ", Skakiera_Thinking_HY_2[1, yj], " | ", Skakiera_Thinking_HY_2[2, yj], " | ", Skakiera_Thinking_HY_2[3, yj], " | ", Skakiera_Thinking_HY_2[4, yj], " | ", Skakiera_Thinking_HY_2[5, yj], " | ", Skakiera_Thinking_HY_2[6, yj], " | ", Skakiera_Thinking_HY_2[7, yj], " |"));
-                //    //    huo_sw1.WriteLine("-----------------------------------------");
-                //    //}
-                //    //huo_sw1.WriteLine("");
+                    //v0.990
+                    //huo_sw1.WriteLine("");
+                    //huo_sw1.WriteLine("CHESSBOARD MOVE 2  - START");
+                    //huo_sw1.WriteLine("-----------------------------------------");
+                    //for (int yj = 7; yj >= 0; yj--)
+                    //{
+                    //    huo_sw1.WriteLine(String.Concat("| ", Skakiera_Thinking_HY_2[0, yj], " | ", Skakiera_Thinking_HY_2[1, yj], " | ", Skakiera_Thinking_HY_2[2, yj], " | ", Skakiera_Thinking_HY_2[3, yj], " | ", Skakiera_Thinking_HY_2[4, yj], " | ", Skakiera_Thinking_HY_2[5, yj], " | ", Skakiera_Thinking_HY_2[6, yj], " | ", Skakiera_Thinking_HY_2[7, yj], " |"));
+                    //    huo_sw1.WriteLine("-----------------------------------------");
+                    //}
+                    //huo_sw1.WriteLine("");
 
-                //    //v0.990
-                //    for (i = 0; i <= 7; i++)
-                //    {
-                //        for (j = 0; j <= 7; j++)
-                //        {
-                //            switch (Skakiera_Thinking_HY_2[(i), (j)])
-                //            {
-                //                case "White Rook":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WR";
-                //                    break;
+                    //v0.990
+                    for (i = 0; i <= 7; i++)
+                    {
+                        for (j = 0; j <= 7; j++)
+                        {
+                            switch (Skakiera_Thinking_HY_2[(i), (j)])
+                            {
+                                case "White Rook":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WR";
+                                    break;
 
-                //                case "White Knight":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WN";
-                //                    break;
+                                case "White Knight":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WN";
+                                    break;
 
-                //                case "White Bishop":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WB";
-                //                    break;
+                                case "White Bishop":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WB";
+                                    break;
 
-                //                case "White Queen":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WQ";
-                //                    break;
+                                case "White Queen":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WQ";
+                                    break;
 
-                //                case "White King":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WK";
-                //                    break;
+                                case "White King":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WK";
+                                    break;
 
-                //                case "White Pawn":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WP";
-                //                    break;
+                                case "White Pawn":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "WP";
+                                    break;
 
-                //                case "Black Rook":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BR";
-                //                    break;
+                                case "Black Rook":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BR";
+                                    break;
 
-                //                case "Black Knight":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BN";
-                //                    break;
+                                case "Black Knight":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BN";
+                                    break;
 
-                //                case "Black Bishop":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BB";
-                //                    break;
+                                case "Black Bishop":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BB";
+                                    break;
 
-                //                case "Black Queen":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BQ";
-                //                    break;
+                                case "Black Queen":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BQ";
+                                    break;
 
-                //                case "Black King":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BK";
-                //                    break;
+                                case "Black King":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BK";
+                                    break;
 
-                //                case "Black Pawn":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BP";
-                //                    break;
+                                case "Black Pawn":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "BP";
+                                    break;
 
-                //                case "":
-                //                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "  ";
-                //                    break;
-                //            }
-                //        }
-                //    }
+                                case "":
+                                    NodesAnalysis2_Chessboard_before[i, j, NodeLevel_2_count] = "  ";
+                                    break;
+                            }
+                        }
+                    }
 
-                //    huo_sw1.WriteLine("");
-                //    huo_sw1.WriteLine("CHESSBOARD Move 2 (upon calling function)");
-                //    huo_sw1.WriteLine("-----------------------------------------");
-                //    for (int yj = 7; yj >= 0; yj--)
-                //    {
-                //        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard_before[0, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[1, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[2, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[3, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[4, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[5, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[6, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[7, yj, NodeLevel_2_count], " |"));
-                //        huo_sw1.WriteLine("-----------------------------------------");
-                //    }
-                //    huo_sw1.WriteLine("CHESSBOARD Move 2 - END");
-                //    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("");
+                    huo_sw1.WriteLine("CHESSBOARD Move 2 (upon calling function)");
+                    huo_sw1.WriteLine("-----------------------------------------");
+                    for (int yj = 7; yj >= 0; yj--)
+                    {
+                        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard_before[0, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[1, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[2, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[3, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[4, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[5, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[6, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_before[7, yj, NodeLevel_2_count], " |"));
+                        huo_sw1.WriteLine("-----------------------------------------");
+                    }
+                    huo_sw1.WriteLine("CHESSBOARD Move 2 - END");
+                    huo_sw1.WriteLine("");
 
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
-                //    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
-                //    huo_sw1.WriteLine("");
-                //}
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 3: ", NodeLevel_3_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 4: ", NodeLevel_4_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 5: ", NodeLevel_5_count.ToString()));
+                    huo_sw1.WriteLine(string.Concat("CMT2 -- Number of Nodes 6: ", NodeLevel_6_count.ToString()));
+                    huo_sw1.WriteLine("");
+                }
                 #endregion WriteLog
 
                 // v0.990 change: The best score for every move will be stored at each level. Only if the new move analyzed
@@ -5932,6 +7309,12 @@ namespace HuoChessW8
                                     m_FinishingRank2 = r + 1;
                                     ProsorinoKommati2 = Skakiera_Thinking_HY_2[(m_FinishingColumnNumber2 - 1), (m_FinishingRank2 - 1)];
 
+                                    //v0.992
+                                    m_StartingColumnNumber2_public = m_StartingColumnNumber2;
+                                    m_FinishingColumnNumber2_public = m_FinishingColumnNumber2;
+                                    m_StartingRank2_public = m_StartingRank2;
+                                    m_FinishingRank2_public = m_FinishingRank2;
+
                                     // Έλεγχος της κίνησης (Check the move)
 
                                     // Validity and legality of the move has been checked in CheckMove
@@ -5968,100 +7351,101 @@ namespace HuoChessW8
                                     {
                                         // v0.991
                                         #region MoveText
-                                        //String m_StartingColumnNumber2_moveText;
-                                        //String m_FinishingColumnNumber2_moveText;
+                                        String m_StartingColumnNumber2_moveText;
+                                        String m_FinishingColumnNumber2_moveText;
 
-                                        //switch (m_StartingColumnNumber2)
-                                        //{
-                                        //    case (1):
-                                        //        m_StartingColumnNumber2_moveText = "a";
-                                        //        break;
+                                        switch (m_StartingColumnNumber2)
+                                        {
+                                            case (1):
+                                                m_StartingColumnNumber2_moveText = "a";
+                                                break;
 
-                                        //    case (2):
-                                        //        m_StartingColumnNumber2_moveText = "b";
-                                        //        break;
+                                            case (2):
+                                                m_StartingColumnNumber2_moveText = "b";
+                                                break;
 
-                                        //    case (3):
-                                        //        m_StartingColumnNumber2_moveText = "c";
-                                        //        break;
+                                            case (3):
+                                                m_StartingColumnNumber2_moveText = "c";
+                                                break;
 
-                                        //    case (4):
-                                        //        m_StartingColumnNumber2_moveText = "d";
-                                        //        break;
+                                            case (4):
+                                                m_StartingColumnNumber2_moveText = "d";
+                                                break;
 
-                                        //    case (5):
-                                        //        m_StartingColumnNumber2_moveText = "e";
-                                        //        break;
+                                            case (5):
+                                                m_StartingColumnNumber2_moveText = "e";
+                                                break;
 
-                                        //    case (6):
-                                        //        m_StartingColumnNumber2_moveText = "f";
-                                        //        break;
+                                            case (6):
+                                                m_StartingColumnNumber2_moveText = "f";
+                                                break;
 
-                                        //    case (7):
-                                        //        m_StartingColumnNumber2_moveText = "g";
-                                        //        break;
+                                            case (7):
+                                                m_StartingColumnNumber2_moveText = "g";
+                                                break;
 
-                                        //    case (8):
-                                        //        m_StartingColumnNumber2_moveText = "h";
-                                        //        break;
+                                            case (8):
+                                                m_StartingColumnNumber2_moveText = "h";
+                                                break;
 
-                                        //    default:
-                                        //        m_StartingColumnNumber2_moveText = "Error";
-                                        //        break;
-                                        //}
+                                            default:
+                                                m_StartingColumnNumber2_moveText = "Error";
+                                                break;
+                                        }
 
-                                        //switch (m_FinishingColumnNumber2)
-                                        //{
-                                        //    case (1):
-                                        //        m_FinishingColumnNumber2_moveText = "a";
-                                        //        break;
+                                        switch (m_FinishingColumnNumber2)
+                                        {
+                                            case (1):
+                                                m_FinishingColumnNumber2_moveText = "a";
+                                                break;
 
-                                        //    case (2):
-                                        //        m_FinishingColumnNumber2_moveText = "b";
-                                        //        break;
+                                            case (2):
+                                                m_FinishingColumnNumber2_moveText = "b";
+                                                break;
 
-                                        //    case (3):
-                                        //        m_FinishingColumnNumber2_moveText = "c";
-                                        //        break;
+                                            case (3):
+                                                m_FinishingColumnNumber2_moveText = "c";
+                                                break;
 
-                                        //    case (4):
-                                        //        m_FinishingColumnNumber2_moveText = "d";
-                                        //        break;
+                                            case (4):
+                                                m_FinishingColumnNumber2_moveText = "d";
+                                                break;
 
-                                        //    case (5):
-                                        //        m_FinishingColumnNumber2_moveText = "e";
-                                        //        break;
+                                            case (5):
+                                                m_FinishingColumnNumber2_moveText = "e";
+                                                break;
 
-                                        //    case (6):
-                                        //        m_FinishingColumnNumber2_moveText = "f";
-                                        //        break;
+                                            case (6):
+                                                m_FinishingColumnNumber2_moveText = "f";
+                                                break;
 
-                                        //    case (7):
-                                        //        m_FinishingColumnNumber2_moveText = "g";
-                                        //        break;
+                                            case (7):
+                                                m_FinishingColumnNumber2_moveText = "g";
+                                                break;
 
-                                        //    case (8):
-                                        //        m_FinishingColumnNumber2_moveText = "h";
-                                        //        break;
+                                            case (8):
+                                                m_FinishingColumnNumber2_moveText = "h";
+                                                break;
 
-                                        //    default:
-                                        //        m_FinishingColumnNumber2_moveText = "Error";
-                                        //        break;
-                                        //}
+                                            default:
+                                                m_FinishingColumnNumber2_moveText = "Error";
+                                                break;
+                                        }
 
-                                        //Move2_text = String.Concat(m_StartingColumnNumber2_moveText,
-                                        //                           m_StartingRank2.ToString(), " -> ",
-                                        //                           m_FinishingColumnNumber2_moveText,
-                                        //                           m_FinishingRank2.ToString());
+                                        Move2_text = String.Concat(m_StartingColumnNumber2_moveText,
+                                                                   m_StartingRank2.ToString(), " -> ",
+                                                                   m_FinishingColumnNumber2_moveText,
+                                                                   m_FinishingRank2.ToString());
 
-                                        //NodesAnalysis2_MoveText[NodeLevel_2_count] = Move2_text;
+                                        NodesAnalysis2_MoveText[NodeLevel_2_count] = Move2_text;
                                         #endregion MoveText
 
                                         //huo_sw1.WriteLine(string.Concat("Hu move 1: Found a legal move!"));
                                         //huo_sw1.WriteLine(String.Concat("[Point 5] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_2[4, 0].ToString()));
 
                                         // Do the move
-                                        //v0.990: ProsorinoKommati -> ProsorinoKommati2, MovingPiece -> MovingPiece2
+                                        // v0.990: ProsorinoKommati -> ProsorinoKommati2, MovingPiece -> MovingPiece2
+                                        // v0.992: Obsolete. The ProsorinoKommati2 is already defined above.
                                         ProsorinoKommati2 = Skakiera_Thinking_HY_2[(m_FinishingColumnNumber2 - 1), (m_FinishingRank2 - 1)];
                                         Skakiera_Thinking_HY_2[(m_StartingColumnNumber2 - 1), (m_StartingRank2 - 1)] = "";
                                         Skakiera_Thinking_HY_2[(m_FinishingColumnNumber2 - 1), (m_FinishingRank2 - 1)] = MovingPiece2;
@@ -6082,8 +7466,31 @@ namespace HuoChessW8
                                         // NodeLevel_2_count++;
                                         #endregion ObsoleteCode
 
-                                        //v0.980: Removed humanDangerParameter from every call of CountScore
+                                        // Count the score of the move
+                                        // v0.980: Removed humanDangerParameter from every call of CountScore
                                         Temp_Score_Move_2 = CountScore(Skakiera_Thinking_HY_2);
+
+                                        // v0.992: Score and parent for each move analyzed are stored on the spot and not at the end of the thinking depth
+                                        // since some branches of the thinking tree might be trimmed, thus not available at the end of the thinking depth for
+                                        // their score and parent to be stored!
+                                        // Store scores
+                                        //NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
+                                        NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+                                        //NodesAnalysis3[NodeLevel_3_count, 0] = Temp_Score_Move_3_human;
+                                        //NodesAnalysis4[NodeLevel_4_count, 0] = Temp_Score_Move_4;
+                                        // Store parents
+                                        //NodesAnalysis0[NodeLevel_0_count, 1] = 0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
+                                        NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
+                                        //NodesAnalysis3[NodeLevel_3_count, 1] = NodeLevel_2_count;
+                                        //NodesAnalysis4[NodeLevel_4_count, 1] = NodeLevel_3_count;
+
+                                        //v0.992: Store the variant text
+                                        //V0.992: NOT NEEDED!
+                                        //NodesAnalysis2_MoveText[NodeLevel_2_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text, " , ",
+                                        //                                                           Move2_text);
 
                                         #region ObsoleteCode
                                         //v0.980: This is the end of the analysis, so no need to call anymore the Analyze_Move functions!
@@ -6119,313 +7526,363 @@ namespace HuoChessW8
                                         #endregion ObsoleteCode
 
                                         // If thinking depth not reached? (Don't forget to trim the tree!)
-                                        if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_2 <= bestScoreLevel2))
-                                          || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_2 >= bestScoreLevel2)))
-                                            {
-                                                Move_Analyzed = Move_Analyzed + 1;
-
-                                            // v0.990 change
-                                            // Store the best score at this level
-                                            // v0.990 change: Moved it here, AFTER we check that the move is better than the existing best score!
-                                            // v0.990 change: (if we have this outside the 'if' statement, then the conditions will always be met)
-                                            bestScoreLevel2 = Temp_Score_Move_2;
-
-                                            // v0.991: Keep this section! It is needed so as not to pass over the
-                                            // existing chessboard as argument to the other function, which will
-                                            // change it! (and we do not want this to happen)
-                                            // v0.990: Skakiera_Move_After -> Skakiera_Move_After_2
-                                            for (i = 0; i <= 7; i++)
-                                            {
-                                                for (j = 0; j <= 7; j++)
-                                                {
-                                                    Skakiera_Move_After_2[(i), (j)] = Skakiera_Thinking_HY_2[(i), (j)];
-                                                }
-                                            }
-
-                                            Who_Is_Analyzed = "Human";
-
-                                            #region HuoChessHistory
-                                            // v0.980 REMOVED First_Call_Human_Thought = true;
-                                            // v0.990 Move 4 changes
-                                            // Check human move
-                                            //v0.990: Skakiera_Move_After -> Skakiera_Thinking_HY_2
-                                            #endregion HuoChessHistory
-
-                                            if (Move_Analyzed == 1)
-                                                Analyze_Move_1_HumanMove(Skakiera_Move_After_2);
-                                            else if (Move_Analyzed == 3)
-                                                Analyze_Move_3_HumanMove(Skakiera_Move_After_2);
-                                        }
-
-
-                                        if (Move_Analyzed == Thinking_Depth)
+                                        // v0.992: Add more trimming rules
+                                        //if (Move_Analyzed < Thinking_Depth)
+                                        // TEST 1: All rules
+                                        // RESULT: Not OK
+                                        // Potential improvement: We should use the dangerousness indication of the move in this level, not of the initial move anayzed!
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_2 <= bestScoreLevel2) && (move_dangerousness = false) && (ThisIsStupidMove.CompareTo("N") == 0) && (Math.Abs(m_StartingColumnNumber2 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank2 - m_StartingRank_HY) < 4))
+                                        //  || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_2 >= bestScoreLevel2) && (move_dangerousness = false) && (ThisIsStupidMove.CompareTo("N") == 0) && (Math.Abs(m_StartingColumnNumber2 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank2 - m_StartingRank_HY) < 4)))
+                                        // TEST 2: Proximity rule
+                                        // RESULT: Not OK. Issues with the move played.
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_2 < bestScoreLevel2) && (Math.Abs(m_StartingColumnNumber2 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank2 - m_StartingRank_HY) < 4))
+                                        //  || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_2 > bestScoreLevel2) && (Math.Abs(m_StartingColumnNumber2 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank2 - m_StartingRank_HY) < 4)))
+                                        // LAST WORKING: TEST 3 (6/1/2021) with the > instead of >= to reduce thinking time
+                                        // TEST 3: Only the score rule (use only the > instead of >= to reduce thinking time)
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_2 < bestScoreLevel2))
+                                        //|| ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_2 > bestScoreLevel2)))
+                                        // TEST 4: Leave only the proximity rule with the finishing square!
+                                        // RESULT: Not OK. Does not work. Too many moves to analyze? TBD. Tested along with RULE SET 4 at Analyze_Move_3.
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Math.Abs(m_FinishingColumnNumber2 - m_FinishingColumnNumber_HY) < 4) && (Math.Abs(m_FinishingRank2 - m_FinishingRank_HY) < 4))
+                                        //  || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Math.Abs(m_FinishingColumnNumber2 - m_FinishingColumnNumber_HY) < 4) && (Math.Abs(m_FinishingRank2 - m_FinishingRank_HY) < 4)))
+                                        // TEST 5: Leave only the rule with the finishing square as target!
+                                        // RESULT: TBD
+                                        //if (  (  (Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (m_FinishingColumnNumber2 == m_FinishingColumnNumber_HY) && (m_FinishingRank2 == m_FinishingRank_HY))
+                                        //|| ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (m_FinishingColumnNumber2 == m_FinishingColumnNumber_HY) && (m_FinishingRank2 == m_FinishingRank_HY)))
+                                        // TEST 6: Finishing square of previous level of thinking as the target
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (m_FinishingColumnNumber2 == m_FinishingColumnNumber1_public) && (m_FinishingRank2 == m_FinishingRank1_public))
+                                        //    || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (m_FinishingColumnNumber2 == m_FinishingColumnNumber1_public) && (m_FinishingRank2 == m_FinishingRank1_public)))
+                                        // TEST 7: Best score OR (not AND) Finishing square of previous level of thinking as the target
+                                        // TEST 8: Only if a piece is captured!
+                                        if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati2.CompareTo("") == 1))
                                         {
-                                            // [MiniMax algorithm - skakos]
-                                            // Record the node in the Nodes Analysis array (to use with MiniMax algorithm) skakos
+                                            Move_Analyzed = Move_Analyzed + 1;
 
-                                            //v0.970
-                                            NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
-                                            NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
-                                            NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+                                        // v0.990 change
+                                        // Store the best score at this level
+                                        // v0.990 change: Moved it here, AFTER we check that the move is better than the existing best score!
+                                        // v0.990 change: (if we have this outside the 'if' statement, then the conditions will always be met)
+                                        bestScoreLevel2 = Temp_Score_Move_2;
 
-                                            // v0.991: Text of the move variant analyzed (used for logs mainly)
-                                            //NodesAnalysis2_MoveText[NodeLevel_2_count] = String.Concat(Move0_text, " , ",
-                                            //                                                           Move1_text, " , ",
-                                            //                                                           Move2_text);
-
-                                            //NodesAnalysis1_MoveText[NodeLevel_1_count] = String.Concat(Move0_text, " , ",
-                                            //                                                           Move1_text);
-
-                                            //NodesAnalysis0_MoveText[NodeLevel_0_count] = String.Concat(Move0_text);
-
-                                            // v0.991: Ability to activate/ deactivate logs easily
-                                            #region WriteLog
-                                            //if (activateLogs == true)
-                                            //{
-                                            //    huo_sw1.WriteLine("");
-                                            //    huo_sw1.WriteLine("CMT2 --------------------------------------------");
-                                            //    //huo_sw1.WriteLine(string.Concat("CMT2 -- VARIANT ANALYZED -- Level 1: ",
-                                            //    //                  NodesAnalysis0_MoveText[NodeLevel_0_count]));
-                                            //    //huo_sw1.WriteLine(string.Concat("CMT2 -- VARIANT ANALYZED -- Level 2: ",
-                                            //    //                  NodesAnalysis0_MoveText[NodeLevel_0_count],
-                                            //    //                  NodesAnalysis1_MoveText[NodeLevel_1_count]));
-                                            //    huo_sw1.WriteLine(string.Concat("CMT2 -- VARIANT ANALYZED : ",
-                                            //                      NodesAnalysis2_MoveText[NodeLevel_2_count]));
-                                            //    huo_sw1.WriteLine(string.Concat("CMT2 -- FINAL SCORE REACHED : ",
-                                            //                      NodesAnalysis2[NodeLevel_2_count, 0].ToString()));
-                                            //    huo_sw1.WriteLine("CMT2 --------------------------------------------");
-                                            //}
-                                            #endregion WriteLog
-
-                                            // v0.992 - Store the average score of the branch
-                                            // (do this here or in the ComputerMove function at the MiniMax algorithm section directly)
-                                            // NodesAnalysisA[NodeLevel_2_count, 0] = (Temp_Score_Move_0 +
-                                            //                                         Temp_Score_Move_1_human +
-                                            //                                         Temp_Score_Move_2) / 3;
-
-                                            #region HuoChessLog
-                                            ////v0.990
-                                            //NodesAnalysis2_Move[NodeLevel_2_count] = String.Concat("Move Analyzed for Node ", NodeLevel_2_count.ToString(), " [Level 2]: ", MovingPiece2, " ", m_StartingColumnNumber2.ToString(), m_StartingRank2.ToString(), " -> ", m_FinishingColumnNumber2.ToString(), m_FinishingRank2.ToString());
-                                            ////v0.990
-                                            //for (i = 0; i <= 7; i++)
-                                            //{
-                                            //    for (j = 0; j <= 7; j++)
-                                            //    {
-                                            //        switch(Skakiera_Thinking_HY_2[(i), (j)])
-                                            //        {
-                                            //            case "White Rook":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WR";
-                                            //                break;
-
-                                            //            case "White Knight":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WN";
-                                            //                break;
-
-                                            //            case "White Bishop":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WB";
-                                            //                break;
-
-                                            //            case "White Queen":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WQ";
-                                            //                break;
-
-                                            //            case "White King":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WK";
-                                            //                break;
-
-                                            //            case "White Pawn":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WP";
-                                            //                break;
-
-                                            //            case "Black Rook":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BR";
-                                            //                break;
-
-                                            //            case "Black Knight":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BN";
-                                            //                break;
-
-                                            //            case "Black Bishop":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BB";
-                                            //                break;
-
-                                            //            case "Black Queen":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BQ";
-                                            //                break;
-
-                                            //            case "Black King":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BK";
-                                            //                break;
-
-                                            //            case "Black Pawn":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BP";
-                                            //                break;
-
-                                            //            case "":
-                                            //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "  ";
-                                            //                break;
-                                            //        }
-                                            //    }
-                                            //}
-
-                                            //huo_sw1.WriteLine("");
-                                            //huo_sw1.WriteLine(String.Concat("CMT2 -- Computer 2nd move: ", NodesAnalysis2_Move[NodeLevel_2_count].ToString()));
-                                            //huo_sw1.WriteLine("");
-                                            //huo_sw1.WriteLine("CHESSBOARD (after final move of computer)");
-                                            ////huo_sw1.WriteLine("-----------------------------------------");
-                                            ////for (int yj = 7; yj >= 0; yj--)
-                                            ////{
-                                            ////    huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard[0, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[1, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[2, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[3, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[4, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[5, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[6, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[7, yj, NodeLevel_2_count], " |"));
-                                            ////    huo_sw1.WriteLine("-----------------------------------------");
-                                            ////}
-                                            //huo_sw1.WriteLine("");
-
-                                            //huo_sw1.WriteLine(string.Concat("CMT2 -- Computer 2nd move: Above position corresponds to Node ", NodeLevel_2_count.ToString(), " of Level 2"));
-                                            #endregion HuoChessLog
-
-                                            // Store the parents (number of the node of the upper level)
-                                            NodesAnalysis0[NodeLevel_0_count, 1] = 0;
-                                            NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
-                                            NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
-
-                                            #region toRemove
-                                            //v0.980: Removed
-                                            //if (Danger_penalty == true)
-                                            //{
-                                            //    //NodesAnalysis[NodeLevel_0_count, 0, 0] = NodesAnalysis[NodeLevel_0_count, 0, 0] - 2000000000;
-                                            //    //NodesAnalysis[NodeLevel_1_count, 1, 0] = NodesAnalysis[NodeLevel_1_count, 1, 0] + 2000000000;
-                                            //}
-
-                                            //if (go_for_it == true)
-                                            //{
-                                            //    //NodesAnalysis[NodeLevel_0_count, 0, 0] = NodesAnalysis[NodeLevel_0_count, 0, 0] + 2000000000;
-                                            //    //NodesAnalysis[NodeLevel_1_count, 1, 0] = NodesAnalysis[NodeLevel_1_count, 1, 0] - 2000000000;
-                                            //}
-                                            #endregion toRemove
-
-                                            //v0.980: removed
-                                            Nodes_Total_count++;
-
-                                            #region toRemove
-                                            //v0.980: Removed
-                                            // Safety valve in case we reach the end of the table capacity
-                                            // This is a limit for the memory. Will have to do something about it!
-                                            //if (Nodes_Total_count > 1000000)
-                                            //{
-                                            //    Console.WriteLine("Limit of memory in NodesAnalysis array reached!");
-                                            //    Nodes_Total_count = 1000000;
-                                            //}
-                                            #endregion toRemove
+                                        // v0.991: Keep this section! It is needed so as not to pass over the
+                                        // existing chessboard as argument to the other function, which will
+                                        // change it! (and we do not want this to happen)
+                                        // v0.990: Skakiera_Move_After -> Skakiera_Move_After_2
+                                        for (i = 0; i <= 7; i++)
+                                        {
+                                            for (j = 0; j <= 7; j++)
+                                            {
+                                                Skakiera_Move_After_2[(i), (j)] = Skakiera_Thinking_HY_2[(i), (j)];
+                                            }
                                         }
+
+                                        Who_Is_Analyzed = "Human";
+
+                                        #region HuoChessHistory
+                                        // v0.980 REMOVED First_Call_Human_Thought = true;
+                                        // v0.990 Move 4 changes
+                                        // Check human move
+                                        //v0.990: Skakiera_Move_After -> Skakiera_Thinking_HY_2
+                                        #endregion HuoChessHistory
+
+                                        //v0.992: The "if" is not needed here.
+                                        if (Move_Analyzed == 1)
+                                            Analyze_Move_1_HumanMove(Skakiera_Move_After_2);
+                                        else if (Move_Analyzed == 3)
+                                            Analyze_Move_3_HumanMove(Skakiera_Move_After_2);
+                                    }
+
+                                    // If you have reached the Thinking Depth... do nothing! :)
+                                    // Anyway all scores and parents in the nodes are already saved at each level of thought.
+                                    if (Move_Analyzed == Thinking_Depth)
+                                    {
+                                        // [MiniMax algorithm - skakos]
+                                        // Record the node in the Nodes Analysis array (to use with MiniMax algorithm) skakos
+
+                                        //v0.970
+                                        //v0.992: Not needed here anymore. The nodes are updated at every level now.
+                                        //NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
+                                        //NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+
+                                        // v0.992
+                                        // v0.992: These ARE be in every node now, as are the node scores!
+                                        //NodesAnalysis4_MoveText[NodeLevel_4_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text, " , ",
+                                        //                                                           Move2_text, " , ",
+                                        //                                                           Move3_text, " , ",
+                                        //                                                           Move4_text);
+
+                                        //NodesAnalysis3_MoveText[NodeLevel_3_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text, " , ",
+                                        //                                                           Move2_text, " , ",
+                                        //                                                           Move3_text);
+
+                                        // v0.991: Text of the move variant analyzed (used for logs mainly)
+                                        //NodesAnalysis2_MoveText[NodeLevel_2_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text, " , ",
+                                        //                                                           Move2_text);
+
+                                        //NodesAnalysis1_MoveText[NodeLevel_1_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text);
+
+                                        //NodesAnalysis0_MoveText[NodeLevel_0_count] = String.Concat(Move0_text);
+
+                                        // v0.991: Ability to activate/ deactivate logs easily
+                                        #region WriteLog
+                                        if (activateLogs == true)
+                                        {
+                                            huo_sw1.WriteLine("");
+                                            huo_sw1.WriteLine("CMT2 --------------------------------------------");
+                                            //huo_sw1.WriteLine(string.Concat("CMT2 -- VARIANT ANALYZED -- Level 1: ",
+                                            //                  NodesAnalysis0_MoveText[NodeLevel_0_count]));
+                                            //huo_sw1.WriteLine(string.Concat("CMT2 -- VARIANT ANALYZED -- Level 2: ",
+                                            //                  NodesAnalysis0_MoveText[NodeLevel_0_count],
+                                            //                  NodesAnalysis1_MoveText[NodeLevel_1_count]));
+                                            huo_sw1.WriteLine(string.Concat("CMT2 -- VARIANT ANALYZED : ",
+                                                                NodesAnalysis2_MoveText[NodeLevel_2_count]));
+                                            huo_sw1.WriteLine(string.Concat("CMT2 -- FINAL SCORE REACHED : ",
+                                                                NodesAnalysis2[NodeLevel_2_count, 0].ToString()));
+                                            huo_sw1.WriteLine("CMT2 --------------------------------------------");
+                                        }
+                                        #endregion WriteLog
+
+                                        // v0.992 - Store the average score of the branch
+                                        // (do this here or in the ComputerMove function at the MiniMax algorithm section directly)
+                                        // NodesAnalysisA[NodeLevel_2_count, 0] = (Temp_Score_Move_0 +
+                                        //                                         Temp_Score_Move_1_human +
+                                        //                                         Temp_Score_Move_2) / 3;
+
+                                        #region HuoChessLog
+                                        ////v0.990
+                                        //NodesAnalysis2_Move[NodeLevel_2_count] = String.Concat("Move Analyzed for Node ", NodeLevel_2_count.ToString(), " [Level 2]: ", MovingPiece2, " ", m_StartingColumnNumber2.ToString(), m_StartingRank2.ToString(), " -> ", m_FinishingColumnNumber2.ToString(), m_FinishingRank2.ToString());
+                                        ////v0.990
+                                        //for (i = 0; i <= 7; i++)
+                                        //{
+                                        //    for (j = 0; j <= 7; j++)
+                                        //    {
+                                        //        switch(Skakiera_Thinking_HY_2[(i), (j)])
+                                        //        {
+                                        //            case "White Rook":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WR";
+                                        //                break;
+
+                                        //            case "White Knight":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WN";
+                                        //                break;
+
+                                        //            case "White Bishop":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WB";
+                                        //                break;
+
+                                        //            case "White Queen":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WQ";
+                                        //                break;
+
+                                        //            case "White King":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WK";
+                                        //                break;
+
+                                        //            case "White Pawn":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "WP";
+                                        //                break;
+
+                                        //            case "Black Rook":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BR";
+                                        //                break;
+
+                                        //            case "Black Knight":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BN";
+                                        //                break;
+
+                                        //            case "Black Bishop":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BB";
+                                        //                break;
+
+                                        //            case "Black Queen":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BQ";
+                                        //                break;
+
+                                        //            case "Black King":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BK";
+                                        //                break;
+
+                                        //            case "Black Pawn":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "BP";
+                                        //                break;
+
+                                        //            case "":
+                                        //                NodesAnalysis2_Chessboard[i, j, NodeLevel_2_count] = "  ";
+                                        //                break;
+                                        //        }
+                                        //    }
+                                        //}
+
+                                        //huo_sw1.WriteLine("");
+                                        //huo_sw1.WriteLine(String.Concat("CMT2 -- Computer 2nd move: ", NodesAnalysis2_Move[NodeLevel_2_count].ToString()));
+                                        //huo_sw1.WriteLine("");
+                                        //huo_sw1.WriteLine("CHESSBOARD (after final move of computer)");
+                                        ////huo_sw1.WriteLine("-----------------------------------------");
+                                        ////for (int yj = 7; yj >= 0; yj--)
+                                        ////{
+                                        ////    huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard[0, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[1, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[2, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[3, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[4, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[5, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[6, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard[7, yj, NodeLevel_2_count], " |"));
+                                        ////    huo_sw1.WriteLine("-----------------------------------------");
+                                        ////}
+                                        //huo_sw1.WriteLine("");
+
+                                        //huo_sw1.WriteLine(string.Concat("CMT2 -- Computer 2nd move: Above position corresponds to Node ", NodeLevel_2_count.ToString(), " of Level 2"));
+                                        #endregion HuoChessLog
+
+                                        // Store the parents (number of the node of the upper level)
+                                        // v0.992: Not needed here anymore. The nodes are updated at every level now.
+                                        //NodesAnalysis0[NodeLevel_0_count, 1] = 0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
+                                        //NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
 
                                         #region toRemove
-                                        //huo_sw1.WriteLine(String.Concat("[Point 7] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_2[4, 0].ToString()));
-
-                                        //if (MovingPiece2.CompareTo("White King") == 0)
+                                        //v0.980: Removed
+                                        //if (Danger_penalty == true)
                                         //{
-                                        //    huo_sw1.WriteLine("");
-                                        //    huo_sw1.WriteLine("King moving...");
-                                        //    huo_sw1.WriteLine(String.Concat("MovingPiece2 = ", MovingPiece2));
-                                        //    huo_sw1.WriteLine(String.Concat("ProsorinoKommati2 = ", ProsorinoKommati2));
-                                        //    huo_sw1.WriteLine("");
+                                        //    //NodesAnalysis[NodeLevel_0_count, 0, 0] = NodesAnalysis[NodeLevel_0_count, 0, 0] - 2000000000;
+                                        //    //NodesAnalysis[NodeLevel_1_count, 1, 0] = NodesAnalysis[NodeLevel_1_count, 1, 0] + 2000000000;
                                         //}
-                                        //if ((MovingPiece2.CompareTo("White Pawn") == 0) && (m_StartingColumnNumber2 == 5) && (m_StartingRank2 == 2))
+
+                                        //if (go_for_it == true)
                                         //{
-                                        //    huo_sw1.WriteLine("");
-                                        //    huo_sw1.WriteLine("White Pawn e2 moving...");
-                                        //    huo_sw1.WriteLine(String.Concat("Target column : ", m_FinishingColumnNumber2));
-                                        //    huo_sw1.WriteLine(String.Concat("Target rank   : ", m_FinishingRank2));
-                                        //    huo_sw1.WriteLine(String.Concat("MovingPiece2 = ", MovingPiece2));
-                                        //    huo_sw1.WriteLine(String.Concat("ProsorinoKommati2 = ", ProsorinoKommati2));
-                                        //    huo_sw1.WriteLine("");
+                                        //    //NodesAnalysis[NodeLevel_0_count, 0, 0] = NodesAnalysis[NodeLevel_0_count, 0, 0] + 2000000000;
+                                        //    //NodesAnalysis[NodeLevel_1_count, 1, 0] = NodesAnalysis[NodeLevel_1_count, 1, 0] - 2000000000;
                                         //}
                                         #endregion toRemove
 
-                                        // Undo the move
-                                        Skakiera_Thinking_HY_2[(m_StartingColumnNumber2 - 1), (m_StartingRank2 - 1)] = MovingPiece2;
-                                        Skakiera_Thinking_HY_2[(m_FinishingColumnNumber2 - 1), (m_FinishingRank2 - 1)] = ProsorinoKommati2;
+                                        //v0.980: removed
+                                        //v0.992: This if shoud be removed alltogether.
+                                        //        Also this "Nodes_Total_count++;" should be moved to where NodeLevel_2_count is increased.
+                                        //Nodes_Total_count++;
 
-                                        // v0.991 - This should be done here!
-                                        NodeLevel_2_count++;
-
-                                        #region WriteLog
-                                        //if ( (MovingPiece2.CompareTo("White King") == 0) ||
-                                        //     ((MovingPiece2.CompareTo("White Pawn") == 0) && (m_StartingColumnNumber2 == 5) && (m_StartingRank2 == 2)) )
+                                        #region toRemove
+                                        //v0.980: Removed
+                                        // Safety valve in case we reach the end of the table capacity
+                                        // This is a limit for the memory. Will have to do something about it!
+                                        //if (Nodes_Total_count > 1000000)
                                         //{
-                                        //    huo_sw1.WriteLine("");
-                                        //    huo_sw1.WriteLine("Restored chessboard...");
-                                        //    for (i = 0; i <= 7; i++)
-                                        //    {
-                                        //        for (j = 0; j <= 7; j++)
-                                        //        {
-                                        //            switch (Skakiera_Thinking_HY_2[(i), (j)])
-                                        //            {
-                                        //                case "White Rook":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WR";
-                                        //                    break;
-
-                                        //                case "White Knight":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WN";
-                                        //                    break;
-
-                                        //                case "White Bishop":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WB";
-                                        //                    break;
-
-                                        //                case "White Queen":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WQ";
-                                        //                    break;
-
-                                        //                case "White King":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WK";
-                                        //                    break;
-
-                                        //                case "White Pawn":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WP";
-                                        //                    break;
-
-                                        //                case "Black Rook":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BR";
-                                        //                    break;
-
-                                        //                case "Black Knight":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BN";
-                                        //                    break;
-
-                                        //                case "Black Bishop":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BB";
-                                        //                    break;
-
-                                        //                case "Black Queen":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BQ";
-                                        //                    break;
-
-                                        //                case "Black King":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BK";
-                                        //                    break;
-
-                                        //                case "Black Pawn":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BP";
-                                        //                    break;
-
-                                        //                case "":
-                                        //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "  ";
-                                        //                    break;
-                                        //            }
-                                        //        }
-                                        //    }
-
-                                        //    huo_sw1.WriteLine("CHESSBOARD (after restoring it to check next move)");
-                                        //    huo_sw1.WriteLine("-----------------------------------------");
-                                        //    for (int yj = 7; yj >= 0; yj--)
-                                        //    {
-                                        //        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard_2[0, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[1, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[2, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[3, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[4, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[5, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[6, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[7, yj, NodeLevel_2_count], " |"));
-                                        //        huo_sw1.WriteLine("-----------------------------------------");
-                                        //    }
-                                        //    huo_sw1.WriteLine("");
+                                        //    Console.WriteLine("Limit of memory in NodesAnalysis array reached!");
+                                        //    Nodes_Total_count = 1000000;
                                         //}
-                                        #endregion WriteLog
+                                        #endregion toRemove
                                     }
+
+                                    #region toRemove
+                                    //huo_sw1.WriteLine(String.Concat("[Point 7] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_2[4, 0].ToString()));
+
+                                    //if (MovingPiece2.CompareTo("White King") == 0)
+                                    //{
+                                    //    huo_sw1.WriteLine("");
+                                    //    huo_sw1.WriteLine("King moving...");
+                                    //    huo_sw1.WriteLine(String.Concat("MovingPiece2 = ", MovingPiece2));
+                                    //    huo_sw1.WriteLine(String.Concat("ProsorinoKommati2 = ", ProsorinoKommati2));
+                                    //    huo_sw1.WriteLine("");
+                                    //}
+                                    //if ((MovingPiece2.CompareTo("White Pawn") == 0) && (m_StartingColumnNumber2 == 5) && (m_StartingRank2 == 2))
+                                    //{
+                                    //    huo_sw1.WriteLine("");
+                                    //    huo_sw1.WriteLine("White Pawn e2 moving...");
+                                    //    huo_sw1.WriteLine(String.Concat("Target column : ", m_FinishingColumnNumber2));
+                                    //    huo_sw1.WriteLine(String.Concat("Target rank   : ", m_FinishingRank2));
+                                    //    huo_sw1.WriteLine(String.Concat("MovingPiece2 = ", MovingPiece2));
+                                    //    huo_sw1.WriteLine(String.Concat("ProsorinoKommati2 = ", ProsorinoKommati2));
+                                    //    huo_sw1.WriteLine("");
+                                    //}
+                                    #endregion toRemove
+
+                                    // Undo the move
+                                    Skakiera_Thinking_HY_2[(m_StartingColumnNumber2 - 1), (m_StartingRank2 - 1)] = MovingPiece2;
+                                    Skakiera_Thinking_HY_2[(m_FinishingColumnNumber2 - 1), (m_FinishingRank2 - 1)] = ProsorinoKommati2;
+
+                                    // v0.991 - This should be done here!
+                                    NodeLevel_2_count++;
+                                    Nodes_Total_count++;
+
+                                    // v0.992: Should we reduce the Move_Analyzed also here?!? No! This is done at the end of the function!
+                                    // Move_Analyzed = Move_Analyzed - 1;
+
+                                    #region WriteLog
+                                    //if ( (MovingPiece2.CompareTo("White King") == 0) ||
+                                    //     ((MovingPiece2.CompareTo("White Pawn") == 0) && (m_StartingColumnNumber2 == 5) && (m_StartingRank2 == 2)) )
+                                    //{
+                                    //    huo_sw1.WriteLine("");
+                                    //    huo_sw1.WriteLine("Restored chessboard...");
+                                    //    for (i = 0; i <= 7; i++)
+                                    //    {
+                                    //        for (j = 0; j <= 7; j++)
+                                    //        {
+                                    //            switch (Skakiera_Thinking_HY_2[(i), (j)])
+                                    //            {
+                                    //                case "White Rook":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WR";
+                                    //                    break;
+
+                                    //                case "White Knight":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WN";
+                                    //                    break;
+
+                                    //                case "White Bishop":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WB";
+                                    //                    break;
+
+                                    //                case "White Queen":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WQ";
+                                    //                    break;
+
+                                    //                case "White King":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WK";
+                                    //                    break;
+
+                                    //                case "White Pawn":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "WP";
+                                    //                    break;
+
+                                    //                case "Black Rook":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BR";
+                                    //                    break;
+
+                                    //                case "Black Knight":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BN";
+                                    //                    break;
+
+                                    //                case "Black Bishop":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BB";
+                                    //                    break;
+
+                                    //                case "Black Queen":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BQ";
+                                    //                    break;
+
+                                    //                case "Black King":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BK";
+                                    //                    break;
+
+                                    //                case "Black Pawn":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "BP";
+                                    //                    break;
+
+                                    //                case "":
+                                    //                    NodesAnalysis2_Chessboard_2[i, j, NodeLevel_2_count] = "  ";
+                                    //                    break;
+                                    //            }
+                                    //        }
+                                    //    }
+
+                                    //    huo_sw1.WriteLine("CHESSBOARD (after restoring it to check next move)");
+                                    //    huo_sw1.WriteLine("-----------------------------------------");
+                                    //    for (int yj = 7; yj >= 0; yj--)
+                                    //    {
+                                    //        huo_sw1.WriteLine(String.Concat("| ", NodesAnalysis2_Chessboard_2[0, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[1, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[2, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[3, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[4, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[5, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[6, yj, NodeLevel_2_count], " | ", NodesAnalysis2_Chessboard_2[7, yj, NodeLevel_2_count], " |"));
+                                    //        huo_sw1.WriteLine("-----------------------------------------");
+                                    //    }
+                                    //    huo_sw1.WriteLine("");
+                                    //}
+                                    #endregion WriteLog
+                                }
 
                                 }
                             }
@@ -6461,6 +7918,8 @@ namespace HuoChessW8
                 // v0.990
                 String[,] Skakiera_Move_After_4 = new String[8, 8];
 
+                //huo_sw1.WriteLine(String.Concat("[Point 0] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+
                 // Σκανάρισμα της σκακιέρας: Όταν εντοπίζεται κάποιο κομμάτι του υπολογιστή,
                 // θα υπολογίζονται ΟΛΕΣ οι πιθανές κινήσεις του προς κάθε κατεύθυνση, ακόμα
                 // και αυτές που δεν μπορεί να κάνει το κομμάτι. Στη συνέχεια, με τη βοήθεια
@@ -6481,20 +7940,44 @@ namespace HuoChessW8
 
                         if (((Who_Is_Analyzed.CompareTo("HY") == 0) && ((((Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("White King") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("White Queen") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("White Rook") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("White Knight") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("White Bishop") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("White Pawn") == 0)) && (m_PlayerColor.CompareTo("Black") == 0)) || (((Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("Black King") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("Black Queen") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("Black Rook") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("Black Knight") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("Black Bishop") == 0) || (Skakiera_Thinking_HY_4[(iii42), (jjj42)].CompareTo("Black Pawn") == 0)) && (m_PlayerColor.CompareTo("White") == 0)))))
                         {
+                            //huo_sw1.WriteLine(String.Concat("[Debug Point 1] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+
                             for (int w = 0; w <= 7; w++)
                             {
                                 for (int r = 0; r <= 7; r++)
                                 {
+                                    //huo_sw1.WriteLine(String.Concat("[Debug Point 2] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+
                                     //v0.990: Replaced m_StartingColumnNumber with m_StartingColumnNumber4
                                     MovingPiece4 = Skakiera_Thinking_HY_4[(iii42), (jjj42)];
                                     m_StartingColumnNumber4 = iii42 + 1;
                                     m_FinishingColumnNumber4 = w + 1;
                                     m_StartingRank4 = jjj42 + 1;
                                     m_FinishingRank4 = r + 1;
-
                                     ProsorinoKommati4 = Skakiera_Thinking_HY_4[(m_FinishingColumnNumber4 - 1), (m_FinishingRank4 - 1)];
 
+                                    #region ObsoleteCode
+                                    // Store temporary move data in local variables, so as to use them in the Undo of the move
+                                    // at the end of this function (the MovingPiece, m_StartingColumnNumber, etc variables are
+                                    // changed by next functions as well, so using them leads to problems)
+                                    // v0.990: Removed this m_FinishingRank -> m_FinishingRank4 useless piece
+                                    // MovingPiece4 = MovingPiece;
+                                    // m_StartingColumnNumber4 = m_StartingColumnNumber4;
+                                    // m_FinishingColumnNumber4 = m_FinishingColumnNumber;
+                                    // m_StartingRank4 = m_StartingRank;
+                                    // m_FinishingRank4 = m_FinishingRank;
+                                    //huo_sw1.WriteLine(String.Concat("[Point 3] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+                                    //huo_sw1.WriteLine(String.Concat("[Point 3] -> Move analyzed: ", MovingPiece4, " ", m_StartingColumnNumber4.ToString(), m_StartingRank4.ToString(), " -> ", m_FinishingColumnNumber4.ToString(), m_FinishingRank4.ToString()));
+                                    //huo_sw1.WriteLine("");
+                                    #endregion ObsoleteCode
+
                                     // Έλεγχος της κίνησης (Check move)
+
+                                    #region ObsoleteCode
+                                    // Validity and legality of the move has been checked in CheckMove
+                                    // CheckMove(Skakiera_Thinking_HY_4);
+                                    //v0.990: MovingPiece -> MovingPiece4
+                                    #endregion ObsoleteCode
 
                                     // Check validity and legality
                                     // Necessary values for variables for the ElegxosOrthotitas (check move corr1ectness) and
@@ -6503,64 +7986,338 @@ namespace HuoChessW8
                                     m_WrongColumn = false;
 
                                     m_OrthotitaKinisis = ElegxosOrthotitas(Skakiera_Thinking_HY_4, 0, m_StartingRank4, m_StartingColumnNumber4, m_FinishingRank4, m_FinishingColumnNumber4, MovingPiece4);
+                                    //huo_sw1.WriteLine(String.Concat("[Point 3.1] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+                                    //v0.990 TEST: Here the King dissapears!!!! [START]
                                     m_NomimotitaKinisis = ElegxosNomimotitas(Skakiera_Thinking_HY_4, 0, m_StartingRank4, m_StartingColumnNumber4, m_FinishingRank4, m_FinishingColumnNumber4, MovingPiece4);
+                                    //v0.990 TEST: Here the King dissapears!!!! [END]
+                                    //v0.990 QUESTION: How does the ElegxosNomimotitas function affect the Skakiera_Thinking_HY_4?
+                                    //v0.990 ANSWER: By calling ElegxosNomimotitas and passing Skakiera_Thinking_HY_4 as reference, any change in the ENSkakiera array of ElegxosNomimotitas function is reflected in the Skakiera_Thinking_HY_4 because the ENSkakiera references the Skakiera_Thinking_HY_4! (I suppose so anyaway, this is the only logical explanation)
                                     
                                     // Restore normal value of m_WhoPlays
                                     m_WhoPlays = "HY";
 
+                                    #region ObsoleteCode
+                                    //huo_sw1.WriteLine(String.Concat("[Point 4] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+                                    //huo_sw1.WriteLine(String.Concat("Orthotita  = ", m_OrthotitaKinisis.ToString()));
+                                    //huo_sw1.WriteLine(String.Concat("Nomimotita = ", m_NomimotitaKinisis.ToString()));
+                                    //v0.980: Removed
+                                    //number_of_moves_analysed++;
+                                    #endregion ObsoleteCode
+
                                     // If all ok, then do the move and measure it
                                     if ((m_OrthotitaKinisis == true) && (m_NomimotitaKinisis == true))
                                     {
+                                        // v0.992
+                                        #region MoveText
+                                        String m_StartingColumnNumber4_moveText;
+                                        String m_FinishingColumnNumber4_moveText;
+
+                                        switch (m_StartingColumnNumber4)
+                                        {
+                                            case (1):
+                                                m_StartingColumnNumber4_moveText = "a";
+                                                break;
+
+                                            case (2):
+                                                m_StartingColumnNumber4_moveText = "b";
+                                                break;
+
+                                            case (3):
+                                                m_StartingColumnNumber4_moveText = "c";
+                                                break;
+
+                                            case (4):
+                                                m_StartingColumnNumber4_moveText = "d";
+                                                break;
+
+                                            case (5):
+                                                m_StartingColumnNumber4_moveText = "e";
+                                                break;
+
+                                            case (6):
+                                                m_StartingColumnNumber4_moveText = "f";
+                                                break;
+
+                                            case (7):
+                                                m_StartingColumnNumber4_moveText = "g";
+                                                break;
+
+                                            case (8):
+                                                m_StartingColumnNumber4_moveText = "h";
+                                                break;
+
+                                            default:
+                                                m_StartingColumnNumber4_moveText = "Error";
+                                                break;
+                                        }
+
+                                        switch (m_FinishingColumnNumber4)
+                                        {
+                                            case (1):
+                                                m_FinishingColumnNumber4_moveText = "a";
+                                                break;
+
+                                            case (2):
+                                                m_FinishingColumnNumber4_moveText = "b";
+                                                break;
+
+                                            case (3):
+                                                m_FinishingColumnNumber4_moveText = "c";
+                                                break;
+
+                                            case (4):
+                                                m_FinishingColumnNumber4_moveText = "d";
+                                                break;
+
+                                            case (5):
+                                                m_FinishingColumnNumber4_moveText = "e";
+                                                break;
+
+                                            case (6):
+                                                m_FinishingColumnNumber4_moveText = "f";
+                                                break;
+
+                                            case (7):
+                                                m_FinishingColumnNumber4_moveText = "g";
+                                                break;
+
+                                            case (8):
+                                                m_FinishingColumnNumber4_moveText = "h";
+                                                break;
+
+                                            default:
+                                                m_FinishingColumnNumber4_moveText = "Error";
+                                                break;
+                                        }
+
+                                        Move4_text = String.Concat(m_StartingColumnNumber4_moveText,
+                                                                   m_StartingRank4.ToString(), " -> ",
+                                                                   m_FinishingColumnNumber4_moveText,
+                                                                   m_FinishingRank4.ToString());
+
+                                        //Move4_text = String.Concat(m_StartingColumnNumber4.ToString(),
+                                        //                           m_StartingRank4.ToString(), " -> ",
+                                        //                           m_FinishingColumnNumber4.ToString(),
+                                        //                           m_FinishingRank4.ToString());
+
+                                        NodesAnalysis4_MoveText[NodeLevel_4_count] = Move4_text;
+
+                                        //NodesAnalysis4_MoveText[NodeLevel_4_count] = String.Concat(
+                                        //       NodesAnalysis0_MoveText[NodeLevel_0_count], " , ",
+                                        //       NodesAnalysis1_MoveText[NodeLevel_1_count], " , ",
+                                        //       NodesAnalysis2_MoveText[NodeLevel_2_count], " , ",
+                                        //       NodesAnalysis3_MoveText[NodeLevel_3_count], " , ",
+                                        //       NodesAnalysis4_MoveText[NodeLevel_4_count]);
+
+                                        #endregion MoveText
+
+                                        //huo_sw1.WriteLine(string.Concat("Hu move 1: Found a legal move!"));
+                                        //huo_sw1.WriteLine(String.Concat("[Point 5] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+
                                         // Do the move
-                                        ProsorinoKommati4 = Skakiera_Thinking_HY_4[(m_FinishingColumnNumber4 - 1), (m_FinishingRank4 - 1)];
+                                        // v0.990: ProsorinoKommati -> ProsorinoKommati4, MovingPiece -> MovingPiece4
+                                        // ProsorinoKommati4 = Skakiera_Thinking_HY_4[(m_FinishingColumnNumber4 - 1), (m_FinishingRank4 - 1)];
                                         Skakiera_Thinking_HY_4[(m_StartingColumnNumber4 - 1), (m_StartingRank4 - 1)] = "";
                                         Skakiera_Thinking_HY_4[(m_FinishingColumnNumber4 - 1), (m_FinishingRank4 - 1)] = MovingPiece4;
 
-                                        NodeLevel_4_count++;
+                                        #region ObsoleteCode
+                                        //huo_sw1.WriteLine(String.Concat("[Point 6] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+                                        // Check the score after the computer move.
+                                        //v0.980: This is Move Analyzed 2, so no need for the other ifs!
+                                        //if (Move_Analyzed == 0)
+                                        //{
+                                        //    NodeLevel_0_count++;
+                                        //    Temp_Score_Move_0 = CountScore(Skakiera_Thinking_HY_4, humanDangerParameter);
+                                        //}
+                                        //v0.990: Removed the "if (Move_Analyzed == 2)"
+                                        //if (Move_Analyzed == 2)
+                                        //{
+                                        #endregion ObsoleteCode
+
+                                        // v0.992
+                                        // NodeLevel_4_count++;
+                                        //v0.980: Removed humanDangerParameter from every call of CountScore
                                         Temp_Score_Move_4 = CountScore(Skakiera_Thinking_HY_4);
 
-                                        if ((  (Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_4 <= bestScoreLevel4))
-                                           || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_4 >= bestScoreLevel4)))
-                                        {
-                                            Move_Analyzed = Move_Analyzed + 1;
+                                        // v0.992: Score and parent for each move analyzed are stored on the spot and not at the end of the thinking depth
+                                        // since some branches of the thinking tree might be trimmed, thus not available at the end of the thinking depth for
+                                        // their score and parent to be stored!
+                                        // Store scores
+                                        //NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
+                                        //NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+                                        //NodesAnalysis3[NodeLevel_3_count, 0] = Temp_Score_Move_3_human;
+                                        NodesAnalysis4[NodeLevel_4_count, 0] = Temp_Score_Move_4;
+                                        // Store parents
+                                        //NodesAnalysis0[NodeLevel_0_count, 1] = 0;
+                                        //NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
+                                        //NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
+                                        //NodesAnalysis3[NodeLevel_3_count, 1] = NodeLevel_2_count;
+                                        NodesAnalysis4[NodeLevel_4_count, 1] = NodeLevel_3_count;
 
-                                            // Store the best score at this level
-                                            bestScoreLevel4 = Temp_Score_Move_4;
+                                        //v0.992: Store variant text
+                                        //v0.992: NOT NEEDED!
+                                        //NodesAnalysis4_MoveText[NodeLevel_4_count] = String.Concat(Move0_text, " , ",
+                                        //                                                           Move1_text, " , ",
+                                        //                                                           Move2_text, " , ",
+                                        //                                                           Move3_text, " , ",
+                                        //                                                           Move4_text);
 
-                                            Who_Is_Analyzed = "Human";
+                                        #region ObsoleteCode
+                                        //v0.980: This is the end of the analysis, so no need to call anymore the Analyze_Move functions!
+                                        //if (Move_Analyzed < Thinking_Depth)
+                                        //{
+                                        //    Move_Analyzed = Move_Analyzed + 1;
 
-                                            // Check human move
-                                            if (Move_Analyzed == 1)
-                                                Analyze_Move_1_HumanMove(Skakiera_Move_After_4);
-                                            else if (Move_Analyzed == 3)
-                                                Analyze_Move_3_HumanMove(Skakiera_Move_After_4);
-                                        }
+                                        //    for (i = 0; i <= 7; i++)
+                                        //    {
+                                        //        for (j = 0; j <= 7; j++)
+                                        //        {
+                                        //            Skakiera_Move_After[(i), (j)] = Skakiera_Thinking[(i), (j)];
+                                        //        }
+                                        //    }
+
+                                        //    Who_Is_Analyzed = "Hu";
+                                        //    First_Call_Human_Thought = true;
+
+                                        //    // Check Hu move
+                                        //    if (Move_Analyzed == 1)
+                                        //        Analyze_Move_1_HumanMove(Skakiera_Move_After);
+                                        //}
+                                        #endregion ObsoleteCode
+
+                                        // v0.990 change: Added back the part which calls deeper levels of analysis
+                                        //if (Move_Analyzed < Thinking_Depth)
+                                        // v0.990 Move 4 changes
+                                        // v0.992: Add more trimming rules
+                                        // RULES SET 1: ALL
+                                        // RESULT: Not OK
+                                        //if ((  (Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_4 <= bestScoreLevel4) && (move_dangerousness = false) && (ThisIsStupidMove.CompareTo("N") == 0) && (Math.Abs(m_StartingColumnNumber4 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank4 - m_StartingRank_HY) < 4))
+                                        //   || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_4 >= bestScoreLevel4) && (move_dangerousness = false) && (ThisIsStupidMove.CompareTo("N") == 0) && (Math.Abs(m_StartingColumnNumber4 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank4 - m_StartingRank_HY) < 4)))
+                                        // RULES SET 2: Proximity rule
+                                        // RESULT: Not OK. Not good moved played.
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_4 < bestScoreLevel4) && (Math.Abs(m_StartingColumnNumber4 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank4 - m_StartingRank_HY) < 4))
+                                        //   || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_4 > bestScoreLevel4) && (Math.Abs(m_StartingColumnNumber4 - m_StartingColumnNumber_HY) < 4) && (Math.Abs(m_StartingRank4 - m_StartingRank_HY) < 4)))
+                                        // LAST WORKINH: SET 3 (6/1/2021)
+                                        // RULES SET 3: Only the score rule (use only the > instead of >= to reduce thinking time)
+                                        //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (Temp_Score_Move_4 <= bestScoreLevel4))
+                                        //   || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (Temp_Score_Move_4 >= bestScoreLevel4)))
+                                        //    {
+                                        //        Move_Analyzed = Move_Analyzed + 1;
+
+                                        //    // v0.990 change
+                                        //    // Store the best score at this level
+                                        //    bestScoreLevel4 = Temp_Score_Move_4;
+
+                                        //    Who_Is_Analyzed = "Human";
+
+                                        //    // Check human move
+                                        //    // (this is useless anyway now, since there is no analysis depth beyond 4...)
+                                        //    if (Move_Analyzed == 1)
+                                        //        Analyze_Move_1_HumanMove(Skakiera_Move_After_4);
+                                        //    else if (Move_Analyzed == 3)
+                                        //        Analyze_Move_3_HumanMove(Skakiera_Move_After_4);
+                                        //    //else if (Move_Analyzed == 5)
+                                        //    //    Analyze_Move_3_HumanMove(Skakiera_Move_After_5);
+                                        //}
 
 
-                                        if (Move_Analyzed == Thinking_Depth)
-                                        {
+                                        //if (Move_Analyzed == Thinking_Depth)
+                                        //{
                                             // [MiniMax algorithm - skakos]
                                             // Record the node in the Nodes Analysis array (to use with MiniMax algorithm) skakos
 
-                                            NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
-                                            NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
-                                            NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
-                                            NodesAnalysis3[NodeLevel_3_count, 0] = Temp_Score_Move_3_human;
-                                            NodesAnalysis4[NodeLevel_4_count, 0] = Temp_Score_Move_4;
+                                            //v0.970
+                                            //v0.992: Is this needed here anymore! The nodes are updated at every level now.
+                                            //NodesAnalysis0[NodeLevel_0_count, 0] = Temp_Score_Move_0;
+                                            //NodesAnalysis1[NodeLevel_1_count, 0] = Temp_Score_Move_1_human;
+                                            //NodesAnalysis2[NodeLevel_2_count, 0] = Temp_Score_Move_2;
+                                            //NodesAnalysis3[NodeLevel_3_count, 0] = Temp_Score_Move_3_human;
+                                            //NodesAnalysis4[NodeLevel_4_count, 0] = Temp_Score_Move_4;
+
+                                            // v0.992
+                                            // v0.992: Not needed here, since this happens in each node now.
+                                            //NodesAnalysis4_MoveText[NodeLevel_4_count] = String.Concat(Move0_text, " , ",
+                                            //                                                           Move1_text, " , ",
+                                            //                                                           Move2_text, " , ",
+                                            //                                                           Move3_text, " , ",
+                                            //                                                           Move4_text);
+
+                                            //NodesAnalysis3_MoveText[NodeLevel_3_count] = String.Concat(Move0_text, " , ",
+                                            //                                                           Move1_text, " , ",
+                                            //                                                           Move2_text, " , ",
+                                            //                                                           Move3_text);
+
+                                            // v0.991: Text of the move variant analyzed (used for logs mainly)
+                                            //NodesAnalysis2_MoveText[NodeLevel_2_count] = String.Concat(Move0_text, " , ",
+                                            //                                                           Move1_text, " , ",
+                                            //                                                           Move2_text);
+
+                                            //NodesAnalysis1_MoveText[NodeLevel_1_count] = String.Concat(Move0_text, " , ",
+                                            //                                                           Move1_text);
+
+                                            //NodesAnalysis0_MoveText[NodeLevel_0_count] = String.Concat(Move0_text);
 
                                             // Store the parents (number of the node of the upper level)
-                                            NodesAnalysis0[NodeLevel_0_count, 1] = 0;
-                                            NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
-                                            NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
-                                            NodesAnalysis3[NodeLevel_3_count, 1] = NodeLevel_2_count;
-                                            NodesAnalysis4[NodeLevel_4_count, 1] = NodeLevel_3_count;
+                                            //v0.992: Is this needed here anymore! The nodes are updated at every level now.
+                                            //NodesAnalysis0[NodeLevel_0_count, 1] = 0;
+                                            //NodesAnalysis1[NodeLevel_1_count, 1] = NodeLevel_0_count;
+                                            //NodesAnalysis2[NodeLevel_2_count, 1] = NodeLevel_1_count;
+                                            //NodesAnalysis3[NodeLevel_3_count, 1] = NodeLevel_2_count;
+                                            //NodesAnalysis4[NodeLevel_4_count, 1] = NodeLevel_3_count;
 
-                                            Nodes_Total_count++;
-                                        }
+                                            #region toRemove
+                                            //v0.980: Removed
+                                            // Safety valve in case we reach the end of the table capacity
+                                            // This is a limit for the memory. Will have to do something about it!
+                                            // v0.991 fix
+                                            //if (Nodes_Total_count > 1000000)
+                                            //{
+                                            //    //Console.WriteLine("Limit of memory in NodesAnalysis array reached!");
+                                            //    //MessageBox.Show("Limit of memory in NodesAnalysis array reached!");
+                                            //    Nodes_Total_count = 1000000;
+                                            //}
+                                            #endregion toRemove
+                                        //}
+
+                                        #region toRemove
+                                        //huo_sw1.WriteLine(String.Concat("[Point 7] -> Σκακιέρα[5,1] = ", Skakiera_Thinking_HY_4[4, 0].ToString()));
+
+                                        //if (MovingPiece4.CompareTo("White King") == 0)
+                                        //{
+                                        //    huo_sw1.WriteLine("");
+                                        //    huo_sw1.WriteLine("King moving...");
+                                        //    huo_sw1.WriteLine(String.Concat("MovingPiece4 = ", MovingPiece4));
+                                        //    huo_sw1.WriteLine(String.Concat("ProsorinoKommati4 = ", ProsorinoKommati4));
+                                        //    huo_sw1.WriteLine("");
+                                        //}
+                                        //if ((MovingPiece4.CompareTo("White Pawn") == 0) && (m_StartingColumnNumber4 == 5) && (m_StartingRank4 == 2))
+                                        //{
+                                        //    huo_sw1.WriteLine("");
+                                        //    huo_sw1.WriteLine("White Pawn e2 moving...");
+                                        //    huo_sw1.WriteLine(String.Concat("Target column : ", m_FinishingColumnNumber4));
+                                        //    huo_sw1.WriteLine(String.Concat("Target rank   : ", m_FinishingRank4));
+                                        //    huo_sw1.WriteLine(String.Concat("MovingPiece4 = ", MovingPiece4));
+                                        //    huo_sw1.WriteLine(String.Concat("ProsorinoKommati4 = ", ProsorinoKommati4));
+                                        //    huo_sw1.WriteLine("");
+                                        //}
+                                        #endregion toRemove
 
                                         // Undo the move
                                         Skakiera_Thinking_HY_4[(m_StartingColumnNumber4 - 1), (m_StartingRank4 - 1)] = MovingPiece4;
                                         Skakiera_Thinking_HY_4[(m_FinishingColumnNumber4 - 1), (m_FinishingRank4 - 1)] = ProsorinoKommati4;
+
+                                        // v0.992
+                                        NodeLevel_4_count++;
+                                        Nodes_Total_count++;
+
+                                        // v0.992 fix - Needed for positions with many options?
+                                        //if (NodeLevel_4_count > 10000000)
+                                        //{
+                                        //    //Console.WriteLine("Limit of memory in NodesAnalysis array reached!");
+                                        //    //MessageBox.Show("Limit of memory in NodesAnalysis array reached!");
+                                        //    NodeLevel_4_count = 10000000;
+                                        //}
 
                                         #region WriteLog
                                         //if ((MovingPiece4.CompareTo("White King") == 0) ||
@@ -6907,7 +8664,7 @@ namespace HuoChessW8
                     label2.Text = "Thinking...";
                     label3.Text = "";
                     // v0.991
-                    //label_variant_thought.Text = "-";
+                    label_variant_thought.Text = "-";
                 }
             }
 
@@ -6935,7 +8692,7 @@ namespace HuoChessW8
             //Application.DoEvents();
             label2.Text = string.Concat("Huo Chess move: ", HuoChess_main.NextLine);
             label3.Text = string.Concat("Final positions analyzed: ", HuoChess_main.FinalPositions);
-            //label_variant_thought.Text = HuoChess_main.Best_Variant_text;
+            label_variant_thought.Text = HuoChess_main.Best_Variant_text;
             Application.DoEvents();
         }
 
@@ -7023,7 +8780,7 @@ namespace HuoChessW8
             RedrawTheSkakiera(Form1.HuoChess_main.Skakiera);
             label2.Text = string.Concat("Huo Chess move: ", HuoChess_main.NextLine);
             label3.Text = string.Concat("Final positions analyzed: ", HuoChess_main.FinalPositions);
-            //label_variant_thought.Text = HuoChess_main.Best_Variant_text;
+            label_variant_thought.Text = HuoChess_main.Best_Variant_text;
         }
 
 
@@ -7484,6 +9241,17 @@ namespace HuoChessW8
             columnClicked = "H";
             rankClicked = 8;
             ManageGameSequence();
+        }
+
+        // v0.992
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            radioButton_White.Select();
+        }
+
+        private void button_Help_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("HOW TO PLAY\n\nSelect colour and press Play. On your turn, click on the start and then on the destination square with the mouse. Computer will automatically start thinking after you make a valid move.\n\nOPENING BOOK FUNCTIONALITY:\nMake sure you have the Huo Chess Opening Book folder in the same folder as the application for the opening book functionality to work. Make sure you have loaded the folder with opening text files. Use the Huo Chess Opening Book Editor to generate them.", "Huo Chess help", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
