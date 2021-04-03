@@ -1018,7 +1018,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(211, 455);
+            this.label3.Location = new System.Drawing.Point(247, 455);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(151, 13);
             this.label3.TabIndex = 74;
@@ -1133,7 +1133,7 @@
             this.Controls.Add(this.pictureBox1);
             this.DoubleBuffered = true;
             this.Name = "Form1";
-            this.Text = "Huo Chess 0.992 - Developers Edition";
+            this.Text = "Huo Chess 0.9921 - Developers Edition";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Click += new System.EventHandler(this.Form1_Click);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxA2)).EndInit();

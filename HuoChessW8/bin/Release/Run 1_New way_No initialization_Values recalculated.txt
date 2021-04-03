@@ -1,0 +1,997 @@
+White Rook 11 -> 11 - White Rook - 5
+White Rook 11 -> 12 - White Pawn - 1
+White Rook 11 -> 13 -  - 1
+White Rook 11 -> 14 -  - 1
+White Rook 11 -> 15 -  - 1
+White Rook 11 -> 16 -  - 1
+White Rook 11 -> 17 - Black Pawn - 1
+White Rook 11 -> 18 - Black Rook - 5
+White Rook 11 -> 21 - White Knight - 3
+White Rook 11 -> 22 - White Pawn - 1
+White Rook 11 -> 23 -  - 1
+White Rook 11 -> 24 -  - 1
+White Rook 11 -> 25 -  - 1
+White Rook 11 -> 26 -  - 1
+White Rook 11 -> 27 - Black Pawn - 1
+White Rook 11 -> 28 - Black Knight - 3
+White Rook 11 -> 31 - White Bishop - 3
+White Rook 11 -> 32 -  - 3
+White Rook 11 -> 33 - White Pawn - 1
+White Rook 11 -> 34 -  - 1
+White Rook 11 -> 35 -  - 1
+White Rook 11 -> 36 -  - 1
+White Rook 11 -> 37 - Black Pawn - 1
+White Rook 11 -> 38 -  - 1
+White Rook 11 -> 41 - White Queen - 9
+White Rook 11 -> 42 -  - 9
+White Rook 11 -> 43 -  - 9
+White Rook 11 -> 44 - White Pawn - 1
+White Rook 11 -> 45 -  - 1
+White Rook 11 -> 46 - Black Pawn - 1
+White Rook 11 -> 47 -  - 1
+White Rook 11 -> 48 - Black Queen - 9
+White Rook 11 -> 51 - White King - 119
+White Rook 11 -> 52 - White Pawn - 1
+White Rook 11 -> 53 -  - 1
+White Rook 11 -> 54 -  - 1
+White Rook 11 -> 55 -  - 1
+White Rook 11 -> 56 -  - 1
+White Rook 11 -> 57 - Black Pawn - 1
+White Rook 11 -> 58 - Black King - 119
+White Rook 11 -> 61 - White Bishop - 3
+White Rook 11 -> 62 - White Pawn - 1
+White Rook 11 -> 63 -  - 1
+White Rook 11 -> 64 -  - 1
+White Rook 11 -> 65 -  - 1
+White Rook 11 -> 66 -  - 1
+White Rook 11 -> 67 - Black Pawn - 1
+White Rook 11 -> 68 - Black Bishop - 3
+White Rook 11 -> 71 - White Knight - 3
+White Rook 11 -> 72 - White Pawn - 1
+White Rook 11 -> 73 -  - 1
+White Rook 11 -> 74 -  - 1
+White Rook 11 -> 75 -  - 1
+White Rook 11 -> 76 -  - 1
+White Rook 11 -> 77 - Black Pawn - 1
+White Rook 11 -> 78 - Black Knight - 3
+White Rook 11 -> 81 - White Rook - 5
+White Rook 11 -> 82 - White Pawn - 1
+White Rook 11 -> 83 - Black Bishop - 3
+White Rook 11 -> 84 -  - 3
+White Rook 11 -> 85 -  - 3
+White Rook 11 -> 86 -  - 3
+White Rook 11 -> 87 - Black Pawn - 1
+White Rook 11 -> 88 - Black Rook - 5
+White Pawn 12 -> 11 - White Rook - 5
+White Pawn 12 -> 12 - White Pawn - 1
+White Pawn 12 -> 13 -  - 1
+White Pawn 12 -> 14 -  - 1
+White Pawn 12 -> 15 -  - 1
+White Pawn 12 -> 16 -  - 1
+White Pawn 12 -> 17 - Black Pawn - 1
+White Pawn 12 -> 18 - Black Rook - 5
+White Pawn 12 -> 21 - White Knight - 3
+White Pawn 12 -> 22 - White Pawn - 1
+White Pawn 12 -> 23 -  - 1
+White Pawn 12 -> 24 -  - 1
+White Pawn 12 -> 25 -  - 1
+White Pawn 12 -> 26 -  - 1
+White Pawn 12 -> 27 - Black Pawn - 1
+White Pawn 12 -> 28 - Black Knight - 3
+White Pawn 12 -> 31 - White Bishop - 3
+White Pawn 12 -> 32 -  - 3
+White Pawn 12 -> 33 - White Pawn - 1
+White Pawn 12 -> 34 -  - 1
+White Pawn 12 -> 35 -  - 1
+White Pawn 12 -> 36 -  - 1
+White Pawn 12 -> 37 - Black Pawn - 1
+White Pawn 12 -> 38 -  - 1
+White Pawn 12 -> 41 - White Queen - 9
+White Pawn 12 -> 42 -  - 9
+White Pawn 12 -> 43 -  - 9
+White Pawn 12 -> 44 - White Pawn - 1
+White Pawn 12 -> 45 -  - 1
+White Pawn 12 -> 46 - Black Pawn - 1
+White Pawn 12 -> 47 -  - 1
+White Pawn 12 -> 48 - Black Queen - 9
+White Pawn 12 -> 51 - White King - 119
+White Pawn 12 -> 52 - White Pawn - 1
+White Pawn 12 -> 53 -  - 1
+White Pawn 12 -> 54 -  - 1
+White Pawn 12 -> 55 -  - 1
+White Pawn 12 -> 56 -  - 1
+White Pawn 12 -> 57 - Black Pawn - 1
+White Pawn 12 -> 58 - Black King - 119
+White Pawn 12 -> 61 - White Bishop - 3
+White Pawn 12 -> 62 - White Pawn - 1
+White Pawn 12 -> 63 -  - 1
+White Pawn 12 -> 64 -  - 1
+White Pawn 12 -> 65 -  - 1
+White Pawn 12 -> 66 -  - 1
+White Pawn 12 -> 67 - Black Pawn - 1
+White Pawn 12 -> 68 - Black Bishop - 3
+White Pawn 12 -> 71 - White Knight - 3
+White Pawn 12 -> 72 - White Pawn - 1
+White Pawn 12 -> 73 -  - 1
+White Pawn 12 -> 74 -  - 1
+White Pawn 12 -> 75 -  - 1
+White Pawn 12 -> 76 -  - 1
+White Pawn 12 -> 77 - Black Pawn - 1
+White Pawn 12 -> 78 - Black Knight - 3
+White Pawn 12 -> 81 - White Rook - 5
+White Pawn 12 -> 82 - White Pawn - 1
+White Pawn 12 -> 83 - Black Bishop - 3
+White Pawn 12 -> 84 -  - 3
+White Pawn 12 -> 85 -  - 3
+White Pawn 12 -> 86 -  - 3
+White Pawn 12 -> 87 - Black Pawn - 1
+White Pawn 12 -> 88 - Black Rook - 5
+White Knight 21 -> 11 - White Rook - 5
+White Knight 21 -> 12 - White Pawn - 1
+White Knight 21 -> 13 -  - 1
+White Knight 21 -> 14 -  - 1
+White Knight 21 -> 15 -  - 1
+White Knight 21 -> 16 -  - 1
+White Knight 21 -> 17 - Black Pawn - 1
+White Knight 21 -> 18 - Black Rook - 5
+White Knight 21 -> 21 - White Knight - 3
+White Knight 21 -> 22 - White Pawn - 1
+White Knight 21 -> 23 -  - 1
+White Knight 21 -> 24 -  - 1
+White Knight 21 -> 25 -  - 1
+White Knight 21 -> 26 -  - 1
+White Knight 21 -> 27 - Black Pawn - 1
+White Knight 21 -> 28 - Black Knight - 3
+White Knight 21 -> 31 - White Bishop - 3
+White Knight 21 -> 32 -  - 3
+White Knight 21 -> 33 - White Pawn - 1
+White Knight 21 -> 34 -  - 1
+White Knight 21 -> 35 -  - 1
+White Knight 21 -> 36 -  - 1
+White Knight 21 -> 37 - Black Pawn - 1
+White Knight 21 -> 38 -  - 1
+White Knight 21 -> 41 - White Queen - 9
+White Knight 21 -> 42 -  - 9
+White Knight 21 -> 43 -  - 9
+White Knight 21 -> 44 - White Pawn - 1
+White Knight 21 -> 45 -  - 1
+White Knight 21 -> 46 - Black Pawn - 1
+White Knight 21 -> 47 -  - 1
+White Knight 21 -> 48 - Black Queen - 9
+White Knight 21 -> 51 - White King - 119
+White Knight 21 -> 52 - White Pawn - 1
+White Knight 21 -> 53 -  - 1
+White Knight 21 -> 54 -  - 1
+White Knight 21 -> 55 -  - 1
+White Knight 21 -> 56 -  - 1
+White Knight 21 -> 57 - Black Pawn - 1
+White Knight 21 -> 58 - Black King - 119
+White Knight 21 -> 61 - White Bishop - 3
+White Knight 21 -> 62 - White Pawn - 1
+White Knight 21 -> 63 -  - 1
+White Knight 21 -> 64 -  - 1
+White Knight 21 -> 65 -  - 1
+White Knight 21 -> 66 -  - 1
+White Knight 21 -> 67 - Black Pawn - 1
+White Knight 21 -> 68 - Black Bishop - 3
+White Knight 21 -> 71 - White Knight - 3
+White Knight 21 -> 72 - White Pawn - 1
+White Knight 21 -> 73 -  - 1
+White Knight 21 -> 74 -  - 1
+White Knight 21 -> 75 -  - 1
+White Knight 21 -> 76 -  - 1
+White Knight 21 -> 77 - Black Pawn - 1
+White Knight 21 -> 78 - Black Knight - 3
+White Knight 21 -> 81 - White Rook - 5
+White Knight 21 -> 82 - White Pawn - 1
+White Knight 21 -> 83 - Black Bishop - 3
+White Knight 21 -> 84 -  - 3
+White Knight 21 -> 85 -  - 3
+White Knight 21 -> 86 -  - 3
+White Knight 21 -> 87 - Black Pawn - 1
+White Knight 21 -> 88 - Black Rook - 5
+White Pawn 22 -> 11 - White Rook - 5
+White Pawn 22 -> 12 - White Pawn - 1
+White Pawn 22 -> 13 -  - 1
+White Pawn 22 -> 14 -  - 1
+White Pawn 22 -> 15 -  - 1
+White Pawn 22 -> 16 -  - 1
+White Pawn 22 -> 17 - Black Pawn - 1
+White Pawn 22 -> 18 - Black Rook - 5
+White Pawn 22 -> 21 - White Knight - 3
+White Pawn 22 -> 22 - White Pawn - 1
+White Pawn 22 -> 23 -  - 1
+White Pawn 22 -> 24 -  - 1
+White Pawn 22 -> 25 -  - 1
+White Pawn 22 -> 26 -  - 1
+White Pawn 22 -> 27 - Black Pawn - 1
+White Pawn 22 -> 28 - Black Knight - 3
+White Pawn 22 -> 31 - White Bishop - 3
+White Pawn 22 -> 32 -  - 3
+White Pawn 22 -> 33 - White Pawn - 1
+White Pawn 22 -> 34 -  - 1
+White Pawn 22 -> 35 -  - 1
+White Pawn 22 -> 36 -  - 1
+White Pawn 22 -> 37 - Black Pawn - 1
+White Pawn 22 -> 38 -  - 1
+White Pawn 22 -> 41 - White Queen - 9
+White Pawn 22 -> 42 -  - 9
+White Pawn 22 -> 43 -  - 9
+White Pawn 22 -> 44 - White Pawn - 1
+White Pawn 22 -> 45 -  - 1
+White Pawn 22 -> 46 - Black Pawn - 1
+White Pawn 22 -> 47 -  - 1
+White Pawn 22 -> 48 - Black Queen - 9
+White Pawn 22 -> 51 - White King - 119
+White Pawn 22 -> 52 - White Pawn - 1
+White Pawn 22 -> 53 -  - 1
+White Pawn 22 -> 54 -  - 1
+White Pawn 22 -> 55 -  - 1
+White Pawn 22 -> 56 -  - 1
+White Pawn 22 -> 57 - Black Pawn - 1
+White Pawn 22 -> 58 - Black King - 119
+White Pawn 22 -> 61 - White Bishop - 3
+White Pawn 22 -> 62 - White Pawn - 1
+White Pawn 22 -> 63 -  - 1
+White Pawn 22 -> 64 -  - 1
+White Pawn 22 -> 65 -  - 1
+White Pawn 22 -> 66 -  - 1
+White Pawn 22 -> 67 - Black Pawn - 1
+White Pawn 22 -> 68 - Black Bishop - 3
+White Pawn 22 -> 71 - White Knight - 3
+White Pawn 22 -> 72 - White Pawn - 1
+White Pawn 22 -> 73 -  - 1
+White Pawn 22 -> 74 -  - 1
+White Pawn 22 -> 75 -  - 1
+White Pawn 22 -> 76 -  - 1
+White Pawn 22 -> 77 - Black Pawn - 1
+White Pawn 22 -> 78 - Black Knight - 3
+White Pawn 22 -> 81 - White Rook - 5
+White Pawn 22 -> 82 - White Pawn - 1
+White Pawn 22 -> 83 - Black Bishop - 3
+White Pawn 22 -> 84 -  - 3
+White Pawn 22 -> 85 -  - 3
+White Pawn 22 -> 86 -  - 3
+White Pawn 22 -> 87 - Black Pawn - 1
+White Pawn 22 -> 88 - Black Rook - 5
+White Bishop 31 -> 11 - White Rook - 5
+White Bishop 31 -> 12 - White Pawn - 1
+White Bishop 31 -> 13 -  - 1
+White Bishop 31 -> 14 -  - 1
+White Bishop 31 -> 15 -  - 1
+White Bishop 31 -> 16 -  - 1
+White Bishop 31 -> 17 - Black Pawn - 1
+White Bishop 31 -> 18 - Black Rook - 5
+White Bishop 31 -> 21 - White Knight - 3
+White Bishop 31 -> 22 - White Pawn - 1
+White Bishop 31 -> 23 -  - 1
+White Bishop 31 -> 24 -  - 1
+White Bishop 31 -> 25 -  - 1
+White Bishop 31 -> 26 -  - 1
+White Bishop 31 -> 27 - Black Pawn - 1
+White Bishop 31 -> 28 - Black Knight - 3
+White Bishop 31 -> 31 - White Bishop - 3
+White Bishop 31 -> 32 -  - 3
+White Bishop 31 -> 33 - White Pawn - 1
+White Bishop 31 -> 34 -  - 1
+White Bishop 31 -> 35 -  - 1
+White Bishop 31 -> 36 -  - 1
+White Bishop 31 -> 37 - Black Pawn - 1
+White Bishop 31 -> 38 -  - 1
+White Bishop 31 -> 41 - White Queen - 9
+White Bishop 31 -> 42 -  - 9
+White Bishop 31 -> 43 -  - 9
+White Bishop 31 -> 44 - White Pawn - 1
+White Bishop 31 -> 45 -  - 1
+White Bishop 31 -> 46 - Black Pawn - 1
+White Bishop 31 -> 47 -  - 1
+White Bishop 31 -> 48 - Black Queen - 9
+White Bishop 31 -> 51 - White King - 119
+White Bishop 31 -> 52 - White Pawn - 1
+White Bishop 31 -> 53 -  - 1
+White Bishop 31 -> 54 -  - 1
+White Bishop 31 -> 55 -  - 1
+White Bishop 31 -> 56 -  - 1
+White Bishop 31 -> 57 - Black Pawn - 1
+White Bishop 31 -> 58 - Black King - 119
+White Bishop 31 -> 61 - White Bishop - 3
+White Bishop 31 -> 62 - White Pawn - 1
+White Bishop 31 -> 63 -  - 1
+White Bishop 31 -> 64 -  - 1
+White Bishop 31 -> 65 -  - 1
+White Bishop 31 -> 66 -  - 1
+White Bishop 31 -> 67 - Black Pawn - 1
+White Bishop 31 -> 68 - Black Bishop - 3
+White Bishop 31 -> 71 - White Knight - 3
+White Bishop 31 -> 72 - White Pawn - 1
+White Bishop 31 -> 73 -  - 1
+White Bishop 31 -> 74 -  - 1
+White Bishop 31 -> 75 -  - 1
+White Bishop 31 -> 76 -  - 1
+White Bishop 31 -> 77 - Black Pawn - 1
+White Bishop 31 -> 78 - Black Knight - 3
+White Bishop 31 -> 81 - White Rook - 5
+White Bishop 31 -> 82 - White Pawn - 1
+White Bishop 31 -> 83 - Black Bishop - 3
+White Bishop 31 -> 84 -  - 3
+White Bishop 31 -> 85 -  - 3
+White Bishop 31 -> 86 -  - 3
+White Bishop 31 -> 87 - Black Pawn - 1
+White Bishop 31 -> 88 - Black Rook - 5
+White Pawn 33 -> 11 - White Rook - 5
+White Pawn 33 -> 12 - White Pawn - 1
+White Pawn 33 -> 13 -  - 1
+White Pawn 33 -> 14 -  - 1
+White Pawn 33 -> 15 -  - 1
+White Pawn 33 -> 16 -  - 1
+White Pawn 33 -> 17 - Black Pawn - 1
+White Pawn 33 -> 18 - Black Rook - 5
+White Pawn 33 -> 21 - White Knight - 3
+White Pawn 33 -> 22 - White Pawn - 1
+White Pawn 33 -> 23 -  - 1
+White Pawn 33 -> 24 -  - 1
+White Pawn 33 -> 25 -  - 1
+White Pawn 33 -> 26 -  - 1
+White Pawn 33 -> 27 - Black Pawn - 1
+White Pawn 33 -> 28 - Black Knight - 3
+White Pawn 33 -> 31 - White Bishop - 3
+White Pawn 33 -> 32 -  - 3
+White Pawn 33 -> 33 - White Pawn - 1
+White Pawn 33 -> 34 -  - 1
+White Pawn 33 -> 35 -  - 1
+White Pawn 33 -> 36 -  - 1
+White Pawn 33 -> 37 - Black Pawn - 1
+White Pawn 33 -> 38 -  - 1
+White Pawn 33 -> 41 - White Queen - 9
+White Pawn 33 -> 42 -  - 9
+White Pawn 33 -> 43 -  - 9
+White Pawn 33 -> 44 - White Pawn - 1
+White Pawn 33 -> 45 -  - 1
+White Pawn 33 -> 46 - Black Pawn - 1
+White Pawn 33 -> 47 -  - 1
+White Pawn 33 -> 48 - Black Queen - 9
+White Pawn 33 -> 51 - White King - 119
+White Pawn 33 -> 52 - White Pawn - 1
+White Pawn 33 -> 53 -  - 1
+White Pawn 33 -> 54 -  - 1
+White Pawn 33 -> 55 -  - 1
+White Pawn 33 -> 56 -  - 1
+White Pawn 33 -> 57 - Black Pawn - 1
+White Pawn 33 -> 58 - Black King - 119
+White Pawn 33 -> 61 - White Bishop - 3
+White Pawn 33 -> 62 - White Pawn - 1
+White Pawn 33 -> 63 -  - 1
+White Pawn 33 -> 64 -  - 1
+White Pawn 33 -> 65 -  - 1
+White Pawn 33 -> 66 -  - 1
+White Pawn 33 -> 67 - Black Pawn - 1
+White Pawn 33 -> 68 - Black Bishop - 3
+White Pawn 33 -> 71 - White Knight - 3
+White Pawn 33 -> 72 - White Pawn - 1
+White Pawn 33 -> 73 -  - 1
+White Pawn 33 -> 74 -  - 1
+White Pawn 33 -> 75 -  - 1
+White Pawn 33 -> 76 -  - 1
+White Pawn 33 -> 77 - Black Pawn - 1
+White Pawn 33 -> 78 - Black Knight - 3
+White Pawn 33 -> 81 - White Rook - 5
+White Pawn 33 -> 82 - White Pawn - 1
+White Pawn 33 -> 83 - Black Bishop - 3
+White Pawn 33 -> 84 -  - 3
+White Pawn 33 -> 85 -  - 3
+White Pawn 33 -> 86 -  - 3
+White Pawn 33 -> 87 - Black Pawn - 1
+White Pawn 33 -> 88 - Black Rook - 5
+White Queen 41 -> 11 - White Rook - 5
+White Queen 41 -> 12 - White Pawn - 1
+White Queen 41 -> 13 -  - 1
+White Queen 41 -> 14 -  - 1
+White Queen 41 -> 15 -  - 1
+White Queen 41 -> 16 -  - 1
+White Queen 41 -> 17 - Black Pawn - 1
+White Queen 41 -> 18 - Black Rook - 5
+White Queen 41 -> 21 - White Knight - 3
+White Queen 41 -> 22 - White Pawn - 1
+White Queen 41 -> 23 -  - 1
+White Queen 41 -> 24 -  - 1
+White Queen 41 -> 25 -  - 1
+White Queen 41 -> 26 -  - 1
+White Queen 41 -> 27 - Black Pawn - 1
+White Queen 41 -> 28 - Black Knight - 3
+White Queen 41 -> 31 - White Bishop - 3
+White Queen 41 -> 32 -  - 3
+White Queen 41 -> 33 - White Pawn - 1
+White Queen 41 -> 34 -  - 1
+White Queen 41 -> 35 -  - 1
+White Queen 41 -> 36 -  - 1
+White Queen 41 -> 37 - Black Pawn - 1
+White Queen 41 -> 38 -  - 1
+White Queen 41 -> 41 - White Queen - 9
+White Queen 41 -> 42 -  - 9
+White Queen 41 -> 43 -  - 9
+White Queen 41 -> 44 - White Pawn - 1
+White Queen 41 -> 45 -  - 1
+White Queen 41 -> 46 - Black Pawn - 1
+White Queen 41 -> 47 -  - 1
+White Queen 41 -> 48 - Black Queen - 9
+White Queen 41 -> 51 - White King - 119
+White Queen 41 -> 52 - White Pawn - 1
+White Queen 41 -> 53 -  - 1
+White Queen 41 -> 54 -  - 1
+White Queen 41 -> 55 -  - 1
+White Queen 41 -> 56 -  - 1
+White Queen 41 -> 57 - Black Pawn - 1
+White Queen 41 -> 58 - Black King - 119
+White Queen 41 -> 61 - White Bishop - 3
+White Queen 41 -> 62 - White Pawn - 1
+White Queen 41 -> 63 -  - 1
+White Queen 41 -> 64 -  - 1
+White Queen 41 -> 65 -  - 1
+White Queen 41 -> 66 -  - 1
+White Queen 41 -> 67 - Black Pawn - 1
+White Queen 41 -> 68 - Black Bishop - 3
+White Queen 41 -> 71 - White Knight - 3
+White Queen 41 -> 72 - White Pawn - 1
+White Queen 41 -> 73 -  - 1
+White Queen 41 -> 74 -  - 1
+White Queen 41 -> 75 -  - 1
+White Queen 41 -> 76 -  - 1
+White Queen 41 -> 77 - Black Pawn - 1
+White Queen 41 -> 78 - Black Knight - 3
+White Queen 41 -> 81 - White Rook - 5
+White Queen 41 -> 82 - White Pawn - 1
+White Queen 41 -> 83 - Black Bishop - 3
+White Queen 41 -> 84 -  - 3
+White Queen 41 -> 85 -  - 3
+White Queen 41 -> 86 -  - 3
+White Queen 41 -> 87 - Black Pawn - 1
+White Queen 41 -> 88 - Black Rook - 5
+White Pawn 44 -> 11 - White Rook - 5
+White Pawn 44 -> 12 - White Pawn - 1
+White Pawn 44 -> 13 -  - 1
+White Pawn 44 -> 14 -  - 1
+White Pawn 44 -> 15 -  - 1
+White Pawn 44 -> 16 -  - 1
+White Pawn 44 -> 17 - Black Pawn - 1
+White Pawn 44 -> 18 - Black Rook - 5
+White Pawn 44 -> 21 - White Knight - 3
+White Pawn 44 -> 22 - White Pawn - 1
+White Pawn 44 -> 23 -  - 1
+White Pawn 44 -> 24 -  - 1
+White Pawn 44 -> 25 -  - 1
+White Pawn 44 -> 26 -  - 1
+White Pawn 44 -> 27 - Black Pawn - 1
+White Pawn 44 -> 28 - Black Knight - 3
+White Pawn 44 -> 31 - White Bishop - 3
+White Pawn 44 -> 32 -  - 3
+White Pawn 44 -> 33 - White Pawn - 1
+White Pawn 44 -> 34 -  - 1
+White Pawn 44 -> 35 -  - 1
+White Pawn 44 -> 36 -  - 1
+White Pawn 44 -> 37 - Black Pawn - 1
+White Pawn 44 -> 38 -  - 1
+White Pawn 44 -> 41 - White Queen - 9
+White Pawn 44 -> 42 -  - 9
+White Pawn 44 -> 43 -  - 9
+White Pawn 44 -> 44 - White Pawn - 1
+White Pawn 44 -> 45 -  - 1
+White Pawn 44 -> 46 - Black Pawn - 1
+White Pawn 44 -> 47 -  - 1
+White Pawn 44 -> 48 - Black Queen - 9
+White Pawn 44 -> 51 - White King - 119
+White Pawn 44 -> 52 - White Pawn - 1
+White Pawn 44 -> 53 -  - 1
+White Pawn 44 -> 54 -  - 1
+White Pawn 44 -> 55 -  - 1
+White Pawn 44 -> 56 -  - 1
+White Pawn 44 -> 57 - Black Pawn - 1
+White Pawn 44 -> 58 - Black King - 119
+White Pawn 44 -> 61 - White Bishop - 3
+White Pawn 44 -> 62 - White Pawn - 1
+White Pawn 44 -> 63 -  - 1
+White Pawn 44 -> 64 -  - 1
+White Pawn 44 -> 65 -  - 1
+White Pawn 44 -> 66 -  - 1
+White Pawn 44 -> 67 - Black Pawn - 1
+White Pawn 44 -> 68 - Black Bishop - 3
+White Pawn 44 -> 71 - White Knight - 3
+White Pawn 44 -> 72 - White Pawn - 1
+White Pawn 44 -> 73 -  - 1
+White Pawn 44 -> 74 -  - 1
+White Pawn 44 -> 75 -  - 1
+White Pawn 44 -> 76 -  - 1
+White Pawn 44 -> 77 - Black Pawn - 1
+White Pawn 44 -> 78 - Black Knight - 3
+White Pawn 44 -> 81 - White Rook - 5
+White Pawn 44 -> 82 - White Pawn - 1
+White Pawn 44 -> 83 - Black Bishop - 3
+White Pawn 44 -> 84 -  - 3
+White Pawn 44 -> 85 -  - 3
+White Pawn 44 -> 86 -  - 3
+White Pawn 44 -> 87 - Black Pawn - 1
+White Pawn 44 -> 88 - Black Rook - 5
+White King 51 -> 11 - White Rook - 5
+White King 51 -> 12 - White Pawn - 1
+White King 51 -> 13 -  - 1
+White King 51 -> 14 -  - 1
+White King 51 -> 15 -  - 1
+White King 51 -> 16 -  - 1
+White King 51 -> 17 - Black Pawn - 1
+White King 51 -> 18 - Black Rook - 5
+White King 51 -> 21 - White Knight - 3
+White King 51 -> 22 - White Pawn - 1
+White King 51 -> 23 -  - 1
+White King 51 -> 24 -  - 1
+White King 51 -> 25 -  - 1
+White King 51 -> 26 -  - 1
+White King 51 -> 27 - Black Pawn - 1
+White King 51 -> 28 - Black Knight - 3
+White King 51 -> 31 - White Bishop - 3
+White King 51 -> 32 -  - 3
+White King 51 -> 33 - White Pawn - 1
+White King 51 -> 34 -  - 1
+White King 51 -> 35 -  - 1
+White King 51 -> 36 -  - 1
+White King 51 -> 37 - Black Pawn - 1
+White King 51 -> 38 -  - 1
+White King 51 -> 41 - White Queen - 9
+White King 51 -> 42 -  - 9
+White King 51 -> 43 -  - 9
+White King 51 -> 44 - White Pawn - 1
+White King 51 -> 45 -  - 1
+White King 51 -> 46 - Black Pawn - 1
+White King 51 -> 47 -  - 1
+White King 51 -> 48 - Black Queen - 9
+White King 51 -> 51 - White King - 119
+White King 51 -> 52 - White Pawn - 1
+White King 51 -> 53 -  - 1
+White King 51 -> 54 -  - 1
+White King 51 -> 55 -  - 1
+White King 51 -> 56 -  - 1
+White King 51 -> 57 - Black Pawn - 1
+White King 51 -> 58 - Black King - 119
+White King 51 -> 61 - White Bishop - 3
+White King 51 -> 62 - White Pawn - 1
+White King 51 -> 63 -  - 1
+White King 51 -> 64 -  - 1
+White King 51 -> 65 -  - 1
+White King 51 -> 66 -  - 1
+White King 51 -> 67 - Black Pawn - 1
+White King 51 -> 68 - Black Bishop - 3
+White King 51 -> 71 - White Knight - 3
+White King 51 -> 72 - White Pawn - 1
+White King 51 -> 73 -  - 1
+White King 51 -> 74 -  - 1
+White King 51 -> 75 -  - 1
+White King 51 -> 76 -  - 1
+White King 51 -> 77 - Black Pawn - 1
+White King 51 -> 78 - Black Knight - 3
+White King 51 -> 81 - White Rook - 5
+White King 51 -> 82 - White Pawn - 1
+White King 51 -> 83 - Black Bishop - 3
+White King 51 -> 84 -  - 3
+White King 51 -> 85 -  - 3
+White King 51 -> 86 -  - 3
+White King 51 -> 87 - Black Pawn - 1
+White King 51 -> 88 - Black Rook - 5
+White Pawn 52 -> 11 - White Rook - 5
+White Pawn 52 -> 12 - White Pawn - 1
+White Pawn 52 -> 13 -  - 1
+White Pawn 52 -> 14 -  - 1
+White Pawn 52 -> 15 -  - 1
+White Pawn 52 -> 16 -  - 1
+White Pawn 52 -> 17 - Black Pawn - 1
+White Pawn 52 -> 18 - Black Rook - 5
+White Pawn 52 -> 21 - White Knight - 3
+White Pawn 52 -> 22 - White Pawn - 1
+White Pawn 52 -> 23 -  - 1
+White Pawn 52 -> 24 -  - 1
+White Pawn 52 -> 25 -  - 1
+White Pawn 52 -> 26 -  - 1
+White Pawn 52 -> 27 - Black Pawn - 1
+White Pawn 52 -> 28 - Black Knight - 3
+White Pawn 52 -> 31 - White Bishop - 3
+White Pawn 52 -> 32 -  - 3
+White Pawn 52 -> 33 - White Pawn - 1
+White Pawn 52 -> 34 -  - 1
+White Pawn 52 -> 35 -  - 1
+White Pawn 52 -> 36 -  - 1
+White Pawn 52 -> 37 - Black Pawn - 1
+White Pawn 52 -> 38 -  - 1
+White Pawn 52 -> 41 - White Queen - 9
+White Pawn 52 -> 42 -  - 9
+White Pawn 52 -> 43 -  - 9
+White Pawn 52 -> 44 - White Pawn - 1
+White Pawn 52 -> 45 -  - 1
+White Pawn 52 -> 46 - Black Pawn - 1
+White Pawn 52 -> 47 -  - 1
+White Pawn 52 -> 48 - Black Queen - 9
+White Pawn 52 -> 51 - White King - 119
+White Pawn 52 -> 52 - White Pawn - 1
+White Pawn 52 -> 53 -  - 1
+White Pawn 52 -> 54 -  - 1
+White Pawn 52 -> 55 -  - 1
+White Pawn 52 -> 56 -  - 1
+White Pawn 52 -> 57 - Black Pawn - 1
+White Pawn 52 -> 58 - Black King - 119
+White Pawn 52 -> 61 - White Bishop - 3
+White Pawn 52 -> 62 - White Pawn - 1
+White Pawn 52 -> 63 -  - 1
+White Pawn 52 -> 64 -  - 1
+White Pawn 52 -> 65 -  - 1
+White Pawn 52 -> 66 -  - 1
+White Pawn 52 -> 67 - Black Pawn - 1
+White Pawn 52 -> 68 - Black Bishop - 3
+White Pawn 52 -> 71 - White Knight - 3
+White Pawn 52 -> 72 - White Pawn - 1
+White Pawn 52 -> 73 -  - 1
+White Pawn 52 -> 74 -  - 1
+White Pawn 52 -> 75 -  - 1
+White Pawn 52 -> 76 -  - 1
+White Pawn 52 -> 77 - Black Pawn - 1
+White Pawn 52 -> 78 - Black Knight - 3
+White Pawn 52 -> 81 - White Rook - 5
+White Pawn 52 -> 82 - White Pawn - 1
+White Pawn 52 -> 83 - Black Bishop - 3
+White Pawn 52 -> 84 -  - 3
+White Pawn 52 -> 85 -  - 3
+White Pawn 52 -> 86 -  - 3
+White Pawn 52 -> 87 - Black Pawn - 1
+White Pawn 52 -> 88 - Black Rook - 5
+White Bishop 61 -> 11 - White Rook - 5
+White Bishop 61 -> 12 - White Pawn - 1
+White Bishop 61 -> 13 -  - 1
+White Bishop 61 -> 14 -  - 1
+White Bishop 61 -> 15 -  - 1
+White Bishop 61 -> 16 -  - 1
+White Bishop 61 -> 17 - Black Pawn - 1
+White Bishop 61 -> 18 - Black Rook - 5
+White Bishop 61 -> 21 - White Knight - 3
+White Bishop 61 -> 22 - White Pawn - 1
+White Bishop 61 -> 23 -  - 1
+White Bishop 61 -> 24 -  - 1
+White Bishop 61 -> 25 -  - 1
+White Bishop 61 -> 26 -  - 1
+White Bishop 61 -> 27 - Black Pawn - 1
+White Bishop 61 -> 28 - Black Knight - 3
+White Bishop 61 -> 31 - White Bishop - 3
+White Bishop 61 -> 32 -  - 3
+White Bishop 61 -> 33 - White Pawn - 1
+White Bishop 61 -> 34 -  - 1
+White Bishop 61 -> 35 -  - 1
+White Bishop 61 -> 36 -  - 1
+White Bishop 61 -> 37 - Black Pawn - 1
+White Bishop 61 -> 38 -  - 1
+White Bishop 61 -> 41 - White Queen - 9
+White Bishop 61 -> 42 -  - 9
+White Bishop 61 -> 43 -  - 9
+White Bishop 61 -> 44 - White Pawn - 1
+White Bishop 61 -> 45 -  - 1
+White Bishop 61 -> 46 - Black Pawn - 1
+White Bishop 61 -> 47 -  - 1
+White Bishop 61 -> 48 - Black Queen - 9
+White Bishop 61 -> 51 - White King - 119
+White Bishop 61 -> 52 - White Pawn - 1
+White Bishop 61 -> 53 -  - 1
+White Bishop 61 -> 54 -  - 1
+White Bishop 61 -> 55 -  - 1
+White Bishop 61 -> 56 -  - 1
+White Bishop 61 -> 57 - Black Pawn - 1
+White Bishop 61 -> 58 - Black King - 119
+White Bishop 61 -> 61 - White Bishop - 3
+White Bishop 61 -> 62 - White Pawn - 1
+White Bishop 61 -> 63 -  - 1
+White Bishop 61 -> 64 -  - 1
+White Bishop 61 -> 65 -  - 1
+White Bishop 61 -> 66 -  - 1
+White Bishop 61 -> 67 - Black Pawn - 1
+White Bishop 61 -> 68 - Black Bishop - 3
+White Bishop 61 -> 71 - White Knight - 3
+White Bishop 61 -> 72 - White Pawn - 1
+White Bishop 61 -> 73 -  - 1
+White Bishop 61 -> 74 -  - 1
+White Bishop 61 -> 75 -  - 1
+White Bishop 61 -> 76 -  - 1
+White Bishop 61 -> 77 - Black Pawn - 1
+White Bishop 61 -> 78 - Black Knight - 3
+White Bishop 61 -> 81 - White Rook - 5
+White Bishop 61 -> 82 - White Pawn - 1
+White Bishop 61 -> 83 - Black Bishop - 3
+White Bishop 61 -> 84 -  - 3
+White Bishop 61 -> 85 -  - 3
+White Bishop 61 -> 86 -  - 3
+White Bishop 61 -> 87 - Black Pawn - 1
+White Bishop 61 -> 88 - Black Rook - 5
+White Pawn 62 -> 11 - White Rook - 5
+White Pawn 62 -> 12 - White Pawn - 1
+White Pawn 62 -> 13 -  - 1
+White Pawn 62 -> 14 -  - 1
+White Pawn 62 -> 15 -  - 1
+White Pawn 62 -> 16 -  - 1
+White Pawn 62 -> 17 - Black Pawn - 1
+White Pawn 62 -> 18 - Black Rook - 5
+White Pawn 62 -> 21 - White Knight - 3
+White Pawn 62 -> 22 - White Pawn - 1
+White Pawn 62 -> 23 -  - 1
+White Pawn 62 -> 24 -  - 1
+White Pawn 62 -> 25 -  - 1
+White Pawn 62 -> 26 -  - 1
+White Pawn 62 -> 27 - Black Pawn - 1
+White Pawn 62 -> 28 - Black Knight - 3
+White Pawn 62 -> 31 - White Bishop - 3
+White Pawn 62 -> 32 -  - 3
+White Pawn 62 -> 33 - White Pawn - 1
+White Pawn 62 -> 34 -  - 1
+White Pawn 62 -> 35 -  - 1
+White Pawn 62 -> 36 -  - 1
+White Pawn 62 -> 37 - Black Pawn - 1
+White Pawn 62 -> 38 -  - 1
+White Pawn 62 -> 41 - White Queen - 9
+White Pawn 62 -> 42 -  - 9
+White Pawn 62 -> 43 -  - 9
+White Pawn 62 -> 44 - White Pawn - 1
+White Pawn 62 -> 45 -  - 1
+White Pawn 62 -> 46 - Black Pawn - 1
+White Pawn 62 -> 47 -  - 1
+White Pawn 62 -> 48 - Black Queen - 9
+White Pawn 62 -> 51 - White King - 119
+White Pawn 62 -> 52 - White Pawn - 1
+White Pawn 62 -> 53 -  - 1
+White Pawn 62 -> 54 -  - 1
+White Pawn 62 -> 55 -  - 1
+White Pawn 62 -> 56 -  - 1
+White Pawn 62 -> 57 - Black Pawn - 1
+White Pawn 62 -> 58 - Black King - 119
+White Pawn 62 -> 61 - White Bishop - 3
+White Pawn 62 -> 62 - White Pawn - 1
+White Pawn 62 -> 63 -  - 1
+White Pawn 62 -> 64 -  - 1
+White Pawn 62 -> 65 -  - 1
+White Pawn 62 -> 66 -  - 1
+White Pawn 62 -> 67 - Black Pawn - 1
+White Pawn 62 -> 68 - Black Bishop - 3
+White Pawn 62 -> 71 - White Knight - 3
+White Pawn 62 -> 72 - White Pawn - 1
+White Pawn 62 -> 73 -  - 1
+White Pawn 62 -> 74 -  - 1
+White Pawn 62 -> 75 -  - 1
+White Pawn 62 -> 76 -  - 1
+White Pawn 62 -> 77 - Black Pawn - 1
+White Pawn 62 -> 78 - Black Knight - 3
+White Pawn 62 -> 81 - White Rook - 5
+White Pawn 62 -> 82 - White Pawn - 1
+White Pawn 62 -> 83 - Black Bishop - 3
+White Pawn 62 -> 84 -  - 3
+White Pawn 62 -> 85 -  - 3
+White Pawn 62 -> 86 -  - 3
+White Pawn 62 -> 87 - Black Pawn - 1
+White Pawn 62 -> 88 - Black Rook - 5
+White Knight 71 -> 11 - White Rook - 5
+White Knight 71 -> 12 - White Pawn - 1
+White Knight 71 -> 13 -  - 1
+White Knight 71 -> 14 -  - 1
+White Knight 71 -> 15 -  - 1
+White Knight 71 -> 16 -  - 1
+White Knight 71 -> 17 - Black Pawn - 1
+White Knight 71 -> 18 - Black Rook - 5
+White Knight 71 -> 21 - White Knight - 3
+White Knight 71 -> 22 - White Pawn - 1
+White Knight 71 -> 23 -  - 1
+White Knight 71 -> 24 -  - 1
+White Knight 71 -> 25 -  - 1
+White Knight 71 -> 26 -  - 1
+White Knight 71 -> 27 - Black Pawn - 1
+White Knight 71 -> 28 - Black Knight - 3
+White Knight 71 -> 31 - White Bishop - 3
+White Knight 71 -> 32 -  - 3
+White Knight 71 -> 33 - White Pawn - 1
+White Knight 71 -> 34 -  - 1
+White Knight 71 -> 35 -  - 1
+White Knight 71 -> 36 -  - 1
+White Knight 71 -> 37 - Black Pawn - 1
+White Knight 71 -> 38 -  - 1
+White Knight 71 -> 41 - White Queen - 9
+White Knight 71 -> 42 -  - 9
+White Knight 71 -> 43 -  - 9
+White Knight 71 -> 44 - White Pawn - 1
+White Knight 71 -> 45 -  - 1
+White Knight 71 -> 46 - Black Pawn - 1
+White Knight 71 -> 47 -  - 1
+White Knight 71 -> 48 - Black Queen - 9
+White Knight 71 -> 51 - White King - 119
+White Knight 71 -> 52 - White Pawn - 1
+White Knight 71 -> 53 -  - 1
+White Knight 71 -> 54 -  - 1
+White Knight 71 -> 55 -  - 1
+White Knight 71 -> 56 -  - 1
+White Knight 71 -> 57 - Black Pawn - 1
+White Knight 71 -> 58 - Black King - 119
+White Knight 71 -> 61 - White Bishop - 3
+White Knight 71 -> 62 - White Pawn - 1
+White Knight 71 -> 63 -  - 1
+White Knight 71 -> 64 -  - 1
+White Knight 71 -> 65 -  - 1
+White Knight 71 -> 66 -  - 1
+White Knight 71 -> 67 - Black Pawn - 1
+White Knight 71 -> 68 - Black Bishop - 3
+White Knight 71 -> 71 - White Knight - 3
+White Knight 71 -> 72 - White Pawn - 1
+White Knight 71 -> 73 -  - 1
+White Knight 71 -> 74 -  - 1
+White Knight 71 -> 75 -  - 1
+White Knight 71 -> 76 -  - 1
+White Knight 71 -> 77 - Black Pawn - 1
+White Knight 71 -> 78 - Black Knight - 3
+White Knight 71 -> 81 - White Rook - 5
+White Knight 71 -> 82 - White Pawn - 1
+White Knight 71 -> 83 - Black Bishop - 3
+White Knight 71 -> 84 -  - 3
+White Knight 71 -> 85 -  - 3
+White Knight 71 -> 86 -  - 3
+White Knight 71 -> 87 - Black Pawn - 1
+White Knight 71 -> 88 - Black Rook - 5
+White Pawn 72 -> 11 - White Rook - 5
+White Pawn 72 -> 12 - White Pawn - 1
+White Pawn 72 -> 13 -  - 1
+White Pawn 72 -> 14 -  - 1
+White Pawn 72 -> 15 -  - 1
+White Pawn 72 -> 16 -  - 1
+White Pawn 72 -> 17 - Black Pawn - 1
+White Pawn 72 -> 18 - Black Rook - 5
+White Pawn 72 -> 21 - White Knight - 3
+White Pawn 72 -> 22 - White Pawn - 1
+White Pawn 72 -> 23 -  - 1
+White Pawn 72 -> 24 -  - 1
+White Pawn 72 -> 25 -  - 1
+White Pawn 72 -> 26 -  - 1
+White Pawn 72 -> 27 - Black Pawn - 1
+White Pawn 72 -> 28 - Black Knight - 3
+White Pawn 72 -> 31 - White Bishop - 3
+White Pawn 72 -> 32 -  - 3
+White Pawn 72 -> 33 - White Pawn - 1
+White Pawn 72 -> 34 -  - 1
+White Pawn 72 -> 35 -  - 1
+White Pawn 72 -> 36 -  - 1
+White Pawn 72 -> 37 - Black Pawn - 1
+White Pawn 72 -> 38 -  - 1
+White Pawn 72 -> 41 - White Queen - 9
+White Pawn 72 -> 42 -  - 9
+White Pawn 72 -> 43 -  - 9
+White Pawn 72 -> 44 - White Pawn - 1
+White Pawn 72 -> 45 -  - 1
+White Pawn 72 -> 46 - Black Pawn - 1
+White Pawn 72 -> 47 -  - 1
+White Pawn 72 -> 48 - Black Queen - 9
+White Pawn 72 -> 51 - White King - 119
+White Pawn 72 -> 52 - White Pawn - 1
+White Pawn 72 -> 53 -  - 1
+White Pawn 72 -> 54 -  - 1
+White Pawn 72 -> 55 -  - 1
+White Pawn 72 -> 56 -  - 1
+White Pawn 72 -> 57 - Black Pawn - 1
+White Pawn 72 -> 58 - Black King - 119
+White Pawn 72 -> 61 - White Bishop - 3
+White Pawn 72 -> 62 - White Pawn - 1
+White Pawn 72 -> 63 -  - 1
+White Pawn 72 -> 64 -  - 1
+White Pawn 72 -> 65 -  - 1
+White Pawn 72 -> 66 -  - 1
+White Pawn 72 -> 67 - Black Pawn - 1
+White Pawn 72 -> 68 - Black Bishop - 3
+White Pawn 72 -> 71 - White Knight - 3
+White Pawn 72 -> 72 - White Pawn - 1
+White Pawn 72 -> 73 -  - 1
+White Pawn 72 -> 74 -  - 1
+White Pawn 72 -> 75 -  - 1
+White Pawn 72 -> 76 -  - 1
+White Pawn 72 -> 77 - Black Pawn - 1
+White Pawn 72 -> 78 - Black Knight - 3
+White Pawn 72 -> 81 - White Rook - 5
+White Pawn 72 -> 82 - White Pawn - 1
+White Pawn 72 -> 83 - Black Bishop - 3
+White Pawn 72 -> 84 -  - 3
+White Pawn 72 -> 85 -  - 3
+White Pawn 72 -> 86 -  - 3
+White Pawn 72 -> 87 - Black Pawn - 1
+White Pawn 72 -> 88 - Black Rook - 5
+White Rook 81 -> 11 - White Rook - 5
+White Rook 81 -> 12 - White Pawn - 1
+White Rook 81 -> 13 -  - 1
+White Rook 81 -> 14 -  - 1
+White Rook 81 -> 15 -  - 1
+White Rook 81 -> 16 -  - 1
+White Rook 81 -> 17 - Black Pawn - 1
+White Rook 81 -> 18 - Black Rook - 5
+White Rook 81 -> 21 - White Knight - 3
+White Rook 81 -> 22 - White Pawn - 1
+White Rook 81 -> 23 -  - 1
+White Rook 81 -> 24 -  - 1
+White Rook 81 -> 25 -  - 1
+White Rook 81 -> 26 -  - 1
+White Rook 81 -> 27 - Black Pawn - 1
+White Rook 81 -> 28 - Black Knight - 3
+White Rook 81 -> 31 - White Bishop - 3
+White Rook 81 -> 32 -  - 3
+White Rook 81 -> 33 - White Pawn - 1
+White Rook 81 -> 34 -  - 1
+White Rook 81 -> 35 -  - 1
+White Rook 81 -> 36 -  - 1
+White Rook 81 -> 37 - Black Pawn - 1
+White Rook 81 -> 38 -  - 1
+White Rook 81 -> 41 - White Queen - 9
+White Rook 81 -> 42 -  - 9
+White Rook 81 -> 43 -  - 9
+White Rook 81 -> 44 - White Pawn - 1
+White Rook 81 -> 45 -  - 1
+White Rook 81 -> 46 - Black Pawn - 1
+White Rook 81 -> 47 -  - 1
+White Rook 81 -> 48 - Black Queen - 9
+White Rook 81 -> 51 - White King - 119
+White Rook 81 -> 52 - White Pawn - 1
+White Rook 81 -> 53 -  - 1
+White Rook 81 -> 54 -  - 1
+White Rook 81 -> 55 -  - 1
+White Rook 81 -> 56 -  - 1
+White Rook 81 -> 57 - Black Pawn - 1
+White Rook 81 -> 58 - Black King - 119
+White Rook 81 -> 61 - White Bishop - 3
+White Rook 81 -> 62 - White Pawn - 1
+White Rook 81 -> 63 -  - 1
+White Rook 81 -> 64 -  - 1
+White Rook 81 -> 65 -  - 1
+White Rook 81 -> 66 -  - 1
+White Rook 81 -> 67 - Black Pawn - 1
+White Rook 81 -> 68 - Black Bishop - 3
+White Rook 81 -> 71 - White Knight - 3
+White Rook 81 -> 72 - White Pawn - 1
+White Rook 81 -> 73 -  - 1
+White Rook 81 -> 74 -  - 1
+White Rook 81 -> 75 -  - 1
+White Rook 81 -> 76 -  - 1
+White Rook 81 -> 77 - Black Pawn - 1
+White Rook 81 -> 78 - Black Knight - 3
+White Rook 81 -> 81 - White Rook - 5
+White Rook 81 -> 82 - White Pawn - 1
+White Rook 81 -> 83 - Black Bishop - 3
+White Rook 81 -> 84 -  - 3
+White Rook 81 -> 85 -  - 3
+White Rook 81 -> 86 -  - 3
+White Rook 81 -> 87 - Black Pawn - 1
+White Rook 81 -> 88 - Black Rook - 5
+White Pawn 82 -> 11 - White Rook - 5
+White Pawn 82 -> 12 - White Pawn - 1
+White Pawn 82 -> 13 -  - 1
+White Pawn 82 -> 14 -  - 1
+White Pawn 82 -> 15 -  - 1
+White Pawn 82 -> 16 -  - 1
+White Pawn 82 -> 17 - Black Pawn - 1
+White Pawn 82 -> 18 - Black Rook - 5
+White Pawn 82 -> 21 - White Knight - 3
+White Pawn 82 -> 22 - White Pawn - 1
+White Pawn 82 -> 23 -  - 1
+White Pawn 82 -> 24 -  - 1
+White Pawn 82 -> 25 -  - 1
+White Pawn 82 -> 26 -  - 1
+White Pawn 82 -> 27 - Black Pawn - 1
+White Pawn 82 -> 28 - Black Knight - 3
+White Pawn 82 -> 31 - White Bishop - 3
+White Pawn 82 -> 32 -  - 3
+White Pawn 82 -> 33 - White Pawn - 1
+White Pawn 82 -> 34 -  - 1
+White Pawn 82 -> 35 -  - 1
+White Pawn 82 -> 36 -  - 1
+White Pawn 82 -> 37 - Black Pawn - 1
+White Pawn 82 -> 38 -  - 1
+White Pawn 82 -> 41 - White Queen - 9
+White Pawn 82 -> 42 -  - 9
+White Pawn 82 -> 43 -  - 9
+White Pawn 82 -> 44 - White Pawn - 1
+White Pawn 82 -> 45 -  - 1
+White Pawn 82 -> 46 - Black Pawn - 1
+White Pawn 82 -> 47 -  - 1
+White Pawn 82 -> 48 - Black Queen - 9
+White Pawn 82 -> 51 - White King - 119
+White Pawn 82 -> 52 - White Pawn - 1
+White Pawn 82 -> 53 -  - 1
+White Pawn 82 -> 54 -  - 1
+White Pawn 82 -> 5

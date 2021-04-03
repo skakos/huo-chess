@@ -35,6 +35,21 @@ using System.IO;
 // Analyze_Move_2_ComputerMove
 // Analyze_Move_3_HumanMove
 // Analyze_Move_4_ComputerMove
+// --------------------
+// v0.9921 changes
+// As of 2021-03-20
+// Changes to support castling (also embedded in computer's thought now)
+// --------------------
+// Global variables (for the program - I added Move_Number_Global)
+// Move_Number_Global update in the program
+// Variables
+// Main_Console()
+// ComputerMove()
+// CountScore()
+// ElegxosNomimotitas()
+// EnterMove()
+// Analyze_Move_2
+// Analyze_Move_3
 
 namespace HuoChessW8
 {
@@ -47,6 +62,8 @@ namespace HuoChessW8
         public static int j_MouseIsIn;
         public static int rankClicked;
         public static String columnClicked;
+        //v0.9921 Added global Move variable!
+        public static int Move_Number_Global;
 
         public Form1()
         {
@@ -498,6 +515,9 @@ namespace HuoChessW8
 
             // Variable to show if castrling occured
             public static bool Castling_Occured = false;
+            // v0.9921: Castling moves
+            public static bool White_Castling_Occured = false;
+            public static bool Black_Castling_Occured = false;
 
             // Variables to show where the kings are in the chessboard
             public static int WhiteKingColumn;
@@ -610,8 +630,10 @@ namespace HuoChessW8
             //public static int m_FinishingRank_Human = 1;
             // Variables to help find out if it is legal for the computer to perform castling
             //v0.980: Removed all that code! It was not used anyway!
-            //public static bool White_King_Moved = false;
-            //public static bool Bl_King_Moved = false;
+            //v0.9921: The code is used again for castling!
+            public static bool White_King_Moved = false;
+            public static bool Black_King_Moved = false;
+            public static bool Castling_Move = false;
             //public static bool White_Rook_a1_Moved = false;
             //public static bool White_Rook_h1_Moved = false;
             //public static bool Bl_Rook_a8_Moved = false;
@@ -722,9 +744,9 @@ namespace HuoChessW8
                 //	huo_debug = false;
 
                 if (Thinking_Depth == 4)
-                    MessageBox.Show("\nHuo Chess v0.992 by Spiros I. Kakos (huo)\n[C# Edition - Last updated: 2019, 2020, 2021]\n\nCURRENT EXPERIMENT:\nDepth 5 half-moves (Minimax Algorithm)\n\nWhat about a nice game of chess?", "Huo Chess W8", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("\nHuo Chess v0.9921 by Spiros I. Kakos (huo)\n[C# Edition - Last updated: 2019, 2020, 2021]\n\nCURRENT EXPERIMENT:\nDepth 5 half-moves (Minimax Algorithm)\n\nWhat about a nice game of chess?", "Huo Chess W8", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 else if (Thinking_Depth == 2)
-                    MessageBox.Show("\nHuo Chess v0.992 by Spiros I. Kakos (huo)\n[C# Edition - Last updated: 2019, 2020, 2021]\n\nCURRENT EXPERIMENT:\nDepth 3 half-moves (Minimax Algorithm)\n\nWhat about a nice game of chess?", "Huo Chess W8", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("\nHuo Chess v0.9921 by Spiros I. Kakos (huo)\n[C# Edition - Last updated: 2019, 2020, 2021]\n\nCURRENT EXPERIMENT:\nDepth 3 half-moves (Minimax Algorithm)\n\nWhat about a nice game of chess?", "Huo Chess W8", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // v0.991: Ability to easily activate/ deactivate logs
                 if (activateLogs == true)
@@ -739,6 +761,11 @@ namespace HuoChessW8
                 // Initial values
                 Move = 0;
                 m_WhichColorPlays = "White";
+                //v0.9921
+                White_King_Moved = false;
+                Black_King_Moved = false;
+                White_Castling_Occured = false;
+                Black_Castling_Occured = false;
 
                 // Setup startup position
                 // v0.990: Removed. This is already called before this function is called!
@@ -4314,13 +4341,68 @@ namespace HuoChessW8
                     else if (Best_Move_FinishingColumnNumber == 8)
                         HY_Finishing_Column_Text = "h";
 
-                    #region ObsoleteCode
+                    // v0.9921
+                    // Check if castling occured (so as to move the rook next to the moving king)
+                    #region castlingOccured
+                    if (m_PlayerColor.CompareTo("Black") == 0)
+                    {
+                        if ((MovingPiece.CompareTo("White King") == 0) &&
+                            (Best_Move_StartingColumnNumber == 5) &&
+                            (Best_Move_StartingRank == 1) &&
+                            (Best_Move_FinishingColumnNumber == 7) &&
+                            (Best_Move_FinishingRank == 1))
+                        {
+                            Skakiera[(5), (0)] = "White Rook";
+                            Skakiera[(7), (0)] = "";
+                            White_Castling_Occured = true;
+                            //MessageBox.Show( "Ο λευκός κάνει μικρό ροκε." );
+                        }
+                        else if ((MovingPiece.CompareTo("White King") == 0) &&
+                                (Best_Move_StartingColumnNumber == 5) &&
+                                (Best_Move_StartingRank == 1) &&
+                                (Best_Move_FinishingColumnNumber == 3) &&
+                                (Best_Move_FinishingRank == 1))
+                        {
+                            Skakiera[(3), (0)] = "White Rook";
+                            Skakiera[(0), (0)] = "";
+                            White_Castling_Occured = true;
+                            //MessageBox.Show( "Ο λευκός κάνει μεγάλο ροκε." );
+                        }
+                    }
+                    else if (m_PlayerColor.CompareTo("White") == 0)
+                    {
+                        if ((MovingPiece.CompareTo("Black King") == 0) &&
+                                (Best_Move_StartingColumnNumber == 5) &&
+                                (Best_Move_StartingRank == 8) &&
+                                (Best_Move_FinishingColumnNumber == 7) &&
+                                (Best_Move_FinishingRank == 8))
+                        {
+                            Skakiera[(5), (7)] = "Black Rook";
+                            Skakiera[(7), (7)] = "";
+                            Black_Castling_Occured = true;
+                            //MessageBox.Show( "Ο μαύρος κάνει μικρό ροκε." );
+                        }
+                        else if ((MovingPiece.CompareTo("Black King") == 0) &&
+                                (Best_Move_StartingColumnNumber == 5) &&
+                                (Best_Move_StartingRank == 8) &&
+                                (Best_Move_FinishingColumnNumber == 3) &&
+                                (Best_Move_FinishingRank == 8))
+                        {
+                            Skakiera[(3), (7)] = "Black Rook";
+                            Skakiera[(0), (7)] = "";
+                            Black_Castling_Occured = true;
+                            //MessageBox.Show( "Ο μαύρος κάνει μεγάλο ροκε." );
+                        }
+                    }
+                    #endregion castlingOccured
+
                     // If king is moved, no castling can occur
                     //v0.980: Removed all this code! It is not used anyway!
-                    //if (MovingPiece.CompareTo("White King") == 0)
-                    //    White_King_Moved = true;
-                    //else if (MovingPiece.CompareTo("Black King") == 0)
-                    //    Bl_King_Moved = false;
+                    //v0.9921: The code is used again!
+                    if (MovingPiece.CompareTo("White King") == 0)
+                        White_King_Moved = true;
+                    else if (MovingPiece.CompareTo("Black King") == 0)
+                        Black_King_Moved = true;
                     //else if (MovingPiece.CompareTo("White Rook") == 0)
                     //{
                     //    if ((Best_Move_StartingColumnNumber == 1) && (Best_Move_StartingRank == 1))
@@ -4335,7 +4417,6 @@ namespace HuoChessW8
                     //    else if ((Best_Move_StartingColumnNumber == 8) && (Best_Move_StartingRank == 8))
                     //        Bl_Rook_h8_Moved = false;
                     //}
-                    #endregion ObsoleteCode
 
                     // Is there a pawn to promote?
                     // v0.992: Pawn promotion only checked once centrally through pawn promotion function!
@@ -4374,7 +4455,7 @@ namespace HuoChessW8
                     #endregion ObsoleteCode
 
                     // v0.980: No need to have NextLine
-                    NextLine = String.Concat(HY_Starting_Column_Text, Best_Move_StartingRank.ToString(), " -> ", HY_Finishing_Column_Text, Best_Move_FinishingRank.ToString());
+                    NextLine = String.Concat(HY_Starting_Column_Text, Best_Move_StartingRank.ToString(), " -> ", HY_Finishing_Column_Text, Best_Move_FinishingRank.ToString(), " (Move ", Move_Number_Global.ToString(), ")");
                     //Console.WriteLine(String.Concat("My move: ", HY_Starting_Column_Text, Best_Move_StartingRank.ToString(), " -> ", HY_Finishing_Column_Text, Best_Move_FinishingRank.ToString()));
                     //Display_board(Skakiera);
                     //MessageBox.Show(number_of_moves_analysed.ToString());
@@ -4395,11 +4476,17 @@ namespace HuoChessW8
                     if (m_PlayerColor.CompareTo("Black") == 0)
                     {
                         m_WhichColorPlays = "Black";
-                        Move = Move + 1;
+                        //v0.9921 This was moved outside the if statement
+                        //Move = Move + 1;
                     }
                     else if (m_PlayerColor.CompareTo("White") == 0)
+                    {
                         m_WhichColorPlays = "White";
+                    }
 
+                    //v0.9921: Increase move. Use Move_Number_Global!
+                    Move = Move + 1;
+                    Move_Number_Global = Move_Number_Global + 1;
                     // Now it is the Human's turn to play
                     m_WhoPlays = "Human";
                 }
@@ -4422,6 +4509,7 @@ namespace HuoChessW8
             // Now the additional score checks can be added with integers, e.g. if (CSSkakiera[3, 4].CompareTo("Black Pawn") == 0) THEN positionScore = positionScore - 1 for the above example.
             // If I wanted to do what using decimals, then all positionScore, bestPositionScore, NodesAnalysis0... NodesAnalysis4 variables and arrays should de defined as DOUBLE, but then we would have memory problems...
             // REMEMBER NOTATION: CSSkakiera[column, row] with columns and rows starting from zero.
+            // v0.9921 changes
             public static int CountScore(string[,] CSSkakiera)
             {
                 // White pieces: positive score
@@ -4527,17 +4615,29 @@ namespace HuoChessW8
                             //    }
                             //}
                             //Advanced pawns
-                            if ((Move > 10) && (j > 2))
+                            if ((Move > 30) && (j > 1))
                             {
                                 Current_Move_Score = Current_Move_Score + 3 * Score_Multiplier_White;
                             }
-                            if ((Move > 30) && (j > 4))
+                            if ((Move > 30) && (j > 2))
+                            {
+                                Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            }
+                            if ((Move > 30) && (j > 3))
                             {
                                 Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
                             }
+                            if ((Move > 30) && (j > 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 20 * Score_Multiplier_White;
+                            }
+                            if ((Move > 30) && (j > 5))
+                            {
+                                Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
+                            }
                             if ((Move > 30) && (j == 7))
                             {
-                                Current_Move_Score = Current_Move_Score + 90 * Score_Multiplier_White;
+                                Current_Move_Score = Current_Move_Score + 100 * Score_Multiplier_White;
                             }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Rook") == 0)
@@ -4547,14 +4647,14 @@ namespace HuoChessW8
 
                             //v0.992
                             // Get near the King at the ending...
-                            //if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
-                            //}
-                            //if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
-                            //}
+                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Knight") == 0)
                         {
@@ -4564,11 +4664,11 @@ namespace HuoChessW8
                             // Get near the King at the ending...
                             if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
                             {
-                                Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
                             if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
                             {
-                                Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Bishop") == 0)
@@ -4577,14 +4677,14 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
 
                             // Get near the King at the ending...
-                            //if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
-                            //}
-                            //if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
-                            //}
+                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Queen") == 0)
                         {
@@ -4592,14 +4692,14 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score + 90 * Score_Multiplier_White;
 
                             // Get near the King at the ending...
-                            //if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
-                            //}
-                            //if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
-                            //}
+                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 3))
+                            {
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 3))
+                            {
+                                Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White King") == 0)
                         {
@@ -4629,17 +4729,29 @@ namespace HuoChessW8
                             //    }
                             //}
                             // Advanced pawns
-                            if ((Move > 10) && (j < 6))
+                            if ((Move > 30) && (j < 6))
                             {
                                 Current_Move_Score = Current_Move_Score - 3 * Score_Multiplier_Black;
                             }
                             if ((Move > 30) && (j < 5))
                             {
+                                Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 30) && (j < 4))
+                            {
                                 Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 30) && (j < 3))
+                            {
+                                Current_Move_Score = Current_Move_Score - 20 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 30) && (j < 2))
+                            {
+                                Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
                             }
                             if ((Move > 30) && (j == 0))
                             {
-                                Current_Move_Score = Current_Move_Score - 90 * Score_Multiplier_Black;
+                                Current_Move_Score = Current_Move_Score - 100 * Score_Multiplier_Black;
                             }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Rook") == 0)
@@ -4648,14 +4760,14 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score - 50 * Score_Multiplier_Black;
 
                             // Get near the King at the ending...
-                            //if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
-                            //}
-                            //if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
-                            //}
+                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Knight") == 0)
                         {
@@ -4667,11 +4779,11 @@ namespace HuoChessW8
                             // Get near the King at the ending...
                             if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
                             {
-                                Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
                             if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
                             {
-                                Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Bishop") == 0)
@@ -4680,14 +4792,14 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
 
                             // Get near the King at the ending...
-                            //if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
-                            //}
-                            //if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
-                            //}
+                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            {
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Queen") == 0)
                         {
@@ -4695,14 +4807,14 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score - 90 * Score_Multiplier_Black;
 
                             // Get near the King at the ending...
-                            //if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
-                            //}
-                            //if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
-                            //{
-                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_White;
-                            //}
+                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 3))
+                            {
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
+                            }
+                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 3))
+                            {
+                                Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
+                            }
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black King") == 0)
                         {
@@ -4715,21 +4827,50 @@ namespace HuoChessW8
 
                 // Position Quality Checks
                 // Take the center with the pawns
-                if (CSSkakiera[3, 3].CompareTo("White Pawn") == 0)
+                if (Move < 16)
                 {
-                    Current_Move_Score = Current_Move_Score + 1;
-                }
-                if (CSSkakiera[4, 3].CompareTo("White Pawn") == 0)
-                {
-                    Current_Move_Score = Current_Move_Score + 1;
-                }
-                if (CSSkakiera[3, 4].CompareTo("Black Pawn") == 0)
-                {
-                    Current_Move_Score = Current_Move_Score - 1;
-                }
-                if (CSSkakiera[4, 4].CompareTo("Black Pawn") == 0)
-                {
-                    Current_Move_Score = Current_Move_Score - 1;
+                    if (CSSkakiera[3, 3].CompareTo("White Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    if (CSSkakiera[4, 3].CompareTo("White Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score + 1;
+                    }
+                    if (CSSkakiera[3, 4].CompareTo("Black Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    if (CSSkakiera[4, 4].CompareTo("Black Pawn") == 0)
+                    {
+                        Current_Move_Score = Current_Move_Score - 1;
+                    }
+                    // Do not leave the king in harm's way! Do castling! (small castling promoted)
+                    // Does not work properly, so for now this is not used - To be improved
+                    //if (CSSkakiera[4, 0].CompareTo("White King") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score - 5;
+                    //}
+                    //if (CSSkakiera[6, 0].CompareTo("White King") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score + 5;
+                    //}
+                    //if (CSSkakiera[4, 7].CompareTo("Black King") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score + 5;
+                    //}
+                    //if (CSSkakiera[6, 7].CompareTo("Black King") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score - 5;
+                    //}
+                    //if (White_Castling_Occured == true)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score + 5;
+                    //}
+                    //if (Black_Castling_Occured == true)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score - 5;
+                    //}
                 }
 
                 // Don't make stupid moves in the beginning
@@ -4782,10 +4923,10 @@ namespace HuoChessW8
                         Current_Move_Score = Current_Move_Score - 1;
                     }
                     // Do not move the queen
-                    if (CSSkakiera[3, 0].CompareTo("") == 0)
-                    {
-                        Current_Move_Score = Current_Move_Score - 1;
-                    }
+                    //if (CSSkakiera[3, 0].CompareTo("") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score - 1;
+                    //}
                     // Do not move the king
                     //if (CSSkakiera[4, 0].CompareTo("") == 0)
                     //{
@@ -4839,10 +4980,10 @@ namespace HuoChessW8
                         Current_Move_Score = Current_Move_Score + 1;
                     }
                     // Do not move the queen
-                    if (CSSkakiera[3, 7].CompareTo("") == 0)
-                    {
-                        Current_Move_Score = Current_Move_Score + 1;
-                    }
+                    //if (CSSkakiera[3, 7].CompareTo("") == 0)
+                    //{
+                    //    Current_Move_Score = Current_Move_Score + 1;
+                    //}
                     // Do not move the king
                     //if (CSSkakiera[4, 7].CompareTo("") == 0)
                     //{
@@ -4896,11 +5037,11 @@ namespace HuoChessW8
                     //(but not too much)
                     if (WhiteKingCheck == true)
                     {
-                        Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
+                        Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                     }
                     if (BlackKingCheck == true)
                     {
-                        Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
+                        Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                     }
                 }
 
@@ -5272,6 +5413,89 @@ namespace HuoChessW8
                     ENSkakiera[(startColumn - 1), (startRank - 1)] = MovingPiece_EN;
                 }
 
+                //--------------- v0.9921: Castling -------------------
+                #region checkCastling
+                // White castling
+
+                //MessageBox.Show(String.Concat("m_WhichColorPlays = ", m_WhichColorPlays));
+                //MessageBox.Show(String.Concat("startColumn = ", startColumn.ToString()));
+                //MessageBox.Show(String.Concat("finishColumn = ", finishColumn.ToString()));
+                //MessageBox.Show(String.Concat("startRank = ", startRank.ToString()));
+                //MessageBox.Show(String.Concat("finishRank = ", finishRank.ToString()));
+                //MessageBox.Show(String.Concat("White_Castling_Occured = ", White_Castling_Occured.ToString()));
+                //MessageBox.Show(String.Concat("White_King_Moved = ", White_King_Moved.ToString()));
+                //MessageBox.Show(String.Concat("m_StartingColumnNumber = ", m_StartingColumnNumber.ToString()));
+                //MessageBox.Show(String.Concat("m_FinishingColumnNumber = ", m_FinishingColumnNumber.ToString()));
+                //MessageBox.Show(String.Concat("m_StartingRank = ", m_StartingRank.ToString()));
+                //MessageBox.Show(String.Concat("m_FinishingRank = ", m_FinishingRank.ToString()));
+                //MessageBox.Show(String.Concat("Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = ", Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].ToString()));
+                //MessageBox.Show(String.Concat("Skakiera[(5), (0)] = ", Skakiera[(5), (0)].ToString()));
+                //MessageBox.Show(String.Concat("Skakiera[(6), (0)] = ", Skakiera[(6), (0)].ToString()));
+                //MessageBox.Show(String.Concat("Skakiera[(7), (0)] = ", Skakiera[(7), (0)].ToString()));
+                //MessageBox.Show(String.Concat("ENSkakiera[(5), (0)] = ", ENSkakiera[(5), (0)].ToString()));
+                //MessageBox.Show(String.Concat("ENSkakiera[(6), (0)] = ", ENSkakiera[(6), (0)].ToString()));
+
+                // Small castling
+                if ((m_WhichColorPlays.CompareTo("White") == 0) &&
+                    (startColumn == 5) &&
+                    (finishColumn == 7) &&
+                    (startRank == 1) &&
+                    (finishRank == 1) &&
+                    (White_Castling_Occured == false) &&
+                    (White_King_Moved == false))
+                {
+                    //MessageBox.Show("Check 1.0");
+                    if ((ENSkakiera[(startColumn - 1), (startRank - 1)].CompareTo("White King") == 0) && (ENSkakiera[(7), (0)].CompareTo("White Rook") == 0) && (ENSkakiera[(5), (0)].CompareTo("") == 0) && (ENSkakiera[(6), (0)].CompareTo("") == 0))
+                    {
+                        //m_OrthotitaKinisis = true;
+                        m_NomimotitaKinisis = true;
+                        Castling_Move = true;
+                        //MessageBox.Show("Check 1.1");
+                    }
+                }
+
+                // Big castling
+                if ((m_WhichColorPlays.CompareTo("White") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 3) && (m_StartingRank == 1) && (m_FinishingRank == 1) && (White_Castling_Occured == false) && (White_King_Moved == false))
+                {
+                    if ((ENSkakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White King") == 0) && (ENSkakiera[(0), (0)].CompareTo("White Rook") == 0) && (ENSkakiera[(1), (0)].CompareTo("") == 0) && (ENSkakiera[(2), (0)].CompareTo("") == 0) && (ENSkakiera[(3), (0)].CompareTo("") == 0))
+                    {
+                        //m_OrthotitaKinisis = true;
+                        m_NomimotitaKinisis = true;
+                        Castling_Move = true;
+                        //MessageBox.Show("Check 1.2");
+                    }
+                }
+
+                // Black castling
+
+                // Small castling
+                if ((m_WhichColorPlays.CompareTo("Black") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 7) && (m_StartingRank == 8) && (m_FinishingRank == 8) && (Black_Castling_Occured == false) && (Black_King_Moved == false))
+                {
+                    if ((ENSkakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black King") == 0) && (ENSkakiera[(7), (7)].CompareTo("Black Rook") == 0) && (ENSkakiera[(5), (7)].CompareTo("") == 0) && (ENSkakiera[(6), (7)].CompareTo("") == 0))
+                    {
+                        //m_OrthotitaKinisis = true;
+                        m_NomimotitaKinisis = true;
+                        Castling_Move = true;
+                        //MessageBox.Show("Check 1.3");
+                        //if (m_WhichColorPlays.CompareTo("Black") == 0)
+                        //    MessageBox.Show(String.Concat("Castling_Move = ", Castling_Move.ToString()));
+                    }
+                }
+
+                // Big castling
+                if ((m_WhichColorPlays.CompareTo("Black") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 3) && (m_StartingRank == 8) && (m_FinishingRank == 8) && (Black_Castling_Occured == false) && (Black_King_Moved == false))
+                {
+                    if ((ENSkakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black King") == 0) && (ENSkakiera[(0), (7)].CompareTo("Black Rook") == 0) && (ENSkakiera[(1), (7)].CompareTo("") == 0) && (ENSkakiera[(2), (7)].CompareTo("") == 0) && (ENSkakiera[(3), (7)].CompareTo("") == 0))
+                    {
+                        //m_OrthotitaKinisis = true;
+                        m_NomimotitaKinisis = true;
+                        Castling_Move = true;
+                        //MessageBox.Show("Check 1.4");
+                    }
+                }
+                #endregion checkCastling
+                //--------------- v0.9921: Castling -------------------
+
                 return Nomimotita;
             }
 
@@ -5629,13 +5853,23 @@ namespace HuoChessW8
                     m_WrongColumn = true;
                 }
 
+                //V0.9921
+                Castling_Move = false;
+
                 // Check correctness of move entered
                 m_OrthotitaKinisis = ElegxosOrthotitas(Skakiera, 0, m_StartingRank, m_StartingColumnNumber, m_FinishingRank, m_FinishingColumnNumber, MovingPiece);
 
                 // Check legality of move entered (only if it is correct - so as to save time!)
-                if (m_OrthotitaKinisis == true)
-                    m_NomimotitaKinisis = ElegxosNomimotitas(Skakiera, 0, m_StartingRank, m_StartingColumnNumber, m_FinishingRank, m_FinishingColumnNumber, MovingPiece);
+                //v0.9921: Always check for Nomimotita, because there the castling is analyzed!
+                //if (m_OrthotitaKinisis == true)
+                m_NomimotitaKinisis = ElegxosNomimotitas(Skakiera, 0, m_StartingRank, m_StartingColumnNumber, m_FinishingRank, m_FinishingColumnNumber, MovingPiece);
 
+                //v0.9921: If castling, then Orthotita is also OK!
+                if (Castling_Move == true)
+                    m_OrthotitaKinisis = true;
+
+                //if (m_WhoPlays.CompareTo("Human") == 0)
+                //    MessageBox.Show(String.Concat("m_OrthotitaKinisis = ", m_OrthotitaKinisis.ToString(), " , m_NomimotitaKinisis = ", m_NomimotitaKinisis.ToString(), " , Castling_Move = ", Castling_Move.ToString()));
                 //v0.992: Put the check for check centrally in ElegxosNomimotitas? I tried but something funny happens!
                 //        No, everything is fine after all! :)
                 //v0.992: Do the check only for valid (so far) moves
@@ -5647,75 +5881,82 @@ namespace HuoChessW8
                 //    ProsorinoKommati = Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)];
                 //    Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = MovingPiece;
 
-                //    // Check if king is still under check
-                //    WhiteKingCheck = CheckForWhiteCheck(Skakiera);
+                    //    // Check if king is still under check
+                    //    WhiteKingCheck = CheckForWhiteCheck(Skakiera);
 
-                //    if ((m_WhichColorPlays.CompareTo("White") == 0) && (WhiteKingCheck == true))
-                //        m_NomimotitaKinisis = false;
+                    //    if ((m_WhichColorPlays.CompareTo("White") == 0) && (WhiteKingCheck == true))
+                    //        m_NomimotitaKinisis = false;
 
-                //    // Check if BK is still under check
-                //    BlackKingCheck = CheckForBlackCheck(Skakiera);
+                    //    // Check if BK is still under check
+                    //    BlackKingCheck = CheckForBlackCheck(Skakiera);
 
-                //    if ((m_WhichColorPlays.CompareTo("Black") == 0) && (BlackKingCheck == true))
-                //        m_NomimotitaKinisis = false;
+                    //    if ((m_WhichColorPlays.CompareTo("Black") == 0) && (BlackKingCheck == true))
+                    //        m_NomimotitaKinisis = false;
 
-                //    // Restore all pieces to the initial state
-                //    Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = MovingPiece;
-                //    Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = ProsorinoKommati;
-                //}
+                    //    // Restore all pieces to the initial state
+                    //    Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)] = MovingPiece;
+                    //    Skakiera[(m_FinishingColumnNumber - 1), (m_FinishingRank - 1)] = ProsorinoKommati;
+                    //}
 
-                // CHECK IF THE Human HAS ENTERED A CASTLING MOVE
-                // v0.980: Simplify & Add the m_OrthotitaKinisis = false cases so as to work correctly!
-                #region checkCastling
+                    //v0.9921: Castling check is now happening centrally inside ElegxosNomimotitas
+                    // CHECK IF THE Human HAS ENTERED A CASTLING MOVE
+                    // v0.980: Simplify & Add the m_OrthotitaKinisis = false cases so as to work correctly!
+                    //#region checkCastling
 
-                // White castling
+                    //// White castling
 
-                // Small castling
-                if ((m_PlayerColor.CompareTo("White") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 7) && (m_StartingRank == 1) && (m_FinishingRank == 1))
-                {
-                    if ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White King") == 0) && (Skakiera[(7), (0)].CompareTo("White Rook") == 0) && (Skakiera[(5), (0)].CompareTo("") == 0) && (Skakiera[(6), (0)].CompareTo("") == 0))
-                    {
-                        m_OrthotitaKinisis = true;
-                        m_NomimotitaKinisis = true;
-                        Castling_Occured = true;
-                    }
-                }
+                    //// Small castling
+                    //if ((m_PlayerColor.CompareTo("White") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 7) && (m_StartingRank == 1) && (m_FinishingRank == 1))
+                    //{
+                    //    if ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White King") == 0) && (Skakiera[(7), (0)].CompareTo("White Rook") == 0) && (Skakiera[(5), (0)].CompareTo("") == 0) && (Skakiera[(6), (0)].CompareTo("") == 0))
+                    //    {
+                    //        //m_OrthotitaKinisis = true;
+                    //        //m_NomimotitaKinisis = true;
+                    //        Castling_Occured = true;
+                    //    }
+                    //}
 
-                // Big castling
-                if ((m_PlayerColor.CompareTo("White") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 3) && (m_StartingRank == 1) && (m_FinishingRank == 1))
-                {
-                    if ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White King") == 0) && (Skakiera[(0), (0)].CompareTo("White Rook") == 0) && (Skakiera[(1), (0)].CompareTo("") == 0) && (Skakiera[(2), (0)].CompareTo("") == 0) && (Skakiera[(3), (0)].CompareTo("") == 0))
-                    {
-                        m_OrthotitaKinisis = true;
-                        m_NomimotitaKinisis = true;
-                        Castling_Occured = true;
-                    }
-                }
+                    //// Big castling
+                    //if ((m_PlayerColor.CompareTo("White") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 3) && (m_StartingRank == 1) && (m_FinishingRank == 1))
+                    //{
+                    //    if ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("White King") == 0) && (Skakiera[(0), (0)].CompareTo("White Rook") == 0) && (Skakiera[(1), (0)].CompareTo("") == 0) && (Skakiera[(2), (0)].CompareTo("") == 0) && (Skakiera[(3), (0)].CompareTo("") == 0))
+                    //    {
+                    //        //m_OrthotitaKinisis = true;
+                    //        //m_NomimotitaKinisis = true;
+                    //        Castling_Occured = true;
+                    //    }
+                    //}
 
-                // Black castling
+                    //// Black castling
 
-                // Small castling
-                if ((m_PlayerColor.CompareTo("Black") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 7) && (m_StartingRank == 8) && (m_FinishingRank == 8))
-                {
-                    if ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black King") == 0) && (Skakiera[(7), (7)].CompareTo("Black Rook") == 0) && (Skakiera[(5), (7)].CompareTo("") == 0) && (Skakiera[(6), (7)].CompareTo("") == 0))
-                    {
-                        m_OrthotitaKinisis = true;
-                        m_NomimotitaKinisis = true;
-                        Castling_Occured = true;
-                    }
-                }
+                    //// Small castling
+                    //if ((m_PlayerColor.CompareTo("Black") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 7) && (m_StartingRank == 8) && (m_FinishingRank == 8))
+                    //{
+                    //    if ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black King") == 0) && (Skakiera[(7), (7)].CompareTo("Black Rook") == 0) && (Skakiera[(5), (7)].CompareTo("") == 0) && (Skakiera[(6), (7)].CompareTo("") == 0))
+                    //    {
+                    //        //m_OrthotitaKinisis = true;
+                    //        //m_NomimotitaKinisis = true;
+                    //        Castling_Occured = true;
+                    //    }
+                    //}
 
-                // Big castling
-                if ((m_PlayerColor.CompareTo("Black") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 3) && (m_StartingRank == 8) && (m_FinishingRank == 8))
-                {
-                    if ((Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black King") == 0) && (Skakiera[(0), (7)].CompareTo("Black Rook") == 0) && (Skakiera[(1), (7)].CompareTo("") == 0) && (Skakiera[(2), (7)].CompareTo("") == 0) && (Skakiera[(3), (7)].CompareTo("") == 0))
-                    {
-                        m_OrthotitaKinisis = true;
-                        m_NomimotitaKinisis = true;
-                        Castling_Occured = true;
-                    }
-                }
-                #endregion checkCastling
+                    //// Big castling
+                    //if ((m_PlayerColor.CompareTo("Black") == 0) && (m_StartingColumnNumber == 5) && (m_FinishingColumnNumber == 3) && (m_StartingRank == 8) && (m_FinishingRank == 8))
+                    //{
+                    //    if (Skakiera[(m_StartingColumnNumber - 1), (m_StartingRank - 1)].CompareTo("Black King") == 0)
+                    //    {
+                    //        //m_OrthotitaKinisis = true;
+                    //        //m_NomimotitaKinisis = true;
+                    //        Castling_Occured = true;
+                    //    }
+                    //}
+                    //#endregion checkCastling
+
+                    //v0.9921: Code for castling
+                if (MovingPiece.CompareTo("White King") == 0)
+                    White_King_Moved = true;
+                else if (MovingPiece.CompareTo("Black King") == 0)
+                    Black_King_Moved = true;
 
                 // v0.992: Pawn promotion is checked once centrally through pawn promotion function PawnPromotion()!!
                 //         However this is needed here so as to calculate correctly the value of the human piece!
@@ -5726,6 +5967,63 @@ namespace HuoChessW8
                     MovingPiece = "White Queen";
                 if ((MovingPiece.CompareTo("Black Pawn") == 0) && (m_FinishingRank == 1))
                     MovingPiece = "Black Queen";
+
+                // Check if castling occured (so as to move the rook next to the moving king)
+                // v0.9921: Simplified code
+                // Check if castling occured (so as to move the rook next to the moving king)
+                #region castlingOccured
+                if (m_PlayerColor.CompareTo("White") == 0)
+                {
+                    //MessageBox.Show("Checkpoint 1.5");
+                    if ((MovingPiece.CompareTo("White King") == 0) &&
+                        (m_StartingColumnNumber == 5) &&
+                        (m_StartingRank == 1) &&
+                        (m_FinishingColumnNumber == 7) &&
+                        (m_FinishingRank == 1))
+                    {
+                        Skakiera[(5), (0)] = "White Rook";
+                        Skakiera[(7), (0)] = "";
+                        White_Castling_Occured = true;
+                        //MessageBox.Show( "Ο λευκός κάνει μικρό ροκε." );
+                    }
+                    else if ((MovingPiece.CompareTo("White King") == 0) &&
+                            (m_StartingColumnNumber == 5) &&
+                            (m_StartingRank == 1) &&
+                            (m_FinishingColumnNumber == 3) &&
+                            (m_FinishingRank == 1))
+                    {
+                        Skakiera[(3), (0)] = "White Rook";
+                        Skakiera[(0), (0)] = "";
+                        White_Castling_Occured = true;
+                        //MessageBox.Show( "Ο λευκός κάνει μεγάλο ροκε." );
+                    }
+                }
+                else if (m_PlayerColor.CompareTo("Black") == 0)
+                {
+                    if ((MovingPiece.CompareTo("Black King") == 0) &&
+                            (m_StartingColumnNumber == 5) &&
+                            (m_StartingRank == 8) &&
+                            (m_FinishingColumnNumber == 7) &&
+                            (m_FinishingRank == 8))
+                    {
+                        Skakiera[(5), (7)] = "Black Rook";
+                        Skakiera[(7), (7)] = "";
+                        Black_Castling_Occured = true;
+                        //MessageBox.Show( "Ο μαύρος κάνει μικρό ροκε." );
+                    }
+                    else if ((MovingPiece.CompareTo("Black King") == 0) &&
+                            (m_StartingColumnNumber == 5) &&
+                            (m_StartingRank == 8) &&
+                            (m_FinishingColumnNumber == 3) &&
+                            (m_FinishingRank == 8))
+                    {
+                        Skakiera[(3), (7)] = "Black Rook";
+                        Skakiera[(0), (7)] = "";
+                        Black_Castling_Occured = true;
+                        //MessageBox.Show( "Ο μαύρος κάνει μεγάλο ροκε." );
+                    }
+                }
+                #endregion castlingOccured
 
                 // Redraw the chessboard
                 if ((m_OrthotitaKinisis == true) && (m_NomimotitaKinisis == true))
@@ -5799,46 +6097,6 @@ namespace HuoChessW8
                         enpassant_possible_target_column = -9;
                     }
                     #endregion checkEnPassant
-
-                    // Check if castling occured (so as to move the rook next to the moving king)
-                    #region castlingOccured
-                    if (Castling_Occured == true)
-                    {
-                        if (m_PlayerColor.CompareTo("White") == 0)
-                        {
-                            if (Skakiera[(6), (0)].CompareTo("White King") == 0)
-                            {
-                                Skakiera[(5), (0)] = "White Rook";
-                                Skakiera[(7), (0)] = "";
-                                //MessageBox.Show( "Ο λευκός κάνει μικρό ροκε." );
-                            }
-                            else if (Skakiera[(2), (0)].CompareTo("White King") == 0)
-                            {
-                                Skakiera[(3), (0)] = "White Rook";
-                                Skakiera[(0), (0)] = "";
-                                //MessageBox.Show( "Ο λευκός κάνει μεγάλο ροκε." );
-                            }
-                        }
-                        else if (m_PlayerColor.CompareTo("Black") == 0)
-                        {
-                            if (Skakiera[(6), (7)].CompareTo("Black King") == 0)
-                            {
-                                Skakiera[(5), (7)] = "Black Rook";
-                                Skakiera[(7), (7)] = "";
-                                //MessageBox.Show( "Ο μαύρος κάνει μικρό ροκε." );
-                            }
-                            else if (Skakiera[(2), (7)].CompareTo("Black King") == 0)
-                            {
-                                Skakiera[(3), (7)] = "Black Rook";
-                                Skakiera[(0), (7)] = "";
-                                //MessageBox.Show( "Ο μαύρος κάνει μεγάλο ροκε." );
-                            }
-                        }
-
-                        // Restore the Castling_Occured variable to false, so as to avoid false castlings in the future!
-                        Castling_Occured = false;
-                    }
-                    #endregion castlingOccured
 
                     // Does a pawn needs promotion?
                     // Not needed here, the pawn is 'transformed' to queen some lines before...
@@ -6330,6 +6588,40 @@ namespace HuoChessW8
                 //Skakiera[(7), (2)] = "White Pawn";
                 //Skakiera[(7), (3)] = "Black Pawn";
                 //Skakiera[(6), (2)] = "Black Rook";
+
+                // Castling test
+                //Skakiera[(0), (0)] = "White Rook";
+                //Skakiera[(0), (1)] = "White Pawn";
+                //Skakiera[(0), (6)] = "Black Pawn";
+                //Skakiera[(0), (7)] = "Black Rook";
+                //Skakiera[(1), (0)] = "White Knight";
+                //Skakiera[(1), (1)] = "White Pawn";
+                //Skakiera[(1), (6)] = "Black Pawn";
+                //Skakiera[(1), (7)] = "Black Knight";
+                //Skakiera[(2), (0)] = "White Bishop";
+                //Skakiera[(2), (1)] = "White Pawn";
+                //Skakiera[(2), (6)] = "Black Pawn";
+                //Skakiera[(2), (7)] = "Black Bishop";
+                //Skakiera[(3), (0)] = "White Queen";
+                //Skakiera[(3), (1)] = "White Pawn";
+                //Skakiera[(3), (6)] = "Black Pawn";
+                //Skakiera[(3), (7)] = "Black Queen";
+                //Skakiera[(4), (0)] = "White King";
+                //Skakiera[(4), (1)] = "White Pawn";
+                //Skakiera[(4), (6)] = "Black Pawn";
+                //Skakiera[(4), (7)] = "Black King";
+                //Skakiera[(5), (0)] = "";
+                //Skakiera[(5), (1)] = "White Pawn";
+                //Skakiera[(5), (6)] = "Black Pawn";
+                //Skakiera[(5), (7)] = "Black Bishop";
+                //Skakiera[(6), (0)] = "";
+                //Skakiera[(6), (1)] = "White Pawn";
+                //Skakiera[(6), (6)] = "Black Pawn";
+                //Skakiera[(6), (7)] = "Black Knight";
+                //Skakiera[(7), (0)] = "White Rook";
+                //Skakiera[(7), (1)] = "White Pawn";
+                //Skakiera[(7), (6)] = "Black Pawn";
+                //Skakiera[(7), (7)] = "Black Rook";
 
                 m_WhichColorPlays = "White";
             }
@@ -7075,7 +7367,9 @@ namespace HuoChessW8
                                         //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber2_public) && (m_FinishingRank3 == m_FinishingRank2_public))
                                         //|| ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber2_public) && (m_FinishingRank3 == m_FinishingRank2_public)))
                                         // RULES SET 7: Only if a piece is captured!
-                                        if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati3.CompareTo("") == 1))
+                                        //if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati3.CompareTo("") == 1))
+                                        // v0.9921: Go deeper if we are at the end of the game
+                                        if ((Move_Analyzed < Thinking_Depth) && ((ProsorinoKommati3.CompareTo("") == 1) || (Move_Number_Global > 40)))
                                         {
                                             // Call ComputerMove for the HY throught process to continue
                                             Move_Analyzed = Move_Analyzed + 1;
@@ -7554,7 +7848,9 @@ namespace HuoChessW8
                                         //    || ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (m_FinishingColumnNumber2 == m_FinishingColumnNumber1_public) && (m_FinishingRank2 == m_FinishingRank1_public)))
                                         // TEST 7: Best score OR (not AND) Finishing square of previous level of thinking as the target
                                         // TEST 8: Only if a piece is captured!
-                                        if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati2.CompareTo("") == 1))
+                                        //if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati2.CompareTo("") == 1))
+                                        // v0.9921: Go deeper in the end of the game anyway
+                                        if ((Move_Analyzed < Thinking_Depth) && ((ProsorinoKommati2.CompareTo("") == 1) || (Move_Number_Global > 40)))
                                         {
                                             Move_Analyzed = Move_Analyzed + 1;
 
@@ -8689,6 +8985,8 @@ namespace HuoChessW8
 
             // v0.991
             //label2.Text = "I played! Now it is your turn!";
+            //v0.9921
+            //Move_Number_Global = Move_Number_Global + 1;
             //Application.DoEvents();
             label2.Text = string.Concat("Huo Chess move: ", HuoChess_main.NextLine);
             label3.Text = string.Concat("Final positions analyzed: ", HuoChess_main.FinalPositions);
