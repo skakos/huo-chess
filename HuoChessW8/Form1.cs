@@ -4615,27 +4615,27 @@ namespace HuoChessW8
                             //    }
                             //}
                             //Advanced pawns
-                            if ((Move > 30) && (j > 1))
+                            if ((Move_Number_Global > 30) && (j > 1))
                             {
                                 Current_Move_Score = Current_Move_Score + 3 * Score_Multiplier_White;
                             }
-                            if ((Move > 30) && (j > 2))
+                            if ((Move_Number_Global > 30) && (j > 2))
                             {
                                 Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
                             }
-                            if ((Move > 30) && (j > 3))
+                            if ((Move_Number_Global > 30) && (j > 3))
                             {
                                 Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
                             }
-                            if ((Move > 30) && (j > 4))
+                            if ((Move_Number_Global > 30) && (j > 4))
                             {
                                 Current_Move_Score = Current_Move_Score + 20 * Score_Multiplier_White;
                             }
-                            if ((Move > 30) && (j > 5))
+                            if ((Move_Number_Global > 30) && (j > 5))
                             {
                                 Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
                             }
-                            if ((Move > 30) && (j == 7))
+                            if ((Move_Number_Global > 30) && (j == 7))
                             {
                                 Current_Move_Score = Current_Move_Score + 100 * Score_Multiplier_White;
                             }
@@ -4647,11 +4647,11 @@ namespace HuoChessW8
 
                             //v0.992
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - BlackKingColumn) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
-                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - BlackKingRank) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
@@ -4662,11 +4662,11 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
 
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - BlackKingColumn) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
-                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - BlackKingRank) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
@@ -4677,11 +4677,11 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
 
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - BlackKingColumn) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
-                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - BlackKingRank) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
@@ -4692,11 +4692,11 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score + 90 * Score_Multiplier_White;
 
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - BlackKingColumn) < 3))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - BlackKingColumn) < 3))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
-                            if ((Move > 40) && (Math.Abs(j - BlackKingRank) < 3))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - BlackKingRank) < 3))
                             {
                                 Current_Move_Score = Current_Move_Score + 1 * Score_Multiplier_White;
                             }
@@ -4729,27 +4729,27 @@ namespace HuoChessW8
                             //    }
                             //}
                             // Advanced pawns
-                            if ((Move > 30) && (j < 6))
+                            if ((Move_Number_Global > 30) && (j < 6))
                             {
                                 Current_Move_Score = Current_Move_Score - 3 * Score_Multiplier_Black;
                             }
-                            if ((Move > 30) && (j < 5))
+                            if ((Move_Number_Global > 30) && (j < 5))
                             {
                                 Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_Black;
                             }
-                            if ((Move > 30) && (j < 4))
+                            if ((Move_Number_Global > 30) && (j < 4))
                             {
                                 Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
                             }
-                            if ((Move > 30) && (j < 3))
+                            if ((Move_Number_Global > 30) && (j < 3))
                             {
                                 Current_Move_Score = Current_Move_Score - 20 * Score_Multiplier_Black;
                             }
-                            if ((Move > 30) && (j < 2))
+                            if ((Move_Number_Global > 30) && (j < 2))
                             {
                                 Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
                             }
-                            if ((Move > 30) && (j == 0))
+                            if ((Move_Number_Global > 30) && (j == 0))
                             {
                                 Current_Move_Score = Current_Move_Score - 100 * Score_Multiplier_Black;
                             }
@@ -4760,11 +4760,11 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score - 50 * Score_Multiplier_Black;
 
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
-                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - WhiteKingRank) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
@@ -4777,11 +4777,11 @@ namespace HuoChessW8
                             // v0.970: Delete tis polles malakies
                             // Current_Move_Score = Current_Move_Score + DangerWeight * CheckDanger_Bl(CSSkakiera, i, j);
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
-                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - WhiteKingRank) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
@@ -4792,11 +4792,11 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
 
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - WhiteKingColumn) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
-                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 4))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - WhiteKingRank) < 4))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
@@ -4807,11 +4807,11 @@ namespace HuoChessW8
                             Current_Move_Score = Current_Move_Score - 90 * Score_Multiplier_Black;
 
                             // Get near the King at the ending...
-                            if ((Move > 40) && (Math.Abs(i - WhiteKingColumn) < 3))
+                            if ((Move_Number_Global > 40) && (Math.Abs(i - WhiteKingColumn) < 3))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
-                            if ((Move > 40) && (Math.Abs(j - WhiteKingRank) < 3))
+                            if ((Move_Number_Global > 40) && (Math.Abs(j - WhiteKingRank) < 3))
                             {
                                 Current_Move_Score = Current_Move_Score - 1 * Score_Multiplier_Black;
                             }
@@ -4827,7 +4827,7 @@ namespace HuoChessW8
 
                 // Position Quality Checks
                 // Take the center with the pawns
-                if (Move < 16)
+                if (Move_Number_Global < 16)
                 {
                     if (CSSkakiera[3, 3].CompareTo("White Pawn") == 0)
                     {
@@ -4874,7 +4874,7 @@ namespace HuoChessW8
                 }
 
                 // Don't make stupid moves in the beginning
-                if (Move < 10)
+                if (Move_Number_Global < 10)
                 {
                     // WHITE PIECES
                     // Move the knight
@@ -5031,7 +5031,7 @@ namespace HuoChessW8
                 //}
 
                 // Finale...
-                if (Move > 40)
+                if (Move_Number_Global > 40)
                 {
                     //Checking is a good thing...
                     //(but not too much)
