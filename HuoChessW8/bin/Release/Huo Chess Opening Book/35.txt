@@ -15,9 +15,9 @@ White Pawn
 Black Pawn
 Black Knight
 White Bishop
+
+
 White Pawn
-
-
 
 
 Black Pawn
@@ -26,8 +26,8 @@ White Queen
 
 
 White Pawn
-Black Pawn
 
+Black Pawn
 
 Black Queen
 White King
@@ -40,13 +40,13 @@ Black Pawn
 Black King
 White Bishop
 White Pawn
-White Knight
+
 
 
 Black Knight
 Black Pawn
 Black Bishop
-
+White Knight
 White Pawn
 
 

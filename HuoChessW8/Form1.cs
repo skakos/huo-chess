@@ -7367,9 +7367,9 @@ namespace HuoChessW8
                                         //if (((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("White") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber2_public) && (m_FinishingRank3 == m_FinishingRank2_public))
                                         //|| ((Move_Analyzed < Thinking_Depth) && (m_PlayerColor.CompareTo("Black") == 0) && (m_FinishingColumnNumber3 == m_FinishingColumnNumber2_public) && (m_FinishingRank3 == m_FinishingRank2_public)))
                                         // RULES SET 7: Only if a piece is captured!
-                                        //if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati3.CompareTo("") == 1))
-                                        // v0.9921: Go deeper if we are at the end of the game
-                                        if ((Move_Analyzed < Thinking_Depth) && ((ProsorinoKommati3.CompareTo("") == 1) || (Move_Number_Global > 40)))
+                                        if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati3.CompareTo("") == 1))
+                                        // v0.9921: Go deeper if we are at the end of the game: Does not work! Goes outside the boundaries of the array!
+                                        //if ((Move_Analyzed < Thinking_Depth) && ((ProsorinoKommati3.CompareTo("") == 1) || (Move_Number_Global > 40)))
                                         {
                                             // Call ComputerMove for the HY throught process to continue
                                             Move_Analyzed = Move_Analyzed + 1;
@@ -7849,8 +7849,9 @@ namespace HuoChessW8
                                         // TEST 7: Best score OR (not AND) Finishing square of previous level of thinking as the target
                                         // TEST 8: Only if a piece is captured!
                                         //if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati2.CompareTo("") == 1))
-                                        // v0.9921: Go deeper in the end of the game anyway
-                                        if ((Move_Analyzed < Thinking_Depth) && ((ProsorinoKommati2.CompareTo("") == 1) || (Move_Number_Global > 40)))
+                                        if ((Move_Analyzed < Thinking_Depth) && (ProsorinoKommati2.CompareTo("") == 1))
+                                        // v0.9921: Go deeper in the end of the game anyway: Does not work! Runs out of the arrays boundaries!
+                                        //if ((Move_Analyzed < Thinking_Depth) && ((ProsorinoKommati2.CompareTo("") == 1) || (Move_Number_Global > 40)))
                                         {
                                             Move_Analyzed = Move_Analyzed + 1;
 

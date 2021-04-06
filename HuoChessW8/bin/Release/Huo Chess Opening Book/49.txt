@@ -40,16 +40,16 @@ Black Pawn
 Black King
 White Bishop
 White Pawn
-
+White Knight
 
 
 
 Black Pawn
 Black Bishop
-White Knight
-
 
 White Pawn
+
+
 
 
 Black Pawn
@@ -66,4 +66,4 @@ BELOW FOLLOW THE SUGGESTED MOVE FOR THAT POSITION
 4
 7
 4
-5
+6
