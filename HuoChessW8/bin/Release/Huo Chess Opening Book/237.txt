@@ -1,0 +1,69 @@
+White Rook
+
+White Pawn
+
+
+
+Black Pawn
+Black Rook
+
+White Pawn
+
+
+
+
+Black Pawn
+
+White Bishop
+White Pawn
+
+
+
+Black Knight
+Black Pawn
+
+White Queen
+
+White Pawn
+Black Pawn
+
+Black Bishop
+Black Queen
+
+White King
+
+
+White Pawn
+Black Pawn
+Black Bishop
+Black Knight
+
+
+White Pawn
+White Knight
+
+
+
+Black Pawn
+Black Rook
+
+White Bishop
+White Knight
+White Pawn
+
+
+Black Pawn
+Black King
+White Rook
+
+White Pawn
+
+
+Black Pawn
+
+
+BELOW FOLLOW THE SUGGESTED MOVE FOR THAT POSITION
+5
+1
+7
+1
