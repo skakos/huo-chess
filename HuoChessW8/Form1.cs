@@ -4615,30 +4615,35 @@ namespace HuoChessW8
                             //    }
                             //}
                             //Advanced pawns
-                            if ((Move_Number_Global > 30) && (j > 1))
+                            if ((Move_Number_Global > 40) && (j > 3))
                             {
-                                Current_Move_Score = Current_Move_Score + 3 * Score_Multiplier_White;
+                                Current_Move_Score = Current_Move_Score + j * Score_Multiplier_White;
                             }
-                            if ((Move_Number_Global > 30) && (j > 2))
-                            {
-                                Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
-                            }
-                            if ((Move_Number_Global > 30) && (j > 3))
-                            {
-                                Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
-                            }
-                            if ((Move_Number_Global > 30) && (j > 4))
-                            {
-                                Current_Move_Score = Current_Move_Score + 20 * Score_Multiplier_White;
-                            }
-                            if ((Move_Number_Global > 30) && (j > 5))
-                            {
-                                Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
-                            }
-                            if ((Move_Number_Global > 30) && (j == 7))
-                            {
-                                Current_Move_Score = Current_Move_Score + 100 * Score_Multiplier_White;
-                            }
+
+                            //if ((Move_Number_Global > 30) && (j > 1))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 3 * Score_Multiplier_White;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j > 2))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 4 * Score_Multiplier_White;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j > 3))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 10 * Score_Multiplier_White;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j > 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 20 * Score_Multiplier_White;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j > 5))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 30 * Score_Multiplier_White;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j == 7))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score + 100 * Score_Multiplier_White;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("White Rook") == 0)
                         {
@@ -4729,30 +4734,35 @@ namespace HuoChessW8
                             //    }
                             //}
                             // Advanced pawns
-                            if ((Move_Number_Global > 30) && (j < 6))
+                            if ((Move_Number_Global > 40) && (j < 4))
                             {
-                                Current_Move_Score = Current_Move_Score - 3 * Score_Multiplier_Black;
+                                Current_Move_Score = Current_Move_Score - j * Score_Multiplier_Black;
                             }
-                            if ((Move_Number_Global > 30) && (j < 5))
-                            {
-                                Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_Black;
-                            }
-                            if ((Move_Number_Global > 30) && (j < 4))
-                            {
-                                Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
-                            }
-                            if ((Move_Number_Global > 30) && (j < 3))
-                            {
-                                Current_Move_Score = Current_Move_Score - 20 * Score_Multiplier_Black;
-                            }
-                            if ((Move_Number_Global > 30) && (j < 2))
-                            {
-                                Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
-                            }
-                            if ((Move_Number_Global > 30) && (j == 0))
-                            {
-                                Current_Move_Score = Current_Move_Score - 100 * Score_Multiplier_Black;
-                            }
+
+                            //if ((Move_Number_Global > 30) && (j < 6))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 3 * Score_Multiplier_Black;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j < 5))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 4 * Score_Multiplier_Black;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j < 4))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 10 * Score_Multiplier_Black;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j < 3))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 20 * Score_Multiplier_Black;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j < 2))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 30 * Score_Multiplier_Black;
+                            //}
+                            //if ((Move_Number_Global > 30) && (j == 0))
+                            //{
+                            //    Current_Move_Score = Current_Move_Score - 100 * Score_Multiplier_Black;
+                            //}
                         }
                         else if (CSSkakiera[(i), (j)].CompareTo("Black Rook") == 0)
                         {
