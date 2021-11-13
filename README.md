@@ -1,8 +1,7 @@
 # huo-chess .NET Framework
 Huo Chess: The best open-source micro chess program to use for educational purposes! This is the latest edition based on the .NET Framework.
 
-The next edition (Huo Chess DV or Huo Chess Delta Version) is based on C# and .NET Platform 6.0.
-Please go to https://github.com/skakos/HuoChessDV for the latest .NET Huo Chess edition.
+The next edition Huo Chess DV (Huo Chess Delta Version) based on C# and .NET Platform 6.0 can be found at https://github.com/skakos/HuoChessDV.
 
 A mini open source chess program for educational purposes (latest version is 44 KB in size). Code is purposefully heavily commented and kept as concise as possible; no size-reducing optimizations are applied that would make the code less readable. Articles explaining the chess engine algorithm exist either here or in Harmonia Philosophica site.
 
