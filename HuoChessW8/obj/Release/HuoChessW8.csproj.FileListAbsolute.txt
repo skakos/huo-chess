@@ -1,0 +1,11 @@
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\bin\Release\HuoChessW8.exe.config
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\bin\Release\HuoChessW8.exe
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\bin\Release\HuoChessW8.pdb
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.csproj.AssemblyReference.cache
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.csproj.SuggestedBindingRedirects.cache
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.Form1.resources
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.Properties.Resources.resources
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.csproj.GenerateResource.cache
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.csproj.CoreCompileInputs.cache
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.exe
+C:\Users\skako\Source\Repos\huo-chess\HuoChessW8\obj\Release\HuoChessW8.pdb
