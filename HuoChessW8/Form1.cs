@@ -5493,7 +5493,7 @@ namespace HuoChessW8
                     }
                 }
 
-                // 2022-05-14 Fix: Replaced m_StartingColumnNumber etc variables with StartingCol etc variables in the checks for castling
+                // 2022-05-14 Fix: Replaced the m_StartingColumnNumber etc variables with StartingCol etc variables in the checks for castling
 
                 // Big castling
                 if ((m_WhichColorPlays.CompareTo("White") == 0) && (startColumn == 5) && (finishColumn == 3) && (startRank == 1) && (finishRank == 1) && (White_Castling_Occured == false) && (White_King_Moved == false))
