@@ -1,0 +1,9 @@
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\bin\Debug\HuoChessW8.exe.config
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\bin\Debug\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\bin\Debug\HuoChessW8.pdb
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\obj\Debug\HuoChessW8.Form1.resources
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\obj\Debug\HuoChessW8.Properties.Resources.resources
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\obj\Debug\HuoChessW8.csproj.GenerateResource.cache
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\obj\Debug\HuoChessW8.csproj.CoreCompileInputs.cache
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\obj\Debug\HuoChessW8.exe
+C:\Users\KakosS\Documents\Visual Studio 2019\Projects\HUO CHESS 0.992 with GUI - Developers edition\Huo Chess 0.992 with GUI_VS2012\Source\HuoChessW8\obj\Debug\HuoChessW8.pdb
