@@ -4053,8 +4053,8 @@ namespace HuoChessW8
                     // this is line 1 in the shape at http://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Minimax.svg/300px-Minimax.svg.png
 
                     // Move 1 level (Human)
-
-                    parentNodeAnalyzed = -999;
+                    // V0.992: Comment out parentNodeAnalyzed = -999;
+                    //parentNodeAnalyzed = -999;
 
                     // v0.991: Start from 0!
                     for (counter1 = 0; counter1 < NodeLevel_1_count; counter1++)
